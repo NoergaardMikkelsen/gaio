@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Statistics",
+  "display": "standalone",
+  "name": "Statistics",
+  "short_name": "Statistics",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
