@@ -36,6 +36,7 @@
       Localization;
       ThemeService;
     </UnoFeatures>
+    <UserSecretsId>dbb985c4-ced9-42a3-93a5-b99619baa6b3</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">

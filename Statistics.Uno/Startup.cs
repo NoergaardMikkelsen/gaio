@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
 using Statistics.Shared.Startup;
