@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Abstraction.Enum.Persistence;
+using Statistics.Shared.Models.Entity;
+using Statistics.Shared.Persistence.Configuration;
 using Statistics.Shared.Persistence.Core;
 
 namespace Statistics.Shared.Persistence;
@@ -16,8 +18,14 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
         Console.WriteLine("Building Database Model...");
         base.OnModelCreating(modelBuilder);
 
-        var databaseType = DatabaseType.POSTGRESS;
+        const DatabaseType databaseType = DatabaseType.POSTGRESS;
 
-        //modelBuilder.ApplyConfiguration(new Configuration(databaseType));
+        modelBuilder.ApplyConfiguration(new ArtificialIntelligenceConfiguration(databaseType));
+        modelBuilder.ApplyConfiguration(new PromptConfiguration(databaseType));
+        modelBuilder.ApplyConfiguration(new ResponseConfiguration(databaseType));
     }
+
+    public DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
+    public DbSet<Prompt> Prompts { get; set; }
+    public DbSet<Response> Responses { get; set; }
 }

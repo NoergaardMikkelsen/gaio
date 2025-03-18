@@ -403,5 +403,4 @@ FodyWeavers.xsd
 solution-config.props
 # Publish Profiles
 !**/Properties/PublishProfiles/*.pubxml
-/Statistics.Uno/secrets.json
-/Statistics.Uno/appsettings.secrets.json
+*appsettings.secrets.json

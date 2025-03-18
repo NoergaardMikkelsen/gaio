@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Shared.Persisten
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Shared.Models", "Statistics.Shared.Models\Statistics.Shared.Models.csproj", "{D973B326-9A6E-45B7-86B3-A937D1D6389F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Commandline", "Statistics.Commandline\Statistics.Commandline.csproj", "{90B95054-3DF8-46BA-8B98-E348DEDBF764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{D973B326-9A6E-45B7-86B3-A937D1D6389F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D973B326-9A6E-45B7-86B3-A937D1D6389F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D973B326-9A6E-45B7-86B3-A937D1D6389F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90B95054-3DF8-46BA-8B98-E348DEDBF764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B95054-3DF8-46BA-8B98-E348DEDBF764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B95054-3DF8-46BA-8B98-E348DEDBF764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B95054-3DF8-46BA-8B98-E348DEDBF764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

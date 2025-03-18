@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Statistics.Shared.Abstraction\Statistics.Shared.Abstraction.csproj" />
   </ItemGroup>
 

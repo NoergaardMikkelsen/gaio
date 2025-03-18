@@ -1,4 +1,4 @@
-namespace Statistics.Uno.Models;
+namespace Statistics.Shared.Models.Settings;
 
 public class SecretsConfig
 {
