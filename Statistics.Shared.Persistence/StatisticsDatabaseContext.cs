@@ -13,6 +13,7 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        Console.WriteLine("Building Database Model...");
         base.OnModelCreating(modelBuilder);
 
         var databaseType = DatabaseType.POSTGRESS;

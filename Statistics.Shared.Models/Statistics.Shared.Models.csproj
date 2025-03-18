@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Entity\" />
-    <Folder Include="Searchable\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Statistics.Shared.Abstraction\Statistics.Shared.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

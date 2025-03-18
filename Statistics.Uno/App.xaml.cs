@@ -16,10 +16,11 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     protected IHost? Host { get; private set; }
+    public Startup Startup {get; private set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var startup = new Startup();
+        Startup = new Startup();
 
         // Load WinUI Resources
         Resources.Build(r => r.Merged(
@@ -32,10 +33,9 @@ public partial class App : Application
                     new Styles.MaterialFontsOverride())));
         var builder = this.CreateBuilder(args);
 
-        startup.SetupApplication(builder)
-            .Configure(host => host.ConfigureServices(collection => startup.SetupServices(collection)));
+        Startup.SetupApplication(builder)
+            .Configure(host => host.ConfigureServices(collection => Startup.SetupServices(collection)));
 
-            
         MainWindow = builder.Window;
 
 #if DEBUG

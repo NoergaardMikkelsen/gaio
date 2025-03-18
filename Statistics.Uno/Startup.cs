@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
 using Statistics.Shared.Startup;
@@ -8,18 +9,39 @@ namespace Statistics.Uno;
 
 public class Startup : ModularStartup
 {
-    private const string DATABASE_CONNECTION_STRING_NAME = "mainDb";
+    protected IHost? Host { get; private set; }
 
     public Startup()
     {
+        Console.WriteLine($"Constructing Startup Class...");
+
         AddModule(new DatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
         {
-            options.UseNpgsql(DATABASE_CONNECTION_STRING_NAME);
+            string connectionString = GetConnectionString();
+
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException(nameof(connectionString),
+                    "The connection string in the secrets was empty");
+
+            options.UseNpgsql(connectionString);
+            Console.WriteLine($"Connected to database with connection string '{connectionString}'");
+
 #if DEBUG
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
 #endif
         }));
+    }
+
+    /// <summary>
+    /// TODO: Update to also work for deployment environment
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception">Throws exception if secrets file is missing</exception>
+    private string GetConnectionString()
+    {
+        var secrets = Host?.Services.GetRequiredService<IOptions<SecretsConfig>>();
+        return secrets?.Value.ConnectionString ?? "";
     }
 
     /// <inheritdoc />
@@ -33,8 +55,6 @@ public class Startup : ModularStartup
     /// <inheritdoc />
     public override void ConfigureApplication(IApplicationBuilder app)
     {
-        base.ConfigureApplication(app);
-
         app.Configure(host => host
 #if DEBUG
             // Switch to Development environment when running in DEBUG
@@ -44,6 +64,12 @@ public class Startup : ModularStartup
             .UseConfiguration(configure: ConfigureConfigurationSource)
             .UseLocalization(ConfigureLocalization)
             );
+
+        Host = app.Build();
+
+        base.ConfigureApplication(app);
+
+        Host = app.Build();
     }
 
     private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logBuilder)
@@ -73,12 +99,12 @@ public class Startup : ModularStartup
         //// DevServer and HotReload related
         //logBuilder.HotReloadCoreLogLevel(LogLevel.Information);
         //// Debug JS interop
-        //logBuilder.WebAssemblyLogLevel(LogLevel.Debug);
+        logBuilder.WebAssemblyLogLevel(LogLevel.Debug);
     }
 
     private IHostBuilder ConfigureConfigurationSource(IConfigBuilder configBuilder)
     {
-        return configBuilder.EmbeddedSource<App>().Section<AppConfig>();
+        return configBuilder.EmbeddedSource<App>().Section<AppConfig>().EmbeddedSource<App>("secrets").Section<SecretsConfig>();
     }
 
     private void ConfigureLocalization(HostBuilderContext context, IServiceCollection services)

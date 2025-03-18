@@ -2,5 +2,5 @@ namespace Statistics.Uno.Models;
 
 public class SecretsConfig
 {
-    string DevelopConnectionString { get; set; }
+    public string ConnectionString { get; set; }
 }

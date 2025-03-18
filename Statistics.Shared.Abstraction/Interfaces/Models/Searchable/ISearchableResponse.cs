@@ -1,4 +1,4 @@
-namespace Statistics.Shared.Abstraction.Interfaces.Model.Searchable;
+namespace Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 
 public interface ISearchableResponse
 {

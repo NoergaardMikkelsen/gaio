@@ -1,6 +1,6 @@
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 
-namespace Statistics.Shared.Abstraction.Interfaces.Model.Searchable;
+namespace Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 
 public interface ISearchableArtificialIntelligence : ISearchable
 {
