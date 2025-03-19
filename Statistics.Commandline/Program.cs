@@ -1,3 +1,7 @@
+using Microsoft.Extensions.Hosting;
+using Statistics.Shared.Persistence;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Statistics.Commandline;
 
 internal class Program
@@ -6,20 +10,25 @@ internal class Program
     {
         var program = new Program();
 
-        program.Run(args);
+        program.Run(args).GetAwaiter().GetResult();
     }
 
-    private void Run(string[] args)
+    private async Task Run(string[] args)
     {
-        var startup = new Startup();
+        Console.WriteLine("Hello World");
 
-        IApplicationBuilder builder = CreateBuilder(args);
-        startup.SetupApplication(builder)
-            .Configure(host => host.ConfigureServices(collection => Startup.SetupServices(collection)));
-    }
+        //var startup = new CommandlineStartup();
 
-    private IApplicationBuilder CreateBuilder(string[] args)
-    {
-        throw new NotImplementedException();
+        //HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+
+        //startup.SetupApplication(builder);
+        //startup.SetupServices(builder.Services);
+
+        //using IHost host = builder.Build();
+        //Console.WriteLine("Host has been build...");
+
+        //var context = startup.ServiceProvider.GetService<StatisticsDatabaseContext>();
+
+        //await host.RunAsync();
     }
 }

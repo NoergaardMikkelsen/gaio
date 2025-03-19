@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Statistics.Shared.Abstraction\Statistics.Shared.Abstraction.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,18 +5,17 @@ using Statistics.Shared.Abstraction.Interfaces.Startup;
 
 namespace Statistics.Shared.Persistence.Core.Startup;
 
-public class DatabaseContextStartupModule<TContext> : IStartupModule where TContext : BaseDatabaseContext
+public abstract class BaseDatabaseContextStartupModule<TContext> : IStartupModule where TContext : BaseDatabaseContext
 {
     public delegate void SetupOptionsDelegate(DbContextOptionsBuilder options);
 
-    private readonly bool migrateOnStartup;
+    protected readonly bool migrateOnStartup;
     private readonly SetupOptionsDelegate setupOptions;
-    private ILogger<DatabaseContextStartupModule<TContext>>? logger;
+    protected ILogger<BaseDatabaseContextStartupModule<TContext>>? logger;
 
-
-    public DatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true)
+    public BaseDatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true)
     {
-        if (typeof(TContext) is { IsAbstract: true, })
+        if (typeof(TContext) is {IsAbstract: true,})
             throw new ArgumentException($"Invalid type argument supplied to '{nameof(TContext)}'");
 
         this.migrateOnStartup = migrateOnStartup;
@@ -26,23 +25,20 @@ public class DatabaseContextStartupModule<TContext> : IStartupModule where TCont
 
     public void ConfigureServices(IServiceCollection services)
     {
-        logger = services.BuildServiceProvider().GetService<ILogger<DatabaseContextStartupModule<TContext>>>();
+        logger = services.BuildServiceProvider().GetService<ILogger<BaseDatabaseContextStartupModule<TContext>>>();
 
         services.AddDbContext<TContext>(options => setupOptions.Invoke(options));
 
         logger?.LogDebug("Completed Configuration of Database Services.");
-    }
+        Console.WriteLine("Completed Configuration of Database Services.");
 
-    public void ConfigureApplication(IApplicationBuilder app)
-    {
         if (!migrateOnStartup)
             return;
 
-        using IServiceScope service =
-            app.Build().Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-        using var context = service.ServiceProvider.GetService<TContext>();
+        var provider = services.BuildServiceProvider();
+        using var context = provider.GetService<TContext>();
         context?.Database.Migrate();
 
-        logger?.LogDebug("Completed Configuration of Database Application.");
+        logger?.LogDebug("Completed Migration of Database.");
     }
 }

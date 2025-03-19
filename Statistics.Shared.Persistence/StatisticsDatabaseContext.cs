@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Enum.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Persistence.Configuration;
@@ -10,6 +12,8 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
 {
     public StatisticsDatabaseContext(DbContextOptions options) : base(options)
     {
+        //Console.WriteLine($"Completed Construction of Database Context. - {JsonConvert.SerializeObject(options)}");
+        Console.WriteLine($"Completed Construction of Database Context.");
     }
 
     /// <inheritdoc />

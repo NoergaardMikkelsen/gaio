@@ -1,22 +1,21 @@
 using Microsoft.Extensions.DependencyInjection;
-using Statistics.Shared.Abstraction.Interfaces.Startup;
 
-namespace Statistics.Shared.Startup;
+namespace Statistics.Uno.Startup;
 
-public abstract class ModularStartup : IStartupModule
+public abstract class UnoModularStartup : IUnoStartupModule
 {
     public IServiceCollection Services { get; private set; }
     public IServiceProvider ServiceProvider { get; private set; }
 
-    private ICollection<IStartupModule> _modules;
+    private ICollection<IUnoStartupModule> _modules;
 
 
-    protected ModularStartup()
+    protected UnoModularStartup()
     {
-        _modules = new List<IStartupModule>();
+        _modules = new List<IUnoStartupModule>();
     }
 
-    protected void AddModule(IStartupModule module)
+    protected void AddModule(IUnoStartupModule module)
     {
         _modules.Add(module);
     }
@@ -36,7 +35,7 @@ public abstract class ModularStartup : IStartupModule
         Services = services ??= new ServiceCollection();
 
         ConfigureServices(services);
-        foreach (IStartupModule module in _modules)
+        foreach (IUnoStartupModule module in _modules)
         {
             module.ConfigureServices(Services);
         }
@@ -47,7 +46,7 @@ public abstract class ModularStartup : IStartupModule
     public IApplicationBuilder SetupApplication(IApplicationBuilder app)
     {
         ConfigureApplication(app);
-        foreach (IStartupModule module in _modules)
+        foreach (IUnoStartupModule module in _modules)
         {
             module.ConfigureApplication(app);
         }

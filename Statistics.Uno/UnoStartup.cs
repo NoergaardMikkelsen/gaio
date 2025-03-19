@@ -3,20 +3,20 @@ using Newtonsoft.Json;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
-using Statistics.Shared.Startup;
 using Statistics.Uno.Models;
+using Statistics.Uno.Startup;
 
 namespace Statistics.Uno;
 
-public class Startup : ModularStartup
+public class UnoStartup : UnoModularStartup
 {
     protected IHost? Host { get; private set; }
 
-    public Startup()
+    public UnoStartup()
     {
         Console.WriteLine($"Constructing Startup Class...");
 
-        AddModule(new DatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
+        AddModule(new UnoDatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
         {
             string connectionString = GetConnectionString();
 

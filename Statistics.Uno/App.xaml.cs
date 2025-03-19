@@ -16,11 +16,11 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     protected IHost? Host { get; private set; }
-    public Startup Startup {get; private set; }
+    public UnoStartup Startup {get; private set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        Startup = new Startup();
+        Startup = new UnoStartup();
 
         // Load WinUI Resources
         Resources.Build(r => r.Merged(
