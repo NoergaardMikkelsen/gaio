@@ -12,4 +12,7 @@ public class SearchableResponse : ISearchableResponse
 
     /// <inheritdoc />
     public int PromptId { get; set; }
+
+    /// <inheritdoc />
+    public int Id { get; set; }
 }

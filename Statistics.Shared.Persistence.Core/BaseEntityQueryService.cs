@@ -1,33 +1,41 @@
+using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 
 namespace Statistics.Shared.Persistence.Core;
 
-public abstract class BaseEntityQueryService<TEntity, TSearchable> : IEntityQueryService<TEntity, TSearchable> where TEntity : class, IEntity where TSearchable : class, ISearchable
+public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : IEntityQueryService<TEntity, TSearchable>
+    where TContext : BaseDatabaseContext where TEntity : class, IEntity where TSearchable : class, ISearchable, new()
 {
-    private readonly BaseDatabaseContext context;
+    protected readonly TContext context;
 
-    protected BaseEntityQueryService(BaseDatabaseContext context)
+    protected BaseEntityQueryService(TContext context)
     {
         this.context = context;
     }
 
     /// <inheritdoc />
-    public async Task<TEntity> AddEntity(TEntity entity)
+    public async Task AddEntity(TEntity entity, bool saveImmediately = true)
     {
-        return context.Add(entity).Entity; // <-- Incorrect retrieval of the supposed result
+        await context.AddAsync(entity);
+
+        if (saveImmediately)
+            await context.SaveChangesAsync();
     }
 
 
     /// <inheritdoc />
-    public async Task<IEnumerable<TEntity>> AddEntities(IEnumerable<TEntity> entities)
+    public async Task AddEntities(IEnumerable<TEntity> entities, bool saveImmediately = true)
     {
-        throw new NotImplementedException();
+        await context.AddRangeAsync(entities);
+
+        if (saveImmediately)
+            await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
     public async Task<TEntity> GetEntity(TSearchable searchable)
     {
-        return BuildQuery(searchable).ToList().First();
+        return (await BuildQuery(searchable).ToListAsync()).First();
     }
 
     private IQueryable<TEntity> BuildQuery(TSearchable searchable)
@@ -48,31 +56,41 @@ public abstract class BaseEntityQueryService<TEntity, TSearchable> : IEntityQuer
     /// <inheritdoc />
     public async Task<IEnumerable<TEntity>> GetEntities(TSearchable searchable)
     {
-        return BuildQuery(searchable).ToList();
+        return await BuildQuery(searchable).ToListAsync();
     }
 
     /// <inheritdoc />
-    public async Task<TEntity> UpdateEntity(TEntity entity)
+    public async Task UpdateEntity(TEntity entity, bool saveImmediately = true)
     {
-        throw new NotImplementedException();
+        context.Update(entity);
+
+        if(saveImmediately)
+            await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<TEntity>> UpdateEntities(IEnumerable<TEntity> entities)
+    public async Task UpdateEntities(IEnumerable<TEntity> entities, bool saveImmediately = true)
     {
-        throw new NotImplementedException();
+        context.UpdateRange(entities);
+
+        if (saveImmediately)
+            await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
-    public async Task DeleteEntity(TSearchable searchable)
+    public async Task DeleteEntity(TSearchable searchable, bool saveImmediately = true)
     {
-        throw new NotImplementedException();
+        TEntity entity = await GetEntity(searchable);
+        context.Remove(entity);
+
+        if (saveImmediately)
+            await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
-    public async Task DeleteEntityById(int id)
+    public async Task DeleteEntityById(int id, bool saveImmediately = true)
     {
-        throw new NotImplementedException();
+        await DeleteEntity(new TSearchable() {Id = id,}, saveImmediately);
     }
 }
 
