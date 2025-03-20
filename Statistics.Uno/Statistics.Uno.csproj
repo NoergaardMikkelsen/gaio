@@ -58,14 +58,4 @@
     <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="appsettings.secrets.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="appsettings.secrets.json" />
-  </ItemGroup>
-
 </Project>

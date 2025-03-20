@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Commandline", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Shared.Startup", "Statistics.Shared.Startup\Statistics.Shared.Startup.csproj", "{69EB698B-9B3C-4FB4-B8CB-2E474435431B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Api", "Statistics.Api\Statistics.Api.csproj", "{2CD4C51D-B38B-4761-B7A5-CC92788803DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{69EB698B-9B3C-4FB4-B8CB-2E474435431B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69EB698B-9B3C-4FB4-B8CB-2E474435431B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69EB698B-9B3C-4FB4-B8CB-2E474435431B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD4C51D-B38B-4761-B7A5-CC92788803DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD4C51D-B38B-4761-B7A5-CC92788803DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD4C51D-B38B-4761-B7A5-CC92788803DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD4C51D-B38B-4761-B7A5-CC92788803DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

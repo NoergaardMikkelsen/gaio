@@ -15,34 +15,6 @@ public class UnoStartup : UnoModularStartup
     public UnoStartup()
     {
         Console.WriteLine($"Constructing Startup Class...");
-
-        AddModule(new UnoDatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
-        {
-            string connectionString = GetConnectionString();
-
-            if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentNullException(nameof(connectionString),
-                    "The connection string in the secrets was empty");
-
-            options.UseNpgsql(connectionString);
-            Console.WriteLine($"Connected to database with connection string '{connectionString}'");
-
-#if DEBUG
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-#endif
-        }));
-    }
-
-    /// <summary>
-    /// TODO: Update to also work for deployment environment
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="Exception">Throws exception if secrets file is missing</exception>
-    private string GetConnectionString()
-    {
-        var secrets = Host?.Services.GetRequiredService<IOptions<SecretsConfig>>();
-        return secrets?.Value.ConnectionString ?? "";
     }
 
     /// <inheritdoc />
