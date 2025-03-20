@@ -11,9 +11,7 @@ public abstract class CommandlineModularStartup : BaseModularStartup<ICommandlin
     /// <inheritdoc />
     public virtual void ConfigureApplication(IHostApplicationBuilder app)
     {
-        app.Configuration.AddJsonFile("appsettings.secrets.json", false, true);
 
-        Configuration = app.Configuration;
     }
 
     public IHostApplicationBuilder SetupApplication(IHostApplicationBuilder app)

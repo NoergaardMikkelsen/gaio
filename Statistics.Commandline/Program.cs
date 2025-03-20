@@ -11,24 +11,23 @@ internal class Program
         var program = new Program();
 
         program.Run(args).GetAwaiter().GetResult();
+        Console.ReadKey();
     }
 
     private async Task Run(string[] args)
     {
-        Console.WriteLine("Hello World");
+        var startup = new CommandlineStartup();
 
-        //var startup = new CommandlineStartup();
+        HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-        //HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+        startup.SetupApplication(builder);
+        startup.SetupServices(builder.Services);
 
-        //startup.SetupApplication(builder);
-        //startup.SetupServices(builder.Services);
-
-        //using IHost host = builder.Build();
-        //Console.WriteLine("Host has been build...");
+        using IHost host = builder.Build();
+        Console.WriteLine("Host has been build...");
 
         //var context = startup.ServiceProvider.GetService<StatisticsDatabaseContext>();
 
-        //await host.RunAsync();
+        await host.RunAsync();
     }
 }
