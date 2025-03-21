@@ -1,3 +1,4 @@
+using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 
 namespace Statistics.Shared.Models.Searchable;
@@ -12,4 +13,7 @@ public class SearchableArtificialIntelligence : ISearchableArtificialIntelligenc
 
     /// <inheritdoc />
     public string Key { get; set; }
+
+    /// <inheritdoc />
+    public ArtificialIntelligenceType AiType { get; set; }
 }

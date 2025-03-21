@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
+using Statistics.Shared.Services.ArtificialIntelligence;
 using Statistics.Uno.Models;
 using Statistics.Uno.Startup;
 
@@ -22,6 +24,7 @@ public class UnoStartup : UnoModularStartup
     {
         base.ConfigureServices(services);
 
+        services.AddTransient<IMasterArtificialIntelligencePromptService, MasterArtificialIntelligencePromptService>();
         // Business Logic Services
     }
 

@@ -1,3 +1,4 @@
+using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Shared.Models.Entity;
@@ -19,6 +20,9 @@ public class ArtificialIntelligence : IArtificialIntelligence
 
     /// <inheritdoc />
     public string Key { get; set; }
+
+    /// <inheritdoc />
+    public ArtificialIntelligenceType AiType { get; set; }
 
     /// <inheritdoc />
     public byte[] Version { get; set; }

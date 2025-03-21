@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Statistics.Commandline.Startup;
+using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
 using Statistics.Shared.Persistence.Services;
+using Statistics.Shared.Services.ArtificialIntelligence;
 using Statistics.Shared.Startup;
 
 namespace Statistics.Commandline;
@@ -49,6 +52,14 @@ public class CommandlineStartup : CommandlineModularStartup
         var config = new SecretsConfig();
         Configuration.GetSection(nameof(SecretsConfig)).Bind(config);
         return config;
+    }
+
+    /// <inheritdoc />
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        base.ConfigureServices(services);
+
+        services.AddTransient<IMasterArtificialIntelligencePromptService, MasterArtificialIntelligencePromptService>();
     }
 
     /// <inheritdoc />
