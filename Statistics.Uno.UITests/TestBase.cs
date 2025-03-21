@@ -1,4 +1,3 @@
-
 namespace Statistics.Uno.UITests;
 
 public class TestBase
@@ -30,7 +29,7 @@ public class TestBase
         private set
         {
             _app = value;
-            global::Uno.UITest.Helpers.Queries.Helpers.App = value;
+            Helpers.App = value;
         }
     }
 
@@ -48,17 +47,14 @@ public class TestBase
 
     public FileInfo TakeScreenshot(string stepName)
     {
-        var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
-            .Replace(" ", "_")
-            .Replace(".", "_");
+        string? title = $"{TestContext.CurrentContext.Test.Name}_{stepName}".Replace(" ", "_").Replace(".", "_");
 
-        var fileInfo = App.Screenshot(title);
+        FileInfo? fileInfo = App.Screenshot(title);
 
-        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
+        string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
         if (fileNameWithoutExt != title && fileInfo.DirectoryName != null)
         {
-            var destFileName = Path
-                .Combine(fileInfo.DirectoryName, title + Path.GetExtension(fileInfo.Name));
+            string? destFileName = Path.Combine(fileInfo.DirectoryName, title + Path.GetExtension(fileInfo.Name));
 
             if (File.Exists(destFileName))
             {
@@ -78,5 +74,4 @@ public class TestBase
 
         return fileInfo;
     }
-
 }

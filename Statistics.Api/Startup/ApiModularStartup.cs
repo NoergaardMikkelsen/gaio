@@ -10,7 +10,6 @@ public class ApiModularStartup : BaseModularStartup<IApiStartupModule>, IApiStar
     /// <inheritdoc />
     public virtual void ConfigureApplication(IApplicationBuilder app)
     {
-
     }
 
     public IApplicationBuilder SetupApplication(IApplicationBuilder app)

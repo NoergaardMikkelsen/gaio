@@ -22,7 +22,9 @@ public class PromptQueryService : BaseEntityQueryService<StatisticsDatabaseConte
     protected override IQueryable<Prompt> AddQueryArguments(SearchablePrompt searchable, IQueryable<Prompt> query)
     {
         if (!string.IsNullOrWhiteSpace(searchable.Text))
+        {
             query = query.Where(x => x.Text.Contains(searchable.Text));
+        }
 
         return query;
     }

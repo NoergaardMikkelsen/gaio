@@ -6,7 +6,6 @@ namespace Statistics.Uno.Startup;
 
 public interface IUnoStartupModule : IStartupModule
 {
-
     /// <summary>
     /// To be called during call to 'SetupApplication', wherein the application is configured.
     /// </summary>

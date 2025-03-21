@@ -6,7 +6,7 @@ namespace Statistics.Commandline;
 
 internal class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         var program = new Program();
 
@@ -25,8 +25,6 @@ internal class Program
 
         using IHost host = builder.Build();
         Console.WriteLine("Host has been build...");
-
-        //var context = startup.ServiceProvider.GetService<StatisticsDatabaseContext>();
 
         await host.RunAsync();
     }

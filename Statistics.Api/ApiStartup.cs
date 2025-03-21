@@ -28,8 +28,10 @@ public class ApiStartup : ApiModularStartup
             SecretsConfig secrets = GetSecrets();
 
             if (string.IsNullOrEmpty(secrets.ConnectionString))
+            {
                 throw new ArgumentNullException(nameof(secrets.ConnectionString),
                     "The connection string in the secrets was empty");
+            }
 
             options.UseNpgsql(secrets.ConnectionString);
             Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
@@ -40,7 +42,9 @@ public class ApiStartup : ApiModularStartup
 #endif
         }));
 
-        AddModule(new ApiEntityQueryServiceStartupModule<ArtificialIntelligenceQueryService, ArtificialIntelligence, SearchableArtificialIntelligence>());
+        AddModule(
+            new ApiEntityQueryServiceStartupModule<ArtificialIntelligenceQueryService, ArtificialIntelligence,
+                SearchableArtificialIntelligence>());
         AddModule(new ApiEntityQueryServiceStartupModule<PromptQueryService, Prompt, SearchablePrompt>());
         AddModule(new ApiEntityQueryServiceStartupModule<ResponseQueryService, Response, SearchableResponse>());
     }
@@ -57,7 +61,7 @@ public class ApiStartup : ApiModularStartup
 
     private SecretsConfig GetSecrets()
     {
-        SecretsConfig config = new SecretsConfig();
+        var config = new SecretsConfig();
         Configuration.GetSection(nameof(SecretsConfig)).Bind(config);
         return config;
     }
@@ -66,8 +70,6 @@ public class ApiStartup : ApiModularStartup
     public override void ConfigureApplication(IApplicationBuilder app)
     {
         base.ConfigureApplication(app);
-
-       
     }
 
     /// <inheritdoc />

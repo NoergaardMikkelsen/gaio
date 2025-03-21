@@ -16,22 +16,19 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     protected IHost? Host { get; private set; }
-    public UnoStartup Startup {get; private set; }
+    public UnoStartup Startup { get; private set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         Startup = new UnoStartup();
 
         // Load WinUI Resources
-        Resources.Build(r => r.Merged(
-            new XamlControlsResources()));
+        Resources.Build(r => r.Merged(new XamlControlsResources()));
 
         // Load Uno.UI.Toolkit and Material Resources
         Resources.Build(r => r.Merged(
-            new  MaterialToolkitTheme(
-                    new Styles.ColorPaletteOverride(),
-                    new Styles.MaterialFontsOverride())));
-        var builder = this.CreateBuilder(args);
+            new MaterialToolkitTheme(new Styles.ColorPaletteOverride(), new Styles.MaterialFontsOverride())));
+        IApplicationBuilder builder = this.CreateBuilder(args);
 
         Startup.SetupApplication(builder)
             .Configure(host => host.ConfigureServices(collection => Startup.SetupServices(collection)));
@@ -63,6 +60,7 @@ public partial class App : Application
             // parameter
             rootFrame.Navigate(typeof(MainPage), args.Arguments);
         }
+
         // Ensure the current window is active
         MainWindow.Activate();
     }

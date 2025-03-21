@@ -4,7 +4,8 @@ using Statistics.Shared.Persistence.Core;
 
 namespace Statistics.Shared.Persistence.Services;
 
-public class ArtificialIntelligenceQueryService : BaseEntityQueryService<StatisticsDatabaseContext, ArtificialIntelligence, SearchableArtificialIntelligence>
+public class ArtificialIntelligenceQueryService : BaseEntityQueryService<StatisticsDatabaseContext,
+    ArtificialIntelligence, SearchableArtificialIntelligence>
 {
     /// <inheritdoc />
     public ArtificialIntelligenceQueryService(StatisticsDatabaseContext context) : base(context)
@@ -18,12 +19,18 @@ public class ArtificialIntelligenceQueryService : BaseEntityQueryService<Statist
     }
 
     /// <inheritdoc />
-    protected override IQueryable<ArtificialIntelligence> AddQueryArguments(SearchableArtificialIntelligence searchable, IQueryable<ArtificialIntelligence> query)
+    protected override IQueryable<ArtificialIntelligence> AddQueryArguments(
+        SearchableArtificialIntelligence searchable, IQueryable<ArtificialIntelligence> query)
     {
         if (!string.IsNullOrWhiteSpace(searchable.Key))
+        {
             query = query.Where(x => x.Key.Contains(searchable.Key));
+        }
+
         if (!string.IsNullOrWhiteSpace(searchable.Name))
+        {
             query = query.Where(x => x.Name.Contains(searchable.Name));
+        }
 
         return query;
     }

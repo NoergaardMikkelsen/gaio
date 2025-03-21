@@ -10,7 +10,9 @@ namespace Statistics.Api.Controllers;
 public class PromptController : EntityController<Prompt, SearchablePrompt, PromptController>
 {
     /// <inheritdoc />
-    public PromptController(IEntityQueryService<Prompt, SearchablePrompt> entityService, ILogger<PromptController> logger) : base(entityService, logger)
+    public PromptController(
+        IEntityQueryService<Prompt, SearchablePrompt> entityService, ILogger<PromptController> logger) : base(
+        entityService, logger)
     {
     }
 }

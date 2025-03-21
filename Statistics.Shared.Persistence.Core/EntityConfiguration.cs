@@ -6,8 +6,7 @@ using Statistics.Shared.Persistence.Core.Converters;
 
 namespace Statistics.Shared.Persistence.Core;
 
-public abstract class EntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
-    where TEntity : class, IEntity
+public abstract class EntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : class, IEntity
 {
     private readonly DatabaseType databaseType;
 

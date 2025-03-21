@@ -9,5 +9,4 @@ public interface IStartupModule
     /// </summary>
     /// <param name="services"></param>
     void ConfigureServices(IServiceCollection services);
-
 }

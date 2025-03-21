@@ -21,11 +21,19 @@ public class ResponseQueryService : BaseEntityQueryService<StatisticsDatabaseCon
     protected override IQueryable<Response> AddQueryArguments(SearchableResponse searchable, IQueryable<Response> query)
     {
         if (searchable.AiId != default)
+        {
             query = query.Where(x => x.AiId == searchable.AiId);
+        }
+
         if (searchable.PromptId != default)
+        {
             query = query.Where(x => x.PromptId == searchable.PromptId);
+        }
+
         if (!string.IsNullOrWhiteSpace(searchable.Text))
+        {
             query = query.Where(x => x.Text.Contains(searchable.Text));
+        }
 
         return query;
     }

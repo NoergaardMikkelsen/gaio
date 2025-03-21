@@ -10,7 +10,8 @@ public class ArtificialIntelligence : IArtificialIntelligence
     public int Id
     {
         get => id;
-        set => throw new InvalidOperationException($"{nameof(Id)} cannot be changed after creation of {nameof(ArtificialIntelligence)} entity");
+        set => throw new InvalidOperationException(
+            $"{nameof(Id)} cannot be changed after creation of {nameof(ArtificialIntelligence)} entity");
     }
 
     /// <inheritdoc />
@@ -33,7 +34,6 @@ public class ArtificialIntelligence : IArtificialIntelligence
 
     public ArtificialIntelligence()
     {
-        
     }
 
     /// <summary>

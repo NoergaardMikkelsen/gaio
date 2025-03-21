@@ -10,7 +10,9 @@ namespace Statistics.Api.Controllers;
 public class ResponseController : EntityController<Response, SearchableResponse, ResponseController>
 {
     /// <inheritdoc />
-    public ResponseController(IEntityQueryService<Response, SearchableResponse> entityService, ILogger<ResponseController> logger) : base(entityService, logger)
+    public ResponseController(
+        IEntityQueryService<Response, SearchableResponse> entityService, ILogger<ResponseController> logger) : base(
+        entityService, logger)
     {
     }
 }

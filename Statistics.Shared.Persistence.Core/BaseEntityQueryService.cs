@@ -19,7 +19,9 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         await context.AddAsync(entity);
 
         if (saveImmediately)
+        {
             await context.SaveChangesAsync();
+        }
     }
 
 
@@ -29,7 +31,9 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         await context.AddRangeAsync(entities);
 
         if (saveImmediately)
+        {
             await context.SaveChangesAsync();
+        }
     }
 
     /// <inheritdoc />
@@ -43,7 +47,9 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         IQueryable<TEntity> query = GetBaseQuery();
 
         if (searchable.Id != default)
+        {
             query = query.Where(x => x.Id == searchable.Id);
+        }
 
         query = AddQueryArguments(searchable, query);
 
@@ -64,8 +70,10 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
     {
         context.Update(entity);
 
-        if(saveImmediately)
+        if (saveImmediately)
+        {
             await context.SaveChangesAsync();
+        }
     }
 
     /// <inheritdoc />
@@ -74,7 +82,9 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         context.UpdateRange(entities);
 
         if (saveImmediately)
+        {
             await context.SaveChangesAsync();
+        }
     }
 
     /// <inheritdoc />
@@ -84,7 +94,9 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         context.Remove(entity);
 
         if (saveImmediately)
+        {
             await context.SaveChangesAsync();
+        }
     }
 
     /// <inheritdoc />
@@ -93,4 +105,3 @@ public abstract class BaseEntityQueryService<TContext, TEntity, TSearchable> : I
         await DeleteEntity(new TSearchable() {Id = id,}, saveImmediately);
     }
 }
-

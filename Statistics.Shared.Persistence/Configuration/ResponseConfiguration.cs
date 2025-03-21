@@ -17,7 +17,9 @@ public class ResponseConfiguration : EntityConfiguration<Response>
     {
         base.Configure(builder);
 
-        builder.HasOne(x => (Prompt)x.Prompt).WithMany(x => (ICollection<Response>) x.Responses).HasForeignKey(x => x.PromptId);
-        builder.HasOne(x => (ArtificialIntelligence)x.Ai).WithMany(x => (ICollection<Response>) x.Responses).HasForeignKey(x => x.AiId);
+        builder.HasOne(x => (Prompt) x.Prompt).WithMany(x => (ICollection<Response>) x.Responses)
+            .HasForeignKey(x => x.PromptId);
+        builder.HasOne(x => (ArtificialIntelligence) x.Ai).WithMany(x => (ICollection<Response>) x.Responses)
+            .HasForeignKey(x => x.AiId);
     }
 }

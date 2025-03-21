@@ -11,13 +11,13 @@ public class SqliteTimestampConverter : ValueConverter<byte[], string>
 
     private static byte[] FromDb(string v)
     {
-        return v.Select(c => (byte)c).ToArray();
+        return v.Select(c => (byte) c).ToArray();
         // Encoding.ASCII.GetString(v)
     }
 
     private static string ToDb(byte[] v)
     {
-        return new(v.Select(b => (char)b).ToArray());
+        return new string(v.Select(b => (char) b).ToArray());
         // Encoding.ASCII.GetBytes(v))
     }
 }

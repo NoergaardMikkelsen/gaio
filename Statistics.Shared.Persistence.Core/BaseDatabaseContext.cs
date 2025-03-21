@@ -47,10 +47,12 @@ public abstract class BaseDatabaseContext : DbContext
 
         foreach (EntityEntry entityEntry in entries)
         {
-            ((IEntity)entityEntry.Entity).UpdatedDateTime = DateTime.Now;
+            ((IEntity) entityEntry.Entity).UpdatedDateTime = DateTime.Now;
 
             if (entityEntry.State == EntityState.Added)
-                ((IEntity)entityEntry.Entity).CreatedDateTime = DateTime.Now;
+            {
+                ((IEntity) entityEntry.Entity).CreatedDateTime = DateTime.Now;
+            }
         }
     }
 }

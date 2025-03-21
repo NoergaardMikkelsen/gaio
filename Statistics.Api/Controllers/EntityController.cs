@@ -3,9 +3,8 @@ using Statistics.Shared.Abstraction.Interfaces.Persistence;
 
 namespace Statistics.Api.Controllers;
 
-
-public abstract class EntityController<TEntity, TSearchable, TController> : ControllerBase where TEntity : class, IEntity
-    where TSearchable : class, ISearchable, new() where TController : ControllerBase
+public abstract class EntityController<TEntity, TSearchable, TController> : ControllerBase
+    where TEntity : class, IEntity where TSearchable : class, ISearchable, new() where TController : ControllerBase
 {
     private readonly IEntityQueryService<TEntity, TSearchable> entityService;
     private readonly ILogger<TController> logger;
@@ -41,7 +40,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to get an entity by id of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to get an entity by id of the controllers type.");
             throw;
         }
     }
@@ -56,7 +56,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to get entities matching specified query of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to get entities matching specified query of the controllers type.");
             throw;
         }
     }
@@ -87,7 +88,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to add multiple entities of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to add multiple entities of the controllers type.");
             throw;
         }
     }
@@ -102,7 +104,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to update a specific entity of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to update a specific entity of the controllers type.");
             throw;
         }
     }
@@ -133,7 +136,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to delete a specific entity by specified query of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to delete a specific entity by specified query of the controllers type.");
             throw;
         }
     }
@@ -148,7 +152,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception was caught while attempting to delete a entity by id of the controllers type.");
+            logger.LogError(e,
+                "An exception was caught while attempting to delete a entity by id of the controllers type.");
             throw;
         }
     }

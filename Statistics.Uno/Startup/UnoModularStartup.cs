@@ -6,7 +6,6 @@ namespace Statistics.Uno.Startup;
 
 public abstract class UnoModularStartup : BaseModularStartup<IUnoStartupModule>, IUnoStartupModule
 {
-
     /// <inheritdoc />
     public virtual void ConfigureApplication(IApplicationBuilder app)
     {

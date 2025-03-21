@@ -29,12 +29,16 @@ public class SwaggerStartupModule : IApiStartupModule
     public void ConfigureApplication(IApplicationBuilder app)
     {
         if (app.GetType().FullName != typeof(WebApplication).FullName)
+        {
             throw new InvalidOperationException(
                 $"Expected application builder supplied to {nameof(SwaggerStartupModule)}.{nameof(ConfigureApplication)} to be of type {nameof(WebApplication)}, but it was of type '{app.GetType().FullName}'");
+        }
 
         var castApp = (WebApplication) app;
         if (!castApp.Environment.IsDevelopment())
+        {
             return;
+        }
 
         // Enable middleware to serve generated Swagger as a JSON endpoint.
         app.UseSwagger();

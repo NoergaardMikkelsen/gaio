@@ -4,14 +4,14 @@ using Statistics.Shared.Startup;
 
 namespace Statistics.Commandline.Startup;
 
-public abstract class CommandlineModularStartup : BaseModularStartup<ICommandlineStartupModule>, ICommandlineStartupModule
+public abstract class CommandlineModularStartup : BaseModularStartup<ICommandlineStartupModule>,
+    ICommandlineStartupModule
 {
     public IConfiguration Configuration { get; protected set; }
 
     /// <inheritdoc />
     public virtual void ConfigureApplication(IHostApplicationBuilder app)
     {
-
     }
 
     public IHostApplicationBuilder SetupApplication(IHostApplicationBuilder app)

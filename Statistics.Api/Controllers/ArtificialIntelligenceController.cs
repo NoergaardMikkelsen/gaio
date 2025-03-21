@@ -7,10 +7,13 @@ namespace Statistics.Api.Controllers;
 
 [Route(Constants.ROUTE_TEMPLATE)]
 [ApiController]
-public class ArtificialIntelligenceController : EntityController<ArtificialIntelligence, SearchableArtificialIntelligence, ArtificialIntelligenceController>
+public class ArtificialIntelligenceController : EntityController<ArtificialIntelligence,
+    SearchableArtificialIntelligence, ArtificialIntelligenceController>
 {
     /// <inheritdoc />
-    public ArtificialIntelligenceController(IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> entityService, ILogger<ArtificialIntelligenceController> logger) : base(entityService, logger)
+    public ArtificialIntelligenceController(
+        IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> entityService,
+        ILogger<ArtificialIntelligenceController> logger) : base(entityService, logger)
     {
     }
 }

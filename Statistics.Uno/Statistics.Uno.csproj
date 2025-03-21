@@ -1,61 +1,61 @@
 <Project Sdk="Uno.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0-browserwasm;net8.0</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFrameworks>net8.0-browserwasm;net8.0</TargetFrameworks>
 
-    <OutputType>Exe</OutputType>
-    <UnoSingleProject>true</UnoSingleProject>
+        <OutputType>Exe</OutputType>
+        <UnoSingleProject>true</UnoSingleProject>
 
-    <!-- Display name -->
-    <ApplicationTitle>Statistics</ApplicationTitle>
-    <!-- App Identifier -->
-    <ApplicationId>com.companyname.Statistics</ApplicationId>
-    <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
-    <!-- Package Publisher -->
-    <ApplicationPublisher>andre.madsen</ApplicationPublisher>
-    <!-- Package Description -->
-    <Description>Statistics powered by Uno Platform.</Description>
+        <!-- Display name -->
+        <ApplicationTitle>Statistics</ApplicationTitle>
+        <!-- App Identifier -->
+        <ApplicationId>com.companyname.Statistics</ApplicationId>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+        <!-- Package Publisher -->
+        <ApplicationPublisher>andre.madsen</ApplicationPublisher>
+        <!-- Package Description -->
+        <Description>Statistics powered by Uno Platform.</Description>
 
-    <!--
+        <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
       https://aka.platform.uno/singleproject-features
     -->
-    <UnoFeatures>
-      CSharpMarkup;
-      Material;
-      Dsp;
-      Hosting;
-      Toolkit;
-      Logging;
-      LoggingSerilog;
-      Mvvm;
-      Configuration;
-      Http;
-      Serialization;
-      Localization;
-      ThemeService;
-    </UnoFeatures>
-    <UserSecretsId>dbb985c4-ced9-42a3-93a5-b99619baa6b3</UserSecretsId>
-  </PropertyGroup>
+        <UnoFeatures>
+            CSharpMarkup;
+            Material;
+            Dsp;
+            Hosting;
+            Toolkit;
+            Logging;
+            LoggingSerilog;
+            Mvvm;
+            Configuration;
+            Http;
+            Serialization;
+            Localization;
+            ThemeService;
+        </UnoFeatures>
+        <UserSecretsId>dbb985c4-ced9-42a3-93a5-b99619baa6b3</UserSecretsId>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">
-    <IsUiAutomationMappingEnabled>True</IsUiAutomationMappingEnabled>
-    <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">
+        <IsUiAutomationMappingEnabled>True</IsUiAutomationMappingEnabled>
+        <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Persistence\Statistics.Shared.Persistence.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Persistence\Statistics.Shared.Persistence.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -8,7 +8,8 @@ public class ApiDatabaseContextStartupModule<TContext> : BaseDatabaseContextStar
     where TContext : BaseDatabaseContext
 {
     /// <inheritdoc />
-    public ApiDatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true) : base(setup, migrateOnStartup)
+    public ApiDatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true) : base(setup,
+        migrateOnStartup)
     {
     }
 

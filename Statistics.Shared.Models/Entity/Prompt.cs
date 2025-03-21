@@ -31,7 +31,6 @@ public class Prompt : IPrompt
 
     public Prompt()
     {
-        
     }
 
     /// <summary>

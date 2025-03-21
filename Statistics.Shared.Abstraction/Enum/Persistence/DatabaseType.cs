@@ -4,5 +4,5 @@ public enum DatabaseType
 {
     SQlite = 0,
     MS_SQL = 1,
-    POSTGRESS = 2
+    POSTGRESS = 2,
 }

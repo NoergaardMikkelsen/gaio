@@ -16,7 +16,9 @@ public abstract class BaseDatabaseContextStartupModule<TContext> : IStartupModul
     public BaseDatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true)
     {
         if (typeof(TContext) is {IsAbstract: true,})
+        {
             throw new ArgumentException($"Invalid type argument supplied to '{nameof(TContext)}'");
+        }
 
         this.migrateOnStartup = migrateOnStartup;
         setupOptions = setup ?? throw new ArgumentNullException(nameof(setup));
@@ -33,9 +35,11 @@ public abstract class BaseDatabaseContextStartupModule<TContext> : IStartupModul
         Console.WriteLine("Completed Configuration of Database Services.");
 
         if (!migrateOnStartup)
+        {
             return;
+        }
 
-        var provider = services.BuildServiceProvider();
+        ServiceProvider? provider = services.BuildServiceProvider();
         using var context = provider.GetService<TContext>();
         context?.Database.Migrate();
 

@@ -40,7 +40,6 @@ public class Response : IResponse
 
     public Response()
     {
-        
     }
 
     /// <summary>

@@ -23,8 +23,10 @@ public class CommandlineStartup : CommandlineModularStartup
             SecretsConfig secrets = GetSecrets();
 
             if (string.IsNullOrEmpty(secrets.ConnectionString))
+            {
                 throw new ArgumentNullException(nameof(secrets.ConnectionString),
                     "The connection string in the secrets was empty");
+            }
 
             options.UseNpgsql(secrets.ConnectionString);
             Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
@@ -44,7 +46,7 @@ public class CommandlineStartup : CommandlineModularStartup
 
     private SecretsConfig GetSecrets()
     {
-        SecretsConfig config = new SecretsConfig();
+        var config = new SecretsConfig();
         Configuration.GetSection(nameof(SecretsConfig)).Bind(config);
         return config;
     }

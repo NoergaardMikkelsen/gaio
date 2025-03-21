@@ -33,10 +33,8 @@ public class UnoStartup : UnoModularStartup
             // Switch to Development environment when running in DEBUG
             .UseEnvironment(Environments.Development)
 #endif
-            .UseLogging(ConfigureLogging, enableUnoLogging: true).UseSerilog(consoleLoggingEnabled: true, fileLoggingEnabled: true)
-            .UseConfiguration(configure: ConfigureConfigurationSource)
-            .UseLocalization(ConfigureLocalization)
-            );
+            .UseLogging(ConfigureLogging, true).UseSerilog(true, true)
+            .UseConfiguration(configure: ConfigureConfigurationSource).UseLocalization(ConfigureLocalization));
 
         Host = app.Build();
 
@@ -48,11 +46,7 @@ public class UnoStartup : UnoModularStartup
     private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logBuilder)
     {
         // Configure log levels for different categories of logging
-        logBuilder
-            .SetMinimumLevel(
-                context.HostingEnvironment.IsDevelopment() ?
-                    LogLevel.Information :
-                    LogLevel.Warning)
+        logBuilder.SetMinimumLevel(context.HostingEnvironment.IsDevelopment() ? LogLevel.Information : LogLevel.Warning)
 
             // Default filters for core Uno Platform namespaces
             .CoreLogLevel(LogLevel.Warning);
@@ -77,7 +71,7 @@ public class UnoStartup : UnoModularStartup
 
     private IHostBuilder ConfigureConfigurationSource(IConfigBuilder configBuilder)
     {
-        return configBuilder.EmbeddedSource<App>().Section<AppConfig>().EmbeddedSource<App>("secrets").Section<SecretsConfig>();
+        return configBuilder.EmbeddedSource<App>().Section<AppConfig>();
     }
 
     private void ConfigureLocalization(HostBuilderContext context, IServiceCollection services)

@@ -24,8 +24,10 @@ public class ApiStartupModule : IApiStartupModule
     public void ConfigureApplication(IApplicationBuilder app)
     {
         if (app.GetType().FullName != typeof(WebApplication).FullName)
+        {
             throw new InvalidOperationException(
                 $"Expected application builder supplied to {nameof(ApiStartupModule)}.{nameof(ConfigureApplication)} to be of type {nameof(WebApplication)}, but it was of type '{app.GetType().FullName}'");
+        }
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
