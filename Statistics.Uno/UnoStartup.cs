@@ -36,8 +36,6 @@ public class UnoStartup : UnoModularStartup
             .UseLogging(ConfigureLogging, true).UseSerilog(true, true)
             .UseConfiguration(configure: ConfigureConfigurationSource).UseLocalization(ConfigureLocalization));
 
-        Host = app.Build();
-
         base.ConfigureApplication(app);
 
         Host = app.Build();
