@@ -12,7 +12,7 @@ public class CommandlineDatabaseContextStartupModule<TContext> : BaseDatabaseCon
 {
     /// <inheritdoc />
     public CommandlineDatabaseContextStartupModule(SetupOptionsDelegate setup, bool migrateOnStartup = true) : base(
-        setup, migrateOnStartup)
+        setup, false)
     {
     }
 

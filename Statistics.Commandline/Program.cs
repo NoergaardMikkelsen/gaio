@@ -10,7 +10,7 @@ namespace Statistics.Commandline;
 
 internal class Program
 {
-    private CommandlineStartup Startup { get; init; }
+    private CommandlineStartup Startup { get; set; }
 
     private static void Main(string[] args)
     {
@@ -22,7 +22,7 @@ internal class Program
 
     private async Task Run(string[] args)
     {
-        var Startup = new CommandlineStartup();
+        Startup = new CommandlineStartup();
 
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
@@ -63,7 +63,7 @@ internal class Program
             return;
         }
 
-        await responseEntityService.AddEntities((IEnumerable<Response>) responses.AsEnumerable());
+        await responseEntityService.AddEntities(responses.Cast<Response>().ToList());
     }
 
     private void GetServicesOrThrow(
