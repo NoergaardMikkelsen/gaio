@@ -35,8 +35,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
     {
         try
         {
-            IEntity payment = await entityService.GetEntity(new TSearchable {Id = id,});
-            return Ok(payment);
+            IEntity entity = await entityService.GetEntity(new TSearchable {Id = id,});
+            return Ok(entity);
         }
         catch (Exception e)
         {
@@ -51,8 +51,24 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
     {
         try
         {
-            IEntity payment = await entityService.GetEntity(searchable);
-            return Ok(payment);
+            IEntity entity = await entityService.GetEntity(searchable);
+            return Ok(entity);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e,
+                "An exception was caught while attempting to get entities matching specified query of the controllers type.");
+            throw;
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllByQuery([FromBody] TSearchable searchable)
+    {
+        try
+        {
+            var entities = await entityService.GetEntities(searchable);
+            return Ok(entities);
         }
         catch (Exception e)
         {

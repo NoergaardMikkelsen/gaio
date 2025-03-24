@@ -5,6 +5,13 @@ namespace Statistics.Uno.Presentation;
 
 public sealed partial class NavigationPage : Page
 {
+    private enum Pages
+    {
+        RESPONSES = 0,
+        PROMPTS = 1,
+        ARTIFICIAL_INTELLIGENCE = 2,
+    }
+
     public NavigationPage()
     {
         var logic = new NavigationPageLogic();
@@ -24,24 +31,24 @@ public sealed partial class NavigationPage : Page
 
         internal Grid CreateContentGrid()
         {
-            var contentGrid = new Grid();
+            var grid = new Grid();
 
             const int columnOneWidth = 10;
             const int columnTwoWidth = 100 - columnOneWidth;
 
-            contentGrid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            contentGrid.ColumnDefinitions(new GridLength(columnOneWidth, GridUnitType.Star),
+            grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
+            grid.ColumnDefinitions(new GridLength(columnOneWidth, GridUnitType.Star),
                 new GridLength(columnTwoWidth, GridUnitType.Star));
-            contentGrid.VerticalAlignment = VerticalAlignment.Stretch;
-            contentGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            grid.VerticalAlignment = VerticalAlignment.Stretch;
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
             var navigationListView = CreateNavigationListView().Grid(row: 0, column: 0);
             var navigationFrame = CreateNavigationFrame().Grid(row: 0, column: 1);
 
-            contentGrid.Children.Add(navigationListView);
-            contentGrid.Children.Add(navigationFrame);
+            grid.Children.Add(navigationListView);
+            grid.Children.Add(navigationFrame);
 
-            return contentGrid;
+            return grid;
         }
 
         private Frame CreateNavigationFrame()
@@ -66,6 +73,7 @@ public sealed partial class NavigationPage : Page
 
             view.SelectionChanged += logic.ListViewOnSelectionChanged;
             view.ItemsSource = options;
+            view.SelectedIndex = (int) Pages.RESPONSES;
 
             return view;
         }
