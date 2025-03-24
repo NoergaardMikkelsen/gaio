@@ -18,7 +18,7 @@ public class Prompt : IPrompt
     public string Text { get; set; }
 
     /// <inheritdoc />
-    public byte[] Version { get; set; }
+    public uint Version { get; set; }
 
     /// <inheritdoc />
     public DateTime CreatedDateTime { get; set; }

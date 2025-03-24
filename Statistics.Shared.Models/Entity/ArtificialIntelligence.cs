@@ -25,7 +25,7 @@ public class ArtificialIntelligence : IArtificialIntelligence
     public ArtificialIntelligenceType AiType { get; set; }
 
     /// <inheritdoc />
-    public byte[] Version { get; set; }
+    public uint Version { get; set; }
 
     /// <inheritdoc />
     public DateTime CreatedDateTime { get; set; }

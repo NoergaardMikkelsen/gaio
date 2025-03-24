@@ -20,7 +20,8 @@ namespace Statistics.Shared.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    AiType = table.Column<int>(type: "integer", nullable: false),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -36,7 +37,7 @@ namespace Statistics.Shared.Persistence.Migrations
                     PromptId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Text = table.Column<string>(type: "text", nullable: false),
-                    Version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -54,7 +55,7 @@ namespace Statistics.Shared.Persistence.Migrations
                     Text = table.Column<string>(type: "text", nullable: false),
                     AiId = table.Column<int>(type: "integer", nullable: false),
                     PromptId = table.Column<int>(type: "integer", nullable: false),
-                    Version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

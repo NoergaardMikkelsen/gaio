@@ -24,7 +24,7 @@ public class Response : IResponse
     public int PromptId { get; set; }
 
     /// <inheritdoc />
-    public byte[] Version { get; set; }
+    public uint Version { get; set; }
 
     /// <inheritdoc />
     public DateTime CreatedDateTime { get; set; }
