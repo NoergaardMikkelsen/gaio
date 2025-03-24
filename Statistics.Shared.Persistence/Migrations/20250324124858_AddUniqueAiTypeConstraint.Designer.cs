@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Statistics.Shared.Persistence;
@@ -11,9 +12,11 @@ using Statistics.Shared.Persistence;
 namespace Statistics.Shared.Persistence.Migrations
 {
     [DbContext(typeof(StatisticsDatabaseContext))]
-    partial class StatisticsDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250324124858_AddUniqueAiTypeConstraint")]
+    partial class AddUniqueAiTypeConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

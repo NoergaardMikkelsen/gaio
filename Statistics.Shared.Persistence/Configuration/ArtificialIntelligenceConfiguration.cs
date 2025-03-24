@@ -16,5 +16,7 @@ public class ArtificialIntelligenceConfiguration : EntityConfiguration<Artificia
     public override void Configure(EntityTypeBuilder<ArtificialIntelligence> builder)
     {
         base.Configure(builder);
+
+        builder.HasIndex(x => x.AiType).IsUnique();
     }
 }
