@@ -44,6 +44,7 @@ From this frontend, a manual execution of all prompts against all or a selected 
 To add support for prompting a new AI, a few simple additions have to be made to the code.
 
 1. Add new Service under ´Statistics.Shared.Services.ArtificialIntelligence´ that implements the ´Statistics.Shared.Abstraction.Interfaces.Services.IArtificialIntelligencePromptService´ interface.
+    1. The 'Statistics.Shared.Services.ArtificialIntelligence.BasePromptService' base class has some helpful methods for implementing the interface.
 2. Expand 'Statistics.Shared.Abstraction.Enum.ArtificialIntelligenceType' with a new fittingly named enum member.
 3. Add a new entry to the dictionary inside the constructor of ´Statistics.Shared.Services.ArtificialIntelligence.MasterArtificialIntelligencePromptService´.
     1. The key should be the newly added enum member of the 'Statistics.Shared.Abstraction.Enum.ArtificialIntelligenceType' enum.
