@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Persistence.Core;
@@ -15,7 +16,7 @@ public class ArtificialIntelligenceQueryService : BaseEntityQueryService<Statist
     /// <inheritdoc />
     protected override IQueryable<ArtificialIntelligence> GetBaseQuery()
     {
-        return context.ArtificialIntelligences.AsQueryable();
+        return context.ArtificialIntelligences.AsQueryable().Include(x => x.Responses).ThenInclude(x => x.Prompt);
     }
 
     /// <inheritdoc />

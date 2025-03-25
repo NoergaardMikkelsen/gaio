@@ -9,10 +9,10 @@ public class SearchableArtificialIntelligence : ISearchableArtificialIntelligenc
     public int Id { get; set; }
 
     /// <inheritdoc />
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <inheritdoc />
-    public string Key { get; set; }
+    public string? Key { get; set; }
 
     /// <inheritdoc />
     public ArtificialIntelligenceType AiType { get; set; }

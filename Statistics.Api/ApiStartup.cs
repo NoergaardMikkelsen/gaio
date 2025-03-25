@@ -14,7 +14,7 @@ public class ApiStartup : ApiModularStartup
 {
     private const string LOG_FILE = "Storage/satistics.log";
 
-    public ApiStartup(IConfiguration config) : base()
+    public ApiStartup() : base()
     {
         Configuration = BuildConfiguration();
 

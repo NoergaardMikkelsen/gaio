@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using IApplicationBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Newtonsoft.Json.Converters;
 
@@ -13,7 +14,11 @@ public class ApiStartupModule : IApiStartupModule
         logger = services.BuildServiceProvider().GetService<ILogger<ApiStartupModule>>();
 
         services.AddControllers().AddNewtonsoftJson(options =>
-            options.SerializerSettings.Converters.Add(new StringEnumConverter()));
+        {
+            options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        });
+        services.AddCors();
 
         services.AddEndpointsApiExplorer();
 
@@ -30,6 +35,7 @@ public class ApiStartupModule : IApiStartupModule
         }
 
         app.UseHttpsRedirection();
+        app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true).AllowCredentials());
         app.UseAuthorization();
 
         var castApp = (WebApplication) app;

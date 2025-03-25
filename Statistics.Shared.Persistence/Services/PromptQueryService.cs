@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -15,7 +16,7 @@ public class PromptQueryService : BaseEntityQueryService<StatisticsDatabaseConte
     /// <inheritdoc />
     protected override IQueryable<Prompt> GetBaseQuery()
     {
-        return context.Prompts.AsQueryable();
+        return context.Prompts.AsQueryable().Include(x => x.Responses).ThenInclude(x => x.Ai);
     }
 
     /// <inheritdoc />

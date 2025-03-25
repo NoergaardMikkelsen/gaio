@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
@@ -44,10 +45,11 @@ public class ArtificialIntelligence : IArtificialIntelligence
     /// Constructor for Entity Framework Core to use.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="responses"></param>
-    private ArtificialIntelligence(int id, List<Response> responses)
+    /// <param name="Responses"></param>
+    [JsonConstructor]
+    private ArtificialIntelligence(int id, List<Response> Responses)
     {
         this.id = id;
-        Responses = responses.Cast<IResponse>() as ICollection<IResponse> ?? new List<IResponse>();
+        this.Responses = Responses.Cast<IResponse>() as ICollection<IResponse> ?? new List<IResponse>();
     }
 }

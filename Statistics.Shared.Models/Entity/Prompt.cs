@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Shared.Models.Entity;
@@ -37,10 +38,11 @@ public class Prompt : IPrompt
     /// Constructor for Entity Framework Core to use.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="responses"></param>
-    private Prompt(int id, List<Response> responses)
+    /// <param name="Responses"></param>
+    [JsonConstructor]
+    private Prompt(int id, List<Response> Responses)
     {
         this.id = id;
-        Responses = responses.Cast<IResponse>() as ICollection<IResponse> ?? new List<IResponse>();
+        this.Responses = Responses.Cast<IResponse>() as ICollection<IResponse> ?? new List<IResponse>();
     }
 }

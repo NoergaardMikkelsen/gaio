@@ -5,7 +5,7 @@ namespace Statistics.Shared.Models.Searchable;
 public class SearchablePrompt : ISearchablePrompt
 {
     /// <inheritdoc />
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     /// <inheritdoc />
     public int Id { get; set; }

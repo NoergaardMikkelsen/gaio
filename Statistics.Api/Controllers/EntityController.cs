@@ -46,7 +46,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> GetByQuery([FromBody] TSearchable searchable)
     {
         try
@@ -62,7 +62,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> GetAllByQuery([FromBody] TSearchable searchable)
     {
         try

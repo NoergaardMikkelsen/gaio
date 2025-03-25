@@ -5,6 +5,7 @@ using Statistics.Shared.Models.Searchable;
 namespace Statistics.Uno.Endpoints;
 
 [Headers("Content-Type: application/json")]
-public interface IResponsesEndpoint : IEntityEndpoint<Response, SearchableResponse>
+public interface
+    IArtificialIntelligenceEndpoint : IEntityEndpoint<ArtificialIntelligence, SearchableArtificialIntelligence>
 {
 }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Shared.Models.Entity;
@@ -46,12 +47,13 @@ public class Response : IResponse
     /// Constructor for Entity Framework Core to use.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="prompt"></param>
-    /// <param name="ai"></param>
-    private Response(int id, Prompt prompt, ArtificialIntelligence ai)
+    /// <param name="Prompt"></param>
+    /// <param name="Ai"></param>
+    [JsonConstructor]
+    private Response(int id, Prompt Prompt, ArtificialIntelligence Ai)
     {
         this.id = id;
-        Prompt = prompt;
-        Ai = ai;
+        this.Prompt = Prompt;
+        this.Ai = Ai;
     }
 }

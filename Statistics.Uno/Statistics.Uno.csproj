@@ -45,6 +45,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.WinUI.Extensions" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

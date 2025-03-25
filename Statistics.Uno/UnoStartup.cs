@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Interfaces.Services;
@@ -5,6 +6,7 @@ using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Core.Startup;
 using Statistics.Shared.Services.ArtificialIntelligence;
+using Statistics.Uno.Endpoints;
 using Statistics.Uno.Models;
 using Statistics.Uno.Startup;
 
@@ -16,7 +18,12 @@ public class UnoStartup : UnoModularStartup
 
     public UnoStartup()
     {
+        const string baseAddress = $"https://localhost:7016/api/";
+
         Console.WriteLine($"Constructing Startup Class...");
+
+        AddModule(new UnoRefitStartupModule<IResponsesEndpoint>($"{baseAddress}Response"));
+        AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>($"{baseAddress}ArtificialIntelligence"));
     }
 
     /// <inheritdoc />
@@ -37,11 +44,17 @@ public class UnoStartup : UnoModularStartup
             .UseEnvironment(Environments.Development)
 #endif
             .UseLogging(ConfigureLogging, true).UseSerilog(true, true)
-            .UseConfiguration(configure: ConfigureConfigurationSource).UseLocalization(ConfigureLocalization));
+            .UseConfiguration(configure: ConfigureConfigurationSource).UseLocalization(ConfigureLocalization)
+            .UseSerialization(ConfigureSerialization));
 
         base.ConfigureApplication(app);
 
         Host = app.Build();
+    }
+
+    private void ConfigureSerialization(HostBuilderContext host, IServiceCollection services)
+    {
+        services.AddSingleton(new JsonSerializerOptions() {IncludeFields = true,});
     }
 
     private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logBuilder)

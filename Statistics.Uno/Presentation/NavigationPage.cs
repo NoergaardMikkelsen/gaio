@@ -42,11 +42,13 @@ public sealed partial class NavigationPage : Page
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            var navigationListView = CreateNavigationListView().Grid(row: 0, column: 0);
-            var navigationFrame = CreateNavigationFrame().Grid(row: 0, column: 1);
+            ListView navigationListView = CreateNavigationListView().Grid(row: 0, column: 0);
+            Frame navigationFrame = CreateNavigationFrame().Grid(row: 0, column: 1);
 
             grid.Children.Add(navigationListView);
             grid.Children.Add(navigationFrame);
+
+            logic.UpdateNavigationFrame();
 
             return grid;
         }
@@ -71,16 +73,16 @@ public sealed partial class NavigationPage : Page
                 CreateArtificialIntelligenceTextBlock(view),
             };
 
-            view.SelectionChanged += logic.ListViewOnSelectionChanged;
             view.ItemsSource = options;
             view.SelectedIndex = (int) Pages.RESPONSES;
+            view.SelectionChanged += logic.ListViewOnSelectionChanged;
 
             return view;
         }
 
         private TextBlock CreateResponseNavigationTextBlock(ListView view)
         {
-            var item = CreateBaseNavigationTextBlock(view);
+            TextBlock item = CreateBaseNavigationTextBlock(view);
 
             item.Text = "Responses";
 
@@ -102,7 +104,7 @@ public sealed partial class NavigationPage : Page
 
         private TextBlock CreatePromptsNavigationTextBlock(ListView view)
         {
-            var item = CreateBaseNavigationTextBlock(view);
+            TextBlock item = CreateBaseNavigationTextBlock(view);
 
             item.Text = "Register Prompts";
 
@@ -111,7 +113,7 @@ public sealed partial class NavigationPage : Page
 
         private TextBlock CreateArtificialIntelligenceTextBlock(ListView view)
         {
-            var item = CreateBaseNavigationTextBlock(view);
+            TextBlock item = CreateBaseNavigationTextBlock(view);
 
             item.Text = "Register Artificial Intelligences ";
 
@@ -122,6 +124,7 @@ public sealed partial class NavigationPage : Page
     private class NavigationPageLogic
     {
         private Frame? navigationFrame;
+        private Pages selectedPage;
 
         internal void RegisterNavigationFrame(Frame frame)
         {
@@ -130,14 +133,38 @@ public sealed partial class NavigationPage : Page
 
         internal void ListViewOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var listView = (ListView) sender;
+
+            selectedPage = (Pages) listView.SelectedIndex;
+            UpdateNavigationFrame();
+        }
+
+        private void AssertNavigationFrameIsSet()
+        {
             if (navigationFrame == null)
             {
                 throw new NullReferenceException(
                     $"Expected '{nameof(navigationFrame)}' reference to be set, but it was not.");
             }
+        }
 
-            // Temporary Navigation to test with.
-            navigationFrame.Navigate(typeof(MainPage));
+        internal void UpdateNavigationFrame()
+        {
+            AssertNavigationFrameIsSet();
+
+            switch (selectedPage)
+            {
+                case Pages.RESPONSES:
+                    Console.WriteLine($"Navigation to '{nameof(ResponsesPage)}'...");
+                    navigationFrame!.Navigate(typeof(ResponsesPage));
+                    break;
+                case Pages.PROMPTS:
+                case Pages.ARTIFICIAL_INTELLIGENCE:
+                default:
+                    Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");
+                    navigationFrame!.Navigate(typeof(DefaultPage));
+                    break;
+            }
         }
     }
 }

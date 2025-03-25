@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Persistence.Core;
@@ -14,7 +15,7 @@ public class ResponseQueryService : BaseEntityQueryService<StatisticsDatabaseCon
     /// <inheritdoc />
     protected override IQueryable<Response> GetBaseQuery()
     {
-        return context.Responses.AsQueryable();
+        return context.Responses.AsQueryable().Include(x => x.Ai).Include(x => x.Prompt);
     }
 
     /// <inheritdoc />

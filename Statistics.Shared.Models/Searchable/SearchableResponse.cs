@@ -5,7 +5,7 @@ namespace Statistics.Shared.Models.Searchable;
 public class SearchableResponse : ISearchableResponse
 {
     /// <inheritdoc />
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     /// <inheritdoc />
     public int AiId { get; set; }
