@@ -1,10 +1,5 @@
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Interfaces.Services;
-using Statistics.Shared.Models.Settings;
-using Statistics.Shared.Persistence;
-using Statistics.Shared.Persistence.Core.Startup;
 using Statistics.Shared.Services.ArtificialIntelligence;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Models;

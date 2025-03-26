@@ -16,7 +16,7 @@ public partial class App : Application
     }
 
     protected Window? MainWindow { get; private set; }
-    protected IHost? Host { get; private set; }
+    private IHost? Host { get; set; }
     public UnoStartup Startup { get; private set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

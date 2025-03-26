@@ -1,16 +1,25 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Uno.Endpoints;
-using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
+using Statistics.Uno.Presentation.ViewModel;
 
 namespace Statistics.Uno.Presentation;
 
 public sealed partial class ResponsesPage : Page
 {
+    private enum DataGridColumns
+    {
+        PROMPT_TEXT = 0,
+        RESPONSE_TEXT = 1,
+        RESPONSE_TIME = 2,
+    }
+
     public ResponsesPage()
     {
         var app = (App) Application.Current;
@@ -23,8 +32,10 @@ public sealed partial class ResponsesPage : Page
             throw new NullReferenceException(
                 $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
 
-        var logic = new ResponsesPageLogic(responseApi, aiApi);
-        var ui = new ResponsesPageUi(logic);
+        DataContext = new ResponsesViewModel();
+
+        var logic = new ResponsesPageLogic(responseApi, aiApi, (ResponsesViewModel) DataContext);
+        var ui = new ResponsesPageUi(logic, (ResponsesViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
@@ -32,10 +43,12 @@ public sealed partial class ResponsesPage : Page
     private class ResponsesPageUi
     {
         private readonly ResponsesPageLogic logic;
+        private ResponsesViewModel DataContext { get; init; }
 
-        public ResponsesPageUi(ResponsesPageLogic logic)
+        public ResponsesPageUi(ResponsesPageLogic logic, ResponsesViewModel dataContext)
         {
             this.logic = logic;
+            DataContext = dataContext;
         }
 
         public Grid CreateContentGrid()
@@ -49,7 +62,7 @@ public sealed partial class ResponsesPage : Page
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
                 new GridLength(rowTwoHeight, GridUnitType.Star));
 
-            ItemsView responsesItemsView = CreateResponsesItemsView().Grid(row: 1, column: 0);
+            DataGrid responsesItemsView = CreateResponsesDataGrid().Grid(row: 1, column: 0);
             ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 0);
 
             grid.Children.Add(aiSelectionComboBox);
@@ -58,23 +71,88 @@ public sealed partial class ResponsesPage : Page
             return grid;
         }
 
-        private ItemsView CreateResponsesItemsView()
+        private DataGrid CreateResponsesDataGrid()
         {
-            var itemsView = new ItemsView();
+            var dataGrid = new DataGrid()
+            {
+                CanUserReorderColumns = false, CanUserResizeColumns = true, CanUserSortColumns = true,
+                SelectionMode = DataGridSelectionMode.Single,
+                ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader, AutoGenerateColumns = false,
+            };
 
-            logic.RegisterResponsesItemsView(itemsView);
+            logic.RegisterResponsesDataGrid(dataGrid);
 
-            itemsView.ItemsSource(x => x.Binding(() => logic.Responses));
+            //dataGrid.ItemsSource(x => x.Binding(() => logic.Responses));
 
-            return itemsView;
+            SetupDataGridColumns(dataGrid);
+            SetupDataGridRowTemplate(dataGrid);
+
+            dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = nameof(ResponsesViewModel.Responses), Source = DataContext});
+
+            return dataGrid;
+        }
+
+        private void SetupDataGridRowTemplate(DataGrid dataGrid)
+        {
+            var stack = new StackPanel();
+            var cells = Enum.GetValues<DataGridColumns>().Select(x =>
+            {
+                var block = new TextBlock();
+
+                switch (x)
+                {
+                    case DataGridColumns.PROMPT_TEXT:
+                        block.Text(x => x.Binding($"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}"));
+                        break;
+                    case DataGridColumns.RESPONSE_TEXT:
+                        block.Text(x => x.Binding($"{nameof(Response.Text)}"));
+                        break;
+                    case DataGridColumns.RESPONSE_TIME:
+                        block.Text(x => x.Binding($"{nameof(Response.CreatedDateTime)}"));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(x), x, null);
+                }
+
+                return block;
+            });
+            stack.Children.AddRange(cells);
+            dataGrid.RowDetailsTemplate = new DataTemplate(() => stack);
+        }
+
+        private void SetupDataGridColumns(DataGrid dataGrid)
+        {
+            var columns = Enum.GetValues<DataGridColumns>().Select(x =>
+            {
+                var column = new DataGridTextColumn()
+                    {Header = logic.EnumStringValueToTitleCase(x.ToString()), Tag = x, Binding = new Binding()};
+
+                switch (x)
+                {
+                    case DataGridColumns.PROMPT_TEXT:
+                        column.Binding.Path = new PropertyPath($"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}");
+                        break;
+                    case DataGridColumns.RESPONSE_TEXT:
+                        column.Binding.Path = new PropertyPath($"{nameof(Response.Text)}");
+                        break;
+                    case DataGridColumns.RESPONSE_TIME:
+                        column.Binding.Path = new PropertyPath($"{nameof(Response.CreatedDateTime)}");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(x), x, null);
+                }
+
+                return column;
+            });
+
+            dataGrid.Columns.AddRange(columns);
         }
 
         private ComboBox CreateAiSelectionComboBox()
         {
             var comboBox = new ComboBox();
 
-            var options = Enum.GetNames(typeof(ArtificialIntelligenceType)).Select(x => x.Split('_')).Select(x =>
-                Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(string.Join(' ', x).ToLower()));
+            var options = logic.EnumNamesToTitleCase(typeof(ArtificialIntelligenceType));
 
             comboBox.ItemsSource = options;
             comboBox.SelectionChanged += logic.ComboBoxOnSelectionChanged;
@@ -84,22 +162,33 @@ public sealed partial class ResponsesPage : Page
         }
     }
 
-    private class ResponsesPageLogic
+    private partial class ResponsesPageLogic
     {
         private readonly IResponsesEndpoint responseApi;
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private ArtificialIntelligenceType comboBoxSelection;
-        private ItemsView itemsView;
+        private DataGrid dataGrid;
         private readonly DispatcherQueue dispatchQueue;
+        private ResponsesViewModel DataContext { get; init; }
 
-        internal IList<IResponse> Responses { get; private set; }
-
-        public ResponsesPageLogic(IResponsesEndpoint responseApi, IArtificialIntelligenceEndpoint aiApi)
+        public ResponsesPageLogic(
+            IResponsesEndpoint responseApi, IArtificialIntelligenceEndpoint aiApi, ResponsesViewModel dataContext)
         {
             this.responseApi = responseApi;
             this.aiApi = aiApi;
-            Responses = new List<IResponse>();
+            DataContext = dataContext;
+            DataContext.Responses = new List<IResponse>();
             dispatchQueue = DispatcherQueue.GetForCurrentThread();
+        }
+
+        internal IEnumerable<string> EnumNamesToTitleCase(Type enumType)
+        {
+            return Enum.GetNames(enumType).Select(EnumStringValueToTitleCase);
+        }
+
+        internal string EnumStringValueToTitleCase(string enumString)
+        {
+            return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(string.Join(' ', enumString.Split('_')).ToLower());
         }
 
         public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,10 +198,10 @@ public sealed partial class ResponsesPage : Page
                                     $"Expected '{nameof(sender)}' to not be null, but it was.");
             comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
 
-            UpdateResponsesItemsView();
+            UpdateResponses();
         }
 
-        private async Task UpdateResponsesItemsView()
+        private async Task UpdateResponses()
         {
             Console.WriteLine($"Requesting Ai with type: '{comboBoxSelection}'");
             var apiResponse = await aiApi.GetByQuery(CancellationToken.None,
@@ -139,15 +228,15 @@ public sealed partial class ResponsesPage : Page
             dispatchQueue.TryEnqueue(() =>
             {
                 Console.WriteLine($"Updating Responses... - {JsonConvert.SerializeObject(selectedAiEntity)}");
-                Responses = selectedAiEntity.Responses.ToList();
+                DataContext.Responses = selectedAiEntity.Responses.ToList();
             });
 
             //Responses = selectedAiEntity.Responses.ToList();
         }
 
-        public void RegisterResponsesItemsView(ItemsView itemsViewReference)
+        public void RegisterResponsesDataGrid(DataGrid dataGridReference)
         {
-            itemsView = itemsViewReference;
+            dataGrid = dataGridReference;
         }
     }
 }
