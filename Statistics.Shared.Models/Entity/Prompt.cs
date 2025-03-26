@@ -38,11 +38,11 @@ public class Prompt : IPrompt
     /// Constructor for Entity Framework Core to use.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="Responses"></param>
+    /// <param name="responses"></param>
     [JsonConstructor]
-    private Prompt(int id, List<Response> Responses)
+    public Prompt(int id, List<Response> responses)
     {
         this.id = id;
-        this.Responses = Responses.Cast<IResponse>() as ICollection<IResponse> ?? new List<IResponse>();
+        this.Responses = responses.Cast<IResponse>().ToList();
     }
 }

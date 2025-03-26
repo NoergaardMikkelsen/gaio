@@ -53,6 +53,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="Refit" />
         <PackageReference Include="Refit.HttpClientFactory" />
+        <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
     </ItemGroup>
 
     <ItemGroup>

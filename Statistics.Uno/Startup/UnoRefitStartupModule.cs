@@ -1,11 +1,26 @@
+using System.Text.Json;
 using Statistics.Uno.Endpoints;
 using Refit;
+using Statistics.Uno.Startup.Converters;
 
 namespace Statistics.Uno.Startup;
 
 public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoint : IRefitEndpoint
 {
     private readonly string baseAddress;
+    private static readonly RefitSettings settings = new RefitSettings()
+    {
+        ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions()
+        {
+            Converters =
+            {
+                new ArtificialIntelligenceJsonConverter(),
+                new PromptJsonConverter(),
+                new ResponseJsonConverter(),
+                new ResponseListJsonConverter(),
+            },
+        }),
+    };
 
     public UnoRefitStartupModule(string baseAddress)
     {
@@ -15,7 +30,7 @@ public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoin
     /// <inheritdoc />
     public void ConfigureServices(IServiceCollection services)
     {
-        var api = RestService.For<TEndpoint>(baseAddress);
+        var api = RestService.For<TEndpoint>(baseAddress, settings);
 
         services.AddSingleton(typeof(TEndpoint), api);
     }
@@ -23,14 +38,10 @@ public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoin
     /// <inheritdoc />
     public void ConfigureApplication(IApplicationBuilder app)
     {
-        //app.Configure(hostBuilder => { hostBuilder.UseHttp(ConfigureRefit); });
     }
 
     private void ConfigureRefit(HostBuilderContext context, IServiceCollection services)
     {
-        //services.AddRefitClient<TEndpoint>().ConfigureHttpClient(httpClient =>
-        //{
-        //    httpClient.BaseAddress = new Uri(baseAddress);
-        //});
+
     }
 }

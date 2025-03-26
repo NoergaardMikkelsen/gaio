@@ -12,5 +12,8 @@ public class Program
         startup.SetupApplication(app);
 
         app.Run();
+
+        // Ensure the console closes after the application stops
+        Environment.Exit(0);
     }
 }

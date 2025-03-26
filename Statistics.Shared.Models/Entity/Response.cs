@@ -47,13 +47,13 @@ public class Response : IResponse
     /// Constructor for Entity Framework Core to use.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="Prompt"></param>
-    /// <param name="Ai"></param>
+    /// <param name="prompt"></param>
+    /// <param name="ai"></param>
     [JsonConstructor]
-    private Response(int id, Prompt Prompt, ArtificialIntelligence Ai)
+    public Response(int id, Prompt prompt, ArtificialIntelligence ai)
     {
         this.id = id;
-        this.Prompt = Prompt;
-        this.Ai = Ai;
+        this.Prompt = prompt;
+        this.Ai = ai;
     }
 }
