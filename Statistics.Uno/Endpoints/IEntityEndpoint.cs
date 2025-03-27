@@ -14,4 +14,7 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
 
     [Post("/GetByQuery")]
     Task<ApiResponse<TEntity>> GetByQuery(CancellationToken ct, [Body] TSearchable searchable);
+
+    [Get("/GetAll")]
+    Task<ApiResponse<List<TEntity>>> GetAll(CancellationToken ct);
 }

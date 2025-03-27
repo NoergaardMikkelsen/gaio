@@ -19,6 +19,7 @@ public class UnoStartup : UnoModularStartup
 
         AddModule(new UnoRefitStartupModule<IResponsesEndpoint>($"{baseAddress}Response"));
         AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>($"{baseAddress}ArtificialIntelligence"));
+        AddModule(new UnoRefitStartupModule<IPromptEndpoint>($"{baseAddress}Prompt"));
     }
 
     /// <inheritdoc />

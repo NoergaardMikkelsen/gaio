@@ -140,6 +140,9 @@ public sealed partial class NavigationPage : Page
                     navigationFrame!.Navigate(typeof(ResponsesPage));
                     break;
                 case Pages.PROMPTS:
+                    Console.WriteLine($"Navigation to '{nameof(PromptsPage)}'...");
+                    navigationFrame!.Navigate(typeof(PromptsPage));
+                    break;
                 case Pages.ARTIFICIAL_INTELLIGENCES:
                 default:
                     Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");

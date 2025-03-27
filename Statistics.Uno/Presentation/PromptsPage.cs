@@ -12,43 +12,41 @@ using Statistics.Uno.Presentation.ViewModel;
 
 namespace Statistics.Uno.Presentation;
 
-public sealed partial class ResponsesPage : Page
+public sealed partial class PromptsPage : Page
 {
     private enum DataGridColumns
     {
         PROMPT_TEXT = 0,
-        RESPONSE_TEXT = 1,
-        RESPONSE_TIME = 2,
+        PROMPT_TIME = 1,
     }
 
-    public ResponsesPage()
+    public PromptsPage()
     {
         var app = (App) Application.Current;
 
-        IArtificialIntelligenceEndpoint aiApi =
-            app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
-            throw new NullReferenceException(
-                $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
+        IPromptEndpoint promptApi = app.Startup.ServiceProvider.GetService<IPromptEndpoint>() ??
+                                    throw new NullReferenceException(
+                                        $"Failed to acquire an instance implementing '{nameof(IPromptEndpoint)}'.");
 
-        DataContext = new ResponsesViewModel();
+        DataContext = new PromptsViewModel();
 
-        var logic = new ResponsesPageLogic(aiApi, (ResponsesViewModel) DataContext);
-        var ui = new ResponsesPageUi(logic, (ResponsesViewModel) DataContext);
+        var logic = new PromptsPageLogic(promptApi, (PromptsViewModel) DataContext);
+        var ui = new PromptsPageUi(logic, (PromptsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdateResponses();
+        logic.UpdatePrompts();
     }
 
-    private class ResponsesPageUi
+    private class PromptsPageUi
     {
-        private readonly ResponsesPageLogic logic;
-        private ResponsesViewModel DataContext { get; }
+        private readonly PromptsPageLogic logic;
+        private PromptsViewModel DataContext { get; }
 
-        public ResponsesPageUi(ResponsesPageLogic logic, ResponsesViewModel dataContext)
+        public PromptsPageUi(PromptsPageLogic logic, PromptsViewModel dataContext)
         {
-            this.logic = logic;
             DataContext = dataContext;
+            this.logic = logic;
         }
 
         public Grid CreateContentGrid()
@@ -57,11 +55,9 @@ public sealed partial class ResponsesPage : Page
 
             ConfigureGridRowsAndColumns(grid);
 
-            DataGrid responsesDataGrid = CreateResponsesDataGrid().Grid(row: 1, column: 0, columnSpan: 5);
-            ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
+            DataGrid promptsDataGrid = CreatePromptsDataGrid().Grid(row: 1, column: 0, columnSpan: 5);
 
-            grid.Children.Add(aiSelectionComboBox);
-            grid.Children.Add(responsesDataGrid);
+            grid.Children.Add(promptsDataGrid);
 
             return grid;
         }
@@ -78,7 +74,7 @@ public sealed partial class ResponsesPage : Page
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private DataGrid CreateResponsesDataGrid()
+        private DataGrid CreatePromptsDataGrid()
         {
             var dataGrid = new DataGrid()
             {
@@ -92,8 +88,7 @@ public sealed partial class ResponsesPage : Page
             SetupDataGridColumns(dataGrid);
             SetupDataGridRowTemplate(dataGrid);
 
-            dataGrid.SetBinding(DataGrid.ItemsSourceProperty,
-                new Binding() {Path = nameof(ResponsesViewModel.Responses), Source = DataContext,});
+            dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = nameof(PromptsViewModel.Prompts), Source = DataContext});
 
             return dataGrid;
         }
@@ -105,8 +100,8 @@ public sealed partial class ResponsesPage : Page
             {
                 var block = new TextBlock() {Margin = new Thickness(10)};
 
-                var binding = new Binding { Path = GetBindingPath(x), };
-                if (x == DataGridColumns.RESPONSE_TIME)
+                var binding = new Binding {Path = GetBindingPath(x),};
+                if (x == DataGridColumns.PROMPT_TIME)
                 {
                     binding.Converter = new StringFormatConverter();
                     binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
@@ -124,10 +119,9 @@ public sealed partial class ResponsesPage : Page
         {
             return column switch
             {
-                DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
-                DataGridColumns.RESPONSE_TEXT => $"{nameof(Response.Text)}",
-                DataGridColumns.RESPONSE_TIME => $"{nameof(Response.CreatedDateTime)}",
-                var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+                DataGridColumns.PROMPT_TEXT => nameof(Prompt.Text),
+                DataGridColumns.PROMPT_TIME => nameof(Prompt.CreatedDateTime),
+                _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
 
@@ -138,12 +132,13 @@ public sealed partial class ResponsesPage : Page
             {
                 DataGridColumn column = value switch
                 {
-                    DataGridColumns.PROMPT_TEXT or DataGridColumns.RESPONSE_TEXT => CreateDataGridTextColumn(value),
-                    DataGridColumns.RESPONSE_TIME => CreateDataGridTemplateColumn(value),
+                    DataGridColumns.PROMPT_TEXT => CreateDataGridTextColumn(value),
+                    DataGridColumns.PROMPT_TIME => CreateDataGridTemplateColumn(value),
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
-                column.Width = new DataGridLength(value == DataGridColumns.RESPONSE_TIME ? 1 : 2, DataGridLengthUnitType.Star);
+                column.Width = new DataGridLength(value == DataGridColumns.PROMPT_TIME ? 1 : 2,
+                    DataGridLengthUnitType.Star);
                 columns.Add(column);
             }
 
@@ -152,10 +147,11 @@ public sealed partial class ResponsesPage : Page
 
         private DataGridTemplateColumn CreateDataGridTemplateColumn(DataGridColumns column)
         {
-            var textBlock = new TextBlock() { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0),};
+            var textBlock = new TextBlock()
+                {VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0),};
 
             var binding = new Binding {Path = GetBindingPath(column),};
-            if (column == DataGridColumns.RESPONSE_TIME)
+            if (column == DataGridColumns.PROMPT_TIME)
             {
                 binding.Converter = new StringFormatConverter();
                 binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
@@ -183,60 +179,38 @@ public sealed partial class ResponsesPage : Page
                 },
             };
         }
-
-        private ComboBox CreateAiSelectionComboBox()
-        {
-            var comboBox = new ComboBox() {Margin = new Thickness(10),};
-
-            var options = typeof(ArtificialIntelligenceType).EnumNamesToTitleCase();
-
-            comboBox.ItemsSource = options;
-            comboBox.SelectionChanged += logic.ComboBoxOnSelectionChanged;
-            comboBox.SelectedIndex = (int) ArtificialIntelligenceType.OPEN_AI;
-
-            return comboBox;
-        }
     }
 
-    private class ResponsesPageLogic
+    private class PromptsPageLogic
     {
-        private readonly IArtificialIntelligenceEndpoint aiApi;
+        private readonly IPromptEndpoint promptApi;
         private ArtificialIntelligenceType comboBoxSelection;
-        private ResponsesViewModel DataContext { get; }
+        private PromptsViewModel DataContext { get; }
 
-        public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, ResponsesViewModel dataContext)
+        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext)
         {
-            this.aiApi = aiApi;
             DataContext = dataContext;
-            DataContext.Responses = new List<IResponse>();
+            this.promptApi = promptApi;
         }
 
-        public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        internal async Task UpdatePrompts()
         {
-            ComboBox comboBox = sender as ComboBox ??
-                                throw new NullReferenceException(
-                                    $"Expected '{nameof(sender)}' to not be null, but it was.");
-            comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
-        }
+            var apiResponse = await promptApi.GetAll(CancellationToken.None);
 
-        internal async Task UpdateResponses()
-        {
-            var apiResponse = await aiApi.GetByQuery(CancellationToken.None,
-                new SearchableArtificialIntelligence() {AiType = comboBoxSelection,});
             if (!apiResponse.IsSuccessful)
             {
                 Console.WriteLine($"Request to Api was not successful. Error is as follows: {apiResponse.Error}");
             }
 
-            ArtificialIntelligence? selectedAiEntity = apiResponse.Content;
+            var allPrompts = apiResponse.Content;
 
-            if (selectedAiEntity == null)
+            if (allPrompts == null)
             {
-                Console.WriteLine($"Failed to get selected Artificial Intelligence entity.");
+                Console.WriteLine($"Failed to get all prompt entities.");
                 return;
             }
 
-            DataContext.Responses = selectedAiEntity.Responses.ToList();
+            DataContext.Prompts = allPrompts;
         }
     }
 }
