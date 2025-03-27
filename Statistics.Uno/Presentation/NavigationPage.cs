@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.UI.Xaml.Controls;
+using Statistics.Shared.Extensions;
 
 namespace Statistics.Uno.Presentation;
 
@@ -9,7 +8,7 @@ public sealed partial class NavigationPage : Page
     {
         RESPONSES = 0,
         PROMPTS = 1,
-        ARTIFICIAL_INTELLIGENCE = 2,
+        ARTIFICIAL_INTELLIGENCES = 2,
     }
 
     public NavigationPage()
@@ -33,7 +32,7 @@ public sealed partial class NavigationPage : Page
         {
             var grid = new Grid();
 
-            const int columnOneWidth = 10;
+            const int columnOneWidth = 12;
             const int columnTwoWidth = 100 - columnOneWidth;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
@@ -64,14 +63,20 @@ public sealed partial class NavigationPage : Page
 
         private ListView CreateNavigationListView()
         {
-            var view = new ListView();
-
-            var options = new List<TextBlock>()
+            var view = new ListView()
             {
-                CreateResponseNavigationTextBlock(view),
-                CreatePromptsNavigationTextBlock(view),
-                CreateArtificialIntelligenceTextBlock(view),
+                Background = new SolidColorBrush(Colors.Black),
+                ItemContainerStyle = new Style(typeof(ListViewItem))
+                {
+                    Setters =
+                    {
+                        new Setter(FrameworkElement.BackgroundProperty, new SolidColorBrush(Colors.Black)),
+                        new Setter(Control.ForegroundProperty, new SolidColorBrush(Colors.White)),
+                    },
+                },
             };
+
+            var options = Enum.GetValues<Pages>().Select(x => CreateNavigationTextBlock(view, x));
 
             view.ItemsSource = options;
             view.SelectedIndex = (int) Pages.RESPONSES;
@@ -80,16 +85,7 @@ public sealed partial class NavigationPage : Page
             return view;
         }
 
-        private TextBlock CreateResponseNavigationTextBlock(ListView view)
-        {
-            TextBlock item = CreateBaseNavigationTextBlock(view);
-
-            item.Text = "Responses";
-
-            return item;
-        }
-
-        private TextBlock CreateBaseNavigationTextBlock(ListView view)
+        private TextBlock CreateNavigationTextBlock(ListView view, Pages page)
         {
             return new TextBlock()
             {
@@ -99,25 +95,10 @@ public sealed partial class NavigationPage : Page
                 Background = view.Background,
                 FocusVisualPrimaryBrush = view.Background,
                 FocusVisualSecondaryBrush = view.Background,
+                Margin = new Thickness(10),
+                Foreground = new SolidColorBrush(Colors.White),
+                Text = page.ToString().ScreamingSnakeCaseToTitleCase(),
             };
-        }
-
-        private TextBlock CreatePromptsNavigationTextBlock(ListView view)
-        {
-            TextBlock item = CreateBaseNavigationTextBlock(view);
-
-            item.Text = "Register Prompts";
-
-            return item;
-        }
-
-        private TextBlock CreateArtificialIntelligenceTextBlock(ListView view)
-        {
-            TextBlock item = CreateBaseNavigationTextBlock(view);
-
-            item.Text = "Register Artificial Intelligences ";
-
-            return item;
         }
     }
 
@@ -159,7 +140,7 @@ public sealed partial class NavigationPage : Page
                     navigationFrame!.Navigate(typeof(ResponsesPage));
                     break;
                 case Pages.PROMPTS:
-                case Pages.ARTIFICIAL_INTELLIGENCE:
+                case Pages.ARTIFICIAL_INTELLIGENCES:
                 default:
                     Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");
                     navigationFrame!.Navigate(typeof(DefaultPage));

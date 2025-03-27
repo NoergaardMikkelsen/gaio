@@ -11,4 +11,10 @@ public static class StringExtensions
 
         return char.ToLower(input[0]) + input[1..];
     }
+
+    public static string ScreamingSnakeCaseToTitleCase(this string input)
+    {
+        return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(string.Join(' ', input.Split('_'))
+            .ToLower());
+    }
 }
