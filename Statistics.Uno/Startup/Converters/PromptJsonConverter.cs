@@ -19,7 +19,6 @@ public class PromptJsonConverter : JsonConverter<Prompt>
         DateTime createdDateTime = default;
         DateTime updatedDateTime = default;
         List<Response> responses = new List<Response>();
-        Console.WriteLine($"Starting reading of {nameof(Prompt)} Json");
 
         while (reader.Read())
         {
@@ -36,34 +35,27 @@ public class PromptJsonConverter : JsonConverter<Prompt>
                 case JsonTokenType.PropertyName:
                     {
                         string propertyName = reader.GetString();
-                        Console.WriteLine($"Reading property: {propertyName}");
                         reader.Read();
 
                         switch (propertyName)
                         {
                             case "id":
                                 id = reader.GetInt32();
-                                Console.WriteLine($"Id: {id}");
                                 break;
                             case "text":
                                 text = reader.GetString();
-                                Console.WriteLine($"Text: {text}");
                                 break;
                             case "version":
                                 version = reader.GetUInt32();
-                                Console.WriteLine($"Version: {version}");
                                 break;
                             case "createdDateTime":
                                 createdDateTime = reader.GetDateTime();
-                                Console.WriteLine($"CreatedDateTime: {createdDateTime}");
                                 break;
                             case "updatedDateTime":
                                 updatedDateTime = reader.GetDateTime();
-                                Console.WriteLine($"UpdatedDateTime: {updatedDateTime}");
                                 break;
                             case "responses":
                                 responses = JsonSerializer.Deserialize<List<Response>>(ref reader, options);
-                                Console.WriteLine($"Responses: {responses.Count} items");
                                 break;
                         }
 

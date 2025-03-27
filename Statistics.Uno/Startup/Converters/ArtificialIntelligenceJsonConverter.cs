@@ -22,7 +22,6 @@ public class ArtificialIntelligenceJsonConverter : JsonConverter<ArtificialIntel
         DateTime createdDateTime = default;
         DateTime updatedDateTime = default;
         List<Response> responses = new List<Response>();
-        Console.WriteLine($"Starting reading of {nameof(ArtificialIntelligence)} Json");
 
         while (reader.Read())
         {
@@ -41,43 +40,34 @@ public class ArtificialIntelligenceJsonConverter : JsonConverter<ArtificialIntel
                 case JsonTokenType.PropertyName:
                     {
                         string propertyName = reader.GetString();
-                        Console.WriteLine($"Reading property: {propertyName}");
                         reader.Read();
 
                         switch (propertyName)
                         {
                             case "id":
                                 id = reader.GetInt32();
-                                Console.WriteLine($"Id: {id}");
                                 break;
                             case "name":
                                 name = reader.GetString();
-                                Console.WriteLine($"Name: {name}");
                                 break;
                             case "key":
                                 key = reader.GetString();
-                                Console.WriteLine($"Key: {key}");
                                 break;
                             case "aiType":
                                 aiType = Enum.Parse<ArtificialIntelligenceType>(reader.GetString());
-                                Console.WriteLine($"AiType: {aiType}");
                                 break;
                             case "version":
                                 version = reader.GetUInt32();
-                                Console.WriteLine($"Version: {version}");
                                 break;
                             case "createdDateTime":
                                 createdDateTime = reader.GetDateTime();
-                                Console.WriteLine($"CreatedDateTime: {createdDateTime}");
                                 break;
                             case "updatedDateTime":
                                 updatedDateTime = reader.GetDateTime();
-                                Console.WriteLine($"UpdatedDateTime: {updatedDateTime}");
                                 break;
                             case "responses":
                                 var responseListConverter = new ResponseListJsonConverter();
                                 responses = responseListConverter.Read(ref reader, typeof(List<Response>), options);
-                                Console.WriteLine($"Responses: {responses.Count} items");
                                 break;
                         }
 
