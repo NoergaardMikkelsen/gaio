@@ -38,31 +38,24 @@ public sealed partial class PromptsPage : Page
         logic.UpdatePrompts();
     }
 
-    private class PromptsPageUi
+    private class PromptsPageUi : BasePageUi<PromptsPageLogic, PromptsViewModel>
     {
-        private readonly PromptsPageLogic logic;
-        private PromptsViewModel DataContext { get; }
-
-        public PromptsPageUi(PromptsPageLogic logic, PromptsViewModel dataContext)
+        public PromptsPageUi(PromptsPageLogic logic, PromptsViewModel dataContext) : base(logic, dataContext)
         {
-            DataContext = dataContext;
-            this.logic = logic;
         }
 
-        public Grid CreateContentGrid()
+        /// <inheritdoc />
+        protected override void AddControlsToGrid(Grid grid)
         {
-            var grid = new Grid();
-
-            ConfigureGridRowsAndColumns(grid);
-
-            DataGrid promptsDataGrid = CreatePromptsDataGrid().Grid(row: 1, column: 0, columnSpan: 5);
+            DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
+                    DataContext, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
+                .Grid(row: 1, column: 0, columnSpan: 5);
 
             grid.Children.Add(promptsDataGrid);
-
-            return grid;
         }
 
-        private void ConfigureGridRowsAndColumns(Grid grid)
+        /// <inheritdoc />
+        protected override void ConfigureGridRowsAndColumns(Grid grid)
         {
             const int rowOneHeight = 8;
             const int rowTwoHeight = 100 - rowOneHeight;
@@ -74,45 +67,10 @@ public sealed partial class PromptsPage : Page
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private DataGrid CreatePromptsDataGrid()
-        {
-            var dataGrid = new DataGrid()
-            {
-                CanUserReorderColumns = false, CanUserResizeColumns = true, CanUserSortColumns = true,
-                SelectionMode = DataGridSelectionMode.Single,
-                ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader, AutoGenerateColumns = false,
-                Margin = new Thickness(10), HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-            };
-
-            SetupDataGridColumns(dataGrid);
-            SetupDataGridRowTemplate(dataGrid);
-
-            dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = nameof(PromptsViewModel.Prompts), Source = DataContext});
-
-            return dataGrid;
-        }
-
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
-            var stack = new StackPanel();
-            var cells = Enum.GetValues<DataGridColumns>().Select(x =>
-            {
-                var block = new TextBlock() {Margin = new Thickness(10)};
-
-                var binding = new Binding {Path = GetBindingPath(x),};
-                if (x == DataGridColumns.PROMPT_TIME)
-                {
-                    binding.Converter = new StringFormatConverter();
-                    binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
-                }
-
-                block.SetBinding(TextBlock.TextProperty, binding);
-
-                return block;
-            });
-            stack.Children.AddRange(cells);
-            dataGrid.RowDetailsTemplate = new DataTemplate(() => stack);
+            DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
+                x => x == (int)DataGridColumns.PROMPT_TIME, x => GetBindingPath((DataGridColumns)x));
         }
 
         private string GetBindingPath(DataGridColumns column)
@@ -121,63 +79,15 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.PROMPT_TEXT => nameof(Prompt.Text),
                 DataGridColumns.PROMPT_TIME => nameof(Prompt.CreatedDateTime),
-                _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+                var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
 
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
-            IList<DataGridColumn> columns = new List<DataGridColumn>();
-            foreach (DataGridColumns value in Enum.GetValues<DataGridColumns>())
-            {
-                DataGridColumn column = value switch
-                {
-                    DataGridColumns.PROMPT_TEXT => CreateDataGridTextColumn(value),
-                    DataGridColumns.PROMPT_TIME => CreateDataGridTemplateColumn(value),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-
-                column.Width = new DataGridLength(value == DataGridColumns.PROMPT_TIME ? 1 : 2,
-                    DataGridLengthUnitType.Star);
-                columns.Add(column);
-            }
-
-            dataGrid.Columns.AddRange(columns);
-        }
-
-        private DataGridTemplateColumn CreateDataGridTemplateColumn(DataGridColumns column)
-        {
-            var textBlock = new TextBlock()
-                {VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0),};
-
-            var binding = new Binding {Path = GetBindingPath(column),};
-            if (column == DataGridColumns.PROMPT_TIME)
-            {
-                binding.Converter = new StringFormatConverter();
-                binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
-            }
-
-            textBlock.SetBinding(TextBlock.TextProperty, binding);
-
-            return new DataGridTemplateColumn()
-            {
-                Header = column.ToString().ScreamingSnakeCaseToTitleCase(),
-                Tag = column,
-                CellTemplate = new DataTemplate(() => textBlock),
-            };
-        }
-
-        private DataGridTextColumn CreateDataGridTextColumn(DataGridColumns column)
-        {
-            return new DataGridTextColumn()
-            {
-                Header = column.ToString().ScreamingSnakeCaseToTitleCase(),
-                Tag = column,
-                Binding = new Binding
-                {
-                    Path = GetBindingPath(column),
-                },
-            };
+            DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
+                x => GetBindingPath((DataGridColumns) x),
+                x => x == (int)DataGridColumns.PROMPT_TIME, i => ((DataGridColumns) i ).ToString());
         }
     }
 

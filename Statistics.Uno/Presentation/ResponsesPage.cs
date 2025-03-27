@@ -40,33 +40,24 @@ public sealed partial class ResponsesPage : Page
         logic.UpdateResponses();
     }
 
-    private class ResponsesPageUi
+    private class ResponsesPageUi : BasePageUi<ResponsesPageLogic, ResponsesViewModel>
     {
-        private readonly ResponsesPageLogic logic;
-        private ResponsesViewModel DataContext { get; }
-
-        public ResponsesPageUi(ResponsesPageLogic logic, ResponsesViewModel dataContext)
+        public ResponsesPageUi(ResponsesPageLogic logic, ResponsesViewModel dataContext) : base(logic, dataContext)
         {
-            this.logic = logic;
-            DataContext = dataContext;
         }
 
-        public Grid CreateContentGrid()
+        protected override void AddControlsToGrid(Grid grid)
         {
-            var grid = new Grid();
-
-            ConfigureGridRowsAndColumns(grid);
-
-            DataGrid responsesDataGrid = CreateResponsesDataGrid().Grid(row: 1, column: 0, columnSpan: 5);
+            DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
+                    DataContext, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
+                .Grid(row: 1, column: 0, columnSpan: 5);
             ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
 
             grid.Children.Add(aiSelectionComboBox);
             grid.Children.Add(responsesDataGrid);
-
-            return grid;
         }
 
-        private void ConfigureGridRowsAndColumns(Grid grid)
+        protected override void ConfigureGridRowsAndColumns(Grid grid)
         {
             const int rowOneHeight = 8;
             const int rowTwoHeight = 100 - rowOneHeight;
@@ -78,46 +69,10 @@ public sealed partial class ResponsesPage : Page
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private DataGrid CreateResponsesDataGrid()
-        {
-            var dataGrid = new DataGrid()
-            {
-                CanUserReorderColumns = false, CanUserResizeColumns = true, CanUserSortColumns = true,
-                SelectionMode = DataGridSelectionMode.Single,
-                ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader, AutoGenerateColumns = false,
-                Margin = new Thickness(10), HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-            };
-
-            SetupDataGridColumns(dataGrid);
-            SetupDataGridRowTemplate(dataGrid);
-
-            dataGrid.SetBinding(DataGrid.ItemsSourceProperty,
-                new Binding() {Path = nameof(ResponsesViewModel.Responses), Source = DataContext,});
-
-            return dataGrid;
-        }
-
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
-            var stack = new StackPanel();
-            var cells = Enum.GetValues<DataGridColumns>().Select(x =>
-            {
-                var block = new TextBlock() {Margin = new Thickness(10)};
-
-                var binding = new Binding { Path = GetBindingPath(x), };
-                if (x == DataGridColumns.RESPONSE_TIME)
-                {
-                    binding.Converter = new StringFormatConverter();
-                    binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
-                }
-
-                block.SetBinding(TextBlock.TextProperty, binding);
-
-                return block;
-            });
-            stack.Children.AddRange(cells);
-            dataGrid.RowDetailsTemplate = new DataTemplate(() => stack);
+            DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
+                x => x == (int) DataGridColumns.RESPONSE_TIME, x => GetBindingPath((DataGridColumns) x));
         }
 
         private string GetBindingPath(DataGridColumns column)
@@ -133,55 +88,9 @@ public sealed partial class ResponsesPage : Page
 
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
-            IList<DataGridColumn> columns = new List<DataGridColumn>();
-            foreach (DataGridColumns value in Enum.GetValues<DataGridColumns>())
-            {
-                DataGridColumn column = value switch
-                {
-                    DataGridColumns.PROMPT_TEXT or DataGridColumns.RESPONSE_TEXT => CreateDataGridTextColumn(value),
-                    DataGridColumns.RESPONSE_TIME => CreateDataGridTemplateColumn(value),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-
-                column.Width = new DataGridLength(value == DataGridColumns.RESPONSE_TIME ? 1 : 2, DataGridLengthUnitType.Star);
-                columns.Add(column);
-            }
-
-            dataGrid.Columns.AddRange(columns);
-        }
-
-        private DataGridTemplateColumn CreateDataGridTemplateColumn(DataGridColumns column)
-        {
-            var textBlock = new TextBlock() { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0),};
-
-            var binding = new Binding {Path = GetBindingPath(column),};
-            if (column == DataGridColumns.RESPONSE_TIME)
-            {
-                binding.Converter = new StringFormatConverter();
-                binding.ConverterParameter = "{0:dd/MM/yyyy HH:mm:ss}";
-            }
-
-            textBlock.SetBinding(TextBlock.TextProperty, binding);
-
-            return new DataGridTemplateColumn()
-            {
-                Header = column.ToString().ScreamingSnakeCaseToTitleCase(),
-                Tag = column,
-                CellTemplate = new DataTemplate(() => textBlock),
-            };
-        }
-
-        private DataGridTextColumn CreateDataGridTextColumn(DataGridColumns column)
-        {
-            return new DataGridTextColumn()
-            {
-                Header = column.ToString().ScreamingSnakeCaseToTitleCase(),
-                Tag = column,
-                Binding = new Binding
-                {
-                    Path = GetBindingPath(column),
-                },
-            };
+            DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
+                x => GetBindingPath((DataGridColumns) x), x => x == (int) DataGridColumns.RESPONSE_TIME,
+                i => ((DataGridColumns) i).ToString());
         }
 
         private ComboBox CreateAiSelectionComboBox()
@@ -191,7 +100,7 @@ public sealed partial class ResponsesPage : Page
             var options = typeof(ArtificialIntelligenceType).EnumNamesToTitleCase();
 
             comboBox.ItemsSource = options;
-            comboBox.SelectionChanged += logic.ComboBoxOnSelectionChanged;
+            comboBox.SelectionChanged += Logic.ComboBoxOnSelectionChanged;
             comboBox.SelectedIndex = (int) ArtificialIntelligenceType.OPEN_AI;
 
             return comboBox;

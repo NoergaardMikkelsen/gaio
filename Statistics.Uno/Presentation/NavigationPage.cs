@@ -1,4 +1,5 @@
 using Statistics.Shared.Extensions;
+using Statistics.Uno.Presentation.ViewModel;
 
 namespace Statistics.Uno.Presentation;
 
@@ -13,43 +14,47 @@ public sealed partial class NavigationPage : Page
 
     public NavigationPage()
     {
+        DataContext = new NavigationViewModel();
+
         var logic = new NavigationPageLogic();
-        var ui = new NavigationPageUi(logic);
+        var ui = new NavigationPageUi(logic, (NavigationViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
+
+        logic.UpdateNavigationFrame();
     }
 
-    private class NavigationPageUi
+    private class NavigationPageUi : BasePageUi<NavigationPageLogic, NavigationViewModel>
     {
         private readonly NavigationPageLogic logic;
 
-        public NavigationPageUi(NavigationPageLogic logic)
+        public NavigationPageUi(NavigationPageLogic logic, NavigationViewModel dataContext) : base(logic, dataContext)
         {
             this.logic = logic;
         }
 
-        internal Grid CreateContentGrid()
+        /// <inheritdoc />
+        protected override void ConfigureGridRowsAndColumns(Grid grid)
         {
-            var grid = new Grid();
-
             const int columnOneWidth = 12;
             const int columnTwoWidth = 100 - columnOneWidth;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
             grid.ColumnDefinitions(new GridLength(columnOneWidth, GridUnitType.Star),
                 new GridLength(columnTwoWidth, GridUnitType.Star));
+
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+        }
 
+        /// <inheritdoc />
+        protected override void AddControlsToGrid(Grid grid)
+        {
             ListView navigationListView = CreateNavigationListView().Grid(row: 0, column: 0);
             Frame navigationFrame = CreateNavigationFrame().Grid(row: 0, column: 1);
 
             grid.Children.Add(navigationListView);
             grid.Children.Add(navigationFrame);
-
-            logic.UpdateNavigationFrame();
-
-            return grid;
         }
 
         private Frame CreateNavigationFrame()
@@ -144,6 +149,9 @@ public sealed partial class NavigationPage : Page
                     navigationFrame!.Navigate(typeof(PromptsPage));
                     break;
                 case Pages.ARTIFICIAL_INTELLIGENCES:
+                    Console.WriteLine($"Navigation to '{nameof(ArtificialIntelligencePage)}'...");
+                    navigationFrame!.Navigate(typeof(ArtificialIntelligencePage));
+                    break;
                 default:
                     Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");
                     navigationFrame!.Navigate(typeof(DefaultPage));

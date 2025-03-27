@@ -64,4 +64,8 @@
         <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Presentation\Core\" />
+    </ItemGroup>
+
 </Project>
