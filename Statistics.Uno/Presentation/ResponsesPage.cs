@@ -18,7 +18,7 @@ public sealed partial class ResponsesPage : Page
     {
         PROMPT_TEXT = 0,
         RESPONSE_TEXT = 1,
-        RESPONSE_TIME = 2,
+        CREATED_AT = 2,
     }
 
     public ResponsesPage()
@@ -72,7 +72,7 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => x == (int) DataGridColumns.RESPONSE_TIME, x => GetBindingPath((DataGridColumns) x));
+                x => x == (int) DataGridColumns.CREATED_AT, x => GetBindingPath((DataGridColumns) x));
         }
 
         private string GetBindingPath(DataGridColumns column)
@@ -81,7 +81,7 @@ public sealed partial class ResponsesPage : Page
             {
                 DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
                 DataGridColumns.RESPONSE_TEXT => $"{nameof(Response.Text)}",
-                DataGridColumns.RESPONSE_TIME => $"{nameof(Response.CreatedDateTime)}",
+                DataGridColumns.CREATED_AT => $"{nameof(Response.CreatedDateTime)}",
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -89,7 +89,7 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => GetBindingPath((DataGridColumns) x), x => x == (int) DataGridColumns.RESPONSE_TIME,
+                x => GetBindingPath((DataGridColumns) x), x => x == (int) DataGridColumns.CREATED_AT,
                 i => ((DataGridColumns) i).ToString());
         }
 

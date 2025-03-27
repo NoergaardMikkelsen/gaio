@@ -19,7 +19,7 @@ public sealed partial class ArtificialIntelligencePage : Page
         NAME = 0,
         KEY = 1,
         AI_TYPE = 2,
-        CREATED_TIME = 3,
+        CREATED_AT = 3,
     }
 
     public ArtificialIntelligencePage()
@@ -72,7 +72,7 @@ public sealed partial class ArtificialIntelligencePage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => x == (int)DataGridColumns.CREATED_TIME, x => GetBindingPath((DataGridColumns)x));
+                x => x == (int)DataGridColumns.CREATED_AT, x => GetBindingPath((DataGridColumns)x));
         }
 
         private string GetBindingPath(DataGridColumns column)
@@ -82,7 +82,7 @@ public sealed partial class ArtificialIntelligencePage : Page
                 DataGridColumns.NAME => nameof(ArtificialIntelligence.Name),
                 DataGridColumns.KEY => nameof(ArtificialIntelligence.Key),
                 DataGridColumns.AI_TYPE => nameof(ArtificialIntelligence.AiType),
-                DataGridColumns.CREATED_TIME => nameof(ArtificialIntelligence.CreatedDateTime),
+                DataGridColumns.CREATED_AT => nameof(ArtificialIntelligence.CreatedDateTime),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -91,7 +91,7 @@ public sealed partial class ArtificialIntelligencePage : Page
         {
             DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
                 x => GetBindingPath((DataGridColumns)x),
-                x => x == (int)DataGridColumns.CREATED_TIME, i => ((DataGridColumns)i).ToString());
+                x => x == (int)DataGridColumns.CREATED_AT, i => ((DataGridColumns)i).ToString());
         }
     }
 

@@ -17,7 +17,7 @@ public sealed partial class PromptsPage : Page
     private enum DataGridColumns
     {
         PROMPT_TEXT = 0,
-        PROMPT_TIME = 1,
+        CREATED_AT = 1,
     }
 
     public PromptsPage()
@@ -70,7 +70,7 @@ public sealed partial class PromptsPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => x == (int)DataGridColumns.PROMPT_TIME, x => GetBindingPath((DataGridColumns)x));
+                x => x == (int)DataGridColumns.CREATED_AT, x => GetBindingPath((DataGridColumns)x));
         }
 
         private string GetBindingPath(DataGridColumns column)
@@ -78,7 +78,7 @@ public sealed partial class PromptsPage : Page
             return column switch
             {
                 DataGridColumns.PROMPT_TEXT => nameof(Prompt.Text),
-                DataGridColumns.PROMPT_TIME => nameof(Prompt.CreatedDateTime),
+                DataGridColumns.CREATED_AT => nameof(Prompt.CreatedDateTime),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -87,7 +87,7 @@ public sealed partial class PromptsPage : Page
         {
             DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
                 x => GetBindingPath((DataGridColumns) x),
-                x => x == (int)DataGridColumns.PROMPT_TIME, i => ((DataGridColumns) i ).ToString());
+                x => x == (int)DataGridColumns.CREATED_AT, i => ((DataGridColumns) i ).ToString());
         }
     }
 
