@@ -17,8 +17,6 @@ public class ResponseListJsonConverter : JsonConverter<List<Response>>
         var responseConverter = (JsonConverter<Response>)options.GetConverter(typeof(Response));
         var responses = new List<Response>();
 
-        Console.WriteLine($"Starting reading of {nameof(List<Response>)} Json");
-
         while (reader.Read())
         {
             if (reader.TokenType == JsonTokenType.EndArray)
