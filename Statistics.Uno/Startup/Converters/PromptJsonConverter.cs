@@ -1,11 +1,19 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 
 namespace Statistics.Uno.Startup.Converters;
 
 public class PromptJsonConverter : JsonConverter<Prompt>
 {
+    private static readonly string Id = nameof(Prompt.Id).ToJsonPropertyCapitalisation();
+    private static readonly string Text = nameof(Prompt.Text).ToJsonPropertyCapitalisation();
+    private static readonly string Version = nameof(Prompt.Version).ToJsonPropertyCapitalisation();
+    private static readonly string CreatedDateTime = nameof(Prompt.CreatedDateTime).ToJsonPropertyCapitalisation();
+    private static readonly string UpdatedDateTime = nameof(Prompt.UpdatedDateTime).ToJsonPropertyCapitalisation();
+    private static readonly string Responses = nameof(Prompt.Responses).ToJsonPropertyCapitalisation();
+
     public override Prompt Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -37,26 +45,29 @@ public class PromptJsonConverter : JsonConverter<Prompt>
                         string propertyName = reader.GetString();
                         reader.Read();
 
-                        switch (propertyName)
+                        if (propertyName == Id)
                         {
-                            case "id":
-                                id = reader.GetInt32();
-                                break;
-                            case "text":
-                                text = reader.GetString();
-                                break;
-                            case "version":
-                                version = reader.GetUInt32();
-                                break;
-                            case "createdDateTime":
-                                createdDateTime = reader.GetDateTime();
-                                break;
-                            case "updatedDateTime":
-                                updatedDateTime = reader.GetDateTime();
-                                break;
-                            case "responses":
-                                responses = JsonSerializer.Deserialize<List<Response>>(ref reader, options);
-                                break;
+                            id = reader.GetInt32();
+                        }
+                        else if (propertyName == Text)
+                        {
+                            text = reader.GetString();
+                        }
+                        else if (propertyName == Version)
+                        {
+                            version = reader.GetUInt32();
+                        }
+                        else if (propertyName == CreatedDateTime)
+                        {
+                            createdDateTime = reader.GetDateTime();
+                        }
+                        else if (propertyName == UpdatedDateTime)
+                        {
+                            updatedDateTime = reader.GetDateTime();
+                        }
+                        else if (propertyName == Responses)
+                        {
+                            responses = JsonSerializer.Deserialize<List<Response>>(ref reader, options);
                         }
 
                         break;
@@ -71,12 +82,12 @@ public class PromptJsonConverter : JsonConverter<Prompt>
     {
         writer.WriteStartObject();
 
-        writer.WriteNumber("id", value.Id);
-        writer.WriteString("text", value.Text);
-        writer.WriteNumber("version", value.Version);
-        writer.WriteString("createdDateTime", value.CreatedDateTime);
-        writer.WriteString("updatedDateTime", value.UpdatedDateTime);
-        writer.WritePropertyName("responses");
+        writer.WriteNumber(Id, value.Id);
+        writer.WriteString(Text, value.Text);
+        writer.WriteNumber(Version, value.Version);
+        writer.WriteString(CreatedDateTime, value.CreatedDateTime);
+        writer.WriteString(UpdatedDateTime, value.UpdatedDateTime);
+        writer.WritePropertyName(Responses);
         JsonSerializer.Serialize(writer, value.Responses, options);
 
         writer.WriteEndObject();

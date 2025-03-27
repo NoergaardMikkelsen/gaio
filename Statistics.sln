@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Api", "Statistic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Shared.Services", "Statistics.Shared.Services\Statistics.Shared.Services.csproj", "{FE466FF5-C606-4920-8633-4F36F6906778}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics.Shared.Extensions", "Statistics.Shared.Extensions\Statistics.Shared.Extensions.csproj", "{98E51D44-3271-4286-8285-55B06804FBDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{FE466FF5-C606-4920-8633-4F36F6906778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE466FF5-C606-4920-8633-4F36F6906778}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE466FF5-C606-4920-8633-4F36F6906778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E51D44-3271-4286-8285-55B06804FBDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E51D44-3271-4286-8285-55B06804FBDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E51D44-3271-4286-8285-55B06804FBDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E51D44-3271-4286-8285-55B06804FBDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

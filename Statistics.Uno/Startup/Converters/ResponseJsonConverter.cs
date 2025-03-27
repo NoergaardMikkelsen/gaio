@@ -1,11 +1,22 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 
 namespace Statistics.Uno.Startup.Converters;
 
 public class ResponseJsonConverter : JsonConverter<Response>
 {
+    private static readonly string Id = nameof(Response.Id).ToJsonPropertyCapitalisation();
+    private static readonly string Text = nameof(Response.Text).ToJsonPropertyCapitalisation();
+    private static readonly string AiId = nameof(Response.AiId).ToJsonPropertyCapitalisation();
+    private static readonly string PromptId = nameof(Response.PromptId).ToJsonPropertyCapitalisation();
+    private static readonly string Version = nameof(Response.Version).ToJsonPropertyCapitalisation();
+    private static readonly string CreatedDateTime = nameof(Response.CreatedDateTime).ToJsonPropertyCapitalisation();
+    private static readonly string UpdatedDateTime = nameof(Response.UpdatedDateTime).ToJsonPropertyCapitalisation();
+    private static readonly string Ai = nameof(Response.Ai).ToJsonPropertyCapitalisation();
+    private static readonly string Prompt = nameof(Response.Prompt).ToJsonPropertyCapitalisation();
+
     public override Response Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -42,35 +53,41 @@ public class ResponseJsonConverter : JsonConverter<Response>
                         string propertyName = reader.GetString();
                         reader.Read();
 
-                        switch (propertyName)
+                        if (propertyName == Id)
                         {
-                            case "id":
-                                id = reader.GetInt32();
-                                break;
-                            case "text":
-                                text = reader.GetString();
-                                break;
-                            case "aiId":
-                                aiId = reader.GetInt32();
-                                break;
-                            case "promptId":
-                                promptId = reader.GetInt32();
-                                break;
-                            case "version":
-                                version = reader.GetUInt32();
-                                break;
-                            case "createdDateTime":
-                                createdDateTime = reader.GetDateTime();
-                                break;
-                            case "updatedDateTime":
-                                updatedDateTime = reader.GetDateTime();
-                                break;
-                            case "ai":
-                                ai = JsonSerializer.Deserialize<ArtificialIntelligence>(ref reader, options);
-                                break;
-                            case "prompt":
-                                prompt = JsonSerializer.Deserialize<Prompt>(ref reader, options);
-                                break;
+                            id = reader.GetInt32();
+                        }
+                        else if (propertyName == Text)
+                        {
+                            text = reader.GetString();
+                        }
+                        else if (propertyName == AiId)
+                        {
+                            aiId = reader.GetInt32();
+                        }
+                        else if (propertyName == PromptId)
+                        {
+                            promptId = reader.GetInt32();
+                        }
+                        else if (propertyName == Version)
+                        {
+                            version = reader.GetUInt32();
+                        }
+                        else if (propertyName == CreatedDateTime)
+                        {
+                            createdDateTime = reader.GetDateTime();
+                        }
+                        else if (propertyName == UpdatedDateTime)
+                        {
+                            updatedDateTime = reader.GetDateTime();
+                        }
+                        else if (propertyName == Ai)
+                        {
+                            ai = JsonSerializer.Deserialize<ArtificialIntelligence>(ref reader, options);
+                        }
+                        else if (propertyName == Prompt)
+                        {
+                            prompt = JsonSerializer.Deserialize<Prompt>(ref reader, options);
                         }
 
                         break;
@@ -85,16 +102,16 @@ public class ResponseJsonConverter : JsonConverter<Response>
     {
         writer.WriteStartObject();
 
-        writer.WriteNumber("id", value.Id);
-        writer.WriteString("text", value.Text);
-        writer.WriteNumber("aiId", value.AiId);
-        writer.WriteNumber("promptId", value.PromptId);
-        writer.WriteNumber("version", value.Version);
-        writer.WriteString("createdDateTime", value.CreatedDateTime);
-        writer.WriteString("updatedDateTime", value.UpdatedDateTime);
-        writer.WritePropertyName("ai");
+        writer.WriteNumber(Id, value.Id);
+        writer.WriteString(Text, value.Text);
+        writer.WriteNumber(AiId, value.AiId);
+        writer.WriteNumber(PromptId, value.PromptId);
+        writer.WriteNumber(Version, value.Version);
+        writer.WriteString(CreatedDateTime, value.CreatedDateTime);
+        writer.WriteString(UpdatedDateTime, value.UpdatedDateTime);
+        writer.WritePropertyName(Ai);
         JsonSerializer.Serialize(writer, value.Ai, options);
-        writer.WritePropertyName("prompt");
+        writer.WritePropertyName(Prompt);
         JsonSerializer.Serialize(writer, value.Prompt, options);
 
         writer.WriteEndObject();
