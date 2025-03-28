@@ -1,16 +1,15 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Enum;
-using Statistics.Uno.Endpoints;
-using Microsoft.UI.Dispatching;
-using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
+using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Factory;
+using Statistics.Uno.Presentation.Pages.Core;
 using Statistics.Uno.Presentation.ViewModel;
 
-namespace Statistics.Uno.Presentation;
+namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class ResponsesPage : Page
 {
@@ -57,7 +56,7 @@ public sealed partial class ResponsesPage : Page
             grid.Children.Add(responsesDataGrid);
         }
 
-        protected override void ConfigureGridRowsAndColumns(Grid grid)
+        protected override void ConfigureGrid(Grid grid)
         {
             const int rowOneHeight = 8;
             const int rowTwoHeight = 100 - rowOneHeight;
@@ -71,12 +70,15 @@ public sealed partial class ResponsesPage : Page
 
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
-            DataGridFactory.SetupDataGridRowTemplate(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => x == (int) DataGridColumns.CREATED_AT, x => GetBindingPath((DataGridColumns) x));
+            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
+                Enum.GetValues<DataGridColumns>().Cast<int>(), x => x == (int) DataGridColumns.CREATED_AT,
+                GetColumnBindingPath));
         }
 
-        private string GetBindingPath(DataGridColumns column)
+        private string GetColumnBindingPath(int columnNumber)
         {
+            var column = (DataGridColumns) columnNumber;
+
             return column switch
             {
                 DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
@@ -88,14 +90,30 @@ public sealed partial class ResponsesPage : Page
 
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
-            DataGridFactory.SetupDataGridColumns(dataGrid, Enum.GetValues<DataGridColumns>().Cast<int>(),
-                x => GetBindingPath((DataGridColumns) x), x => x == (int) DataGridColumns.CREATED_AT,
-                i => ((DataGridColumns) i).ToString());
+            DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,
+                x => x == (int) DataGridColumns.CREATED_AT, i => ((DataGridColumns) i).ToString(), GetColumnStarWidth));
+        }
+
+        private int GetColumnStarWidth(int columnNumber)
+        {
+            var column = (DataGridColumns) columnNumber;
+
+            return column switch
+            {
+                DataGridColumns.PROMPT_TEXT => 100,
+                DataGridColumns.RESPONSE_TEXT => 100,
+                DataGridColumns.CREATED_AT => 35,
+                var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+            };
         }
 
         private ComboBox CreateAiSelectionComboBox()
         {
-            var comboBox = new ComboBox() {Margin = new Thickness(10),};
+            var comboBox = new ComboBox()
+            {
+                Margin = new Thickness(10), BorderBrush = new SolidColorBrush(Colors.White),
+            };
 
             var options = typeof(ArtificialIntelligenceType).EnumNamesToTitleCase();
 

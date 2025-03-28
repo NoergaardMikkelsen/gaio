@@ -17,4 +17,7 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
 
     [Get("/GetAll")]
     Task<ApiResponse<List<TEntity>>> GetAll(CancellationToken ct);
+
+    [Delete("/DeleteById/{id}")]
+    Task<ApiResponse<bool>> DeleteById(CancellationToken ct, int id);
 }

@@ -1,6 +1,7 @@
 using Statistics.Uno.Models;
 using Statistics.Uno.Presentation;
 using Uno.Resizetizer;
+using NavigationPage = Statistics.Uno.Presentation.Pages.NavigationPage;
 
 namespace Statistics.Uno;
 
@@ -13,6 +14,7 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        RequestedTheme = ApplicationTheme.Light;
     }
 
     protected Window? MainWindow { get; private set; }

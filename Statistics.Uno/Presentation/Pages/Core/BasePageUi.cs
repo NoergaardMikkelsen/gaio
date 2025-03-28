@@ -1,4 +1,4 @@
-using CommunityToolkit.WinUI.UI.Controls;
+namespace Statistics.Uno.Presentation.Pages.Core;
 
 public abstract class BasePageUi<TLogic, TViewModel> where TLogic : class where TViewModel : class
 {
@@ -15,14 +15,14 @@ public abstract class BasePageUi<TLogic, TViewModel> where TLogic : class where 
     {
         var grid = new Grid();
 
-        ConfigureGridRowsAndColumns(grid);
+        ConfigureGrid(grid);
         AddControlsToGrid(grid);
 
         return grid;
     }
 
 
-    protected abstract void ConfigureGridRowsAndColumns(Grid grid);
+    protected abstract void ConfigureGrid(Grid grid);
 
     protected abstract void AddControlsToGrid(Grid grid);
 }

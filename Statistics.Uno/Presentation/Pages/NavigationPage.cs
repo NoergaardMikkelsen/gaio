@@ -1,7 +1,8 @@
 using Statistics.Shared.Extensions;
+using Statistics.Uno.Presentation.Pages.Core;
 using Statistics.Uno.Presentation.ViewModel;
 
-namespace Statistics.Uno.Presentation;
+namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class NavigationPage : Page
 {
@@ -34,7 +35,7 @@ public sealed partial class NavigationPage : Page
         }
 
         /// <inheritdoc />
-        protected override void ConfigureGridRowsAndColumns(Grid grid)
+        protected override void ConfigureGrid(Grid grid)
         {
             const int columnOneWidth = 12;
             const int columnTwoWidth = 100 - columnOneWidth;
@@ -59,7 +60,7 @@ public sealed partial class NavigationPage : Page
 
         private Frame CreateNavigationFrame()
         {
-            var frame = new Frame();
+            var frame = new Frame() {Background = new SolidColorBrush(Colors.White),};
 
             logic.RegisterNavigationFrame(frame);
 
@@ -75,8 +76,8 @@ public sealed partial class NavigationPage : Page
                 {
                     Setters =
                     {
-                        new Setter(FrameworkElement.BackgroundProperty, new SolidColorBrush(Colors.Black)),
-                        new Setter(Control.ForegroundProperty, new SolidColorBrush(Colors.White)),
+                        new Setter(BackgroundProperty, new SolidColorBrush(Colors.Black)),
+                        new Setter(ForegroundProperty, new SolidColorBrush(Colors.White)),
                     },
                 },
             };
