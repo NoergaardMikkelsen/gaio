@@ -18,6 +18,6 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
     [Get("/GetAll")]
     Task<ApiResponse<List<TEntity>>> GetAll(CancellationToken ct);
 
-    [Delete("/DeleteById/{id}")]
-    Task<ApiResponse<bool>> DeleteById(CancellationToken ct, int id);
+    [Delete("/DeleteById/id")]
+    Task<ApiResponse<bool>> DeleteById(CancellationToken ct, [Query] int id);
 }

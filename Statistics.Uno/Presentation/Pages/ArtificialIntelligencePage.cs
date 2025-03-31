@@ -31,7 +31,7 @@ public sealed partial class ArtificialIntelligencePage : Page
 
         DataContext = new ArtificialIntelligenceViewModel();
 
-        var logic = new ArtificialIntelligencePageLogic(aiApi, (ArtificialIntelligenceViewModel) DataContext);
+        var logic = new ArtificialIntelligencePageLogic(aiApi, (ArtificialIntelligenceViewModel) DataContext, this);
         var ui = new ArtificialIntelligencePageUi(logic, (ArtificialIntelligenceViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -54,20 +54,35 @@ public sealed partial class ArtificialIntelligencePage : Page
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
                 DataContext, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns,
                 SetupDataGridRowTemplate).Grid(row: 1, column: 0, columnSpan: 5);
+            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
             grid.Children.Add(aiDataGrid);
+            grid.Children.Add(refreshButton);
+        }
+
+        private Button CreateRefreshButton()
+        {
+            var button = new Button()
+            {
+                Content = "Refresh",
+                Margin = new Thickness(5),
+                HorizontalAlignment = HorizontalAlignment.Right,
+            };
+            button.Click += async (_, _) => await Logic.UpdateArtificialIntelligences();
+            return button;
         }
 
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
             const int rowOneHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight;
+            const int rowThreeHeight = 8;
+            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star));
+                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -148,14 +163,12 @@ public sealed partial class ArtificialIntelligencePage : Page
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private ArtificialIntelligenceViewModel DataContext { get; }
-        private readonly DispatcherQueue dispatchQueue;
 
         public ArtificialIntelligencePageLogic(
-            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext)
+            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext, Page page) : base(page)
         {
             this.aiApi = aiApi;
             DataContext = dataContext;
-            dispatchQueue = DispatcherQueue.GetForCurrentThread();
         }
 
         internal async Task UpdateArtificialIntelligences()
@@ -183,30 +196,24 @@ public sealed partial class ArtificialIntelligencePage : Page
             Console.WriteLine("Edit button clicked.");
         }
 
-        public void DeleteButtonOnClick(object sender, RoutedEventArgs e)
+        public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Delete button clicked.");
-            dispatchQueue.EnqueueAsync(async () =>
+            ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
+                "Are you sure you want to delete this item?");
+
+            if (result != ContentDialogResult.Primary)
             {
-                Console.WriteLine("Delete button clicked in dispatcher queue.");
-                ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
-                    "Are you sure you want to delete this item?");
+                return;
+            }
 
-                if (result != ContentDialogResult.Primary)
-                {
-                    Console.WriteLine("User did not confirm deletion.");
-                    return;
-                }
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-                Button button = sender as Button ??
-                                throw new NullReferenceException(
-                                    $"Expected '{nameof(sender)}' to not be null, but it was.");
+            var aiId = (int) button.Tag;
 
-                var aiId = (int) button.Tag;
-                Console.WriteLine($"Deleting prompt with id '{aiId}'...");
-
-                await aiApi.DeleteById(CancellationToken.None, aiId);
-            });
+            await aiApi.DeleteById(CancellationToken.None, aiId);
+            await UpdateArtificialIntelligences();
         }
     }
 }

@@ -28,7 +28,7 @@ public sealed partial class PromptsPage : Page
 
         DataContext = new PromptsViewModel();
 
-        var logic = new PromptsPageLogic(promptApi, (PromptsViewModel) DataContext);
+        var logic = new PromptsPageLogic(promptApi, (PromptsViewModel) DataContext, this);
         var ui = new PromptsPageUi(logic, (PromptsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -48,20 +48,36 @@ public sealed partial class PromptsPage : Page
             DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
                     DataContext, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
+            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
             grid.Children.Add(promptsDataGrid);
+            grid.Children.Add(refreshButton);
+        }
+
+        private Button CreateRefreshButton()
+        {
+            var button = new Button()
+            {
+                Content = "Refresh",
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right,
+            };
+
+            button.Click += async (_, _) => await Logic.UpdatePrompts();
+            return button;
         }
 
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
             const int rowOneHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight;
+            const int rowThreeHeight = 8;
+            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star));
+                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -140,7 +156,7 @@ public sealed partial class PromptsPage : Page
         private PromptsViewModel DataContext { get; }
         private readonly DispatcherQueue dispatchQueue;
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext)
+        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page) : base(page)
         {
             DataContext = dataContext;
             this.promptApi = promptApi;
@@ -172,30 +188,24 @@ public sealed partial class PromptsPage : Page
             Console.WriteLine("Edit button clicked.");
         }
 
-        public void DeleteButtonOnClick(object sender, RoutedEventArgs e)
+        public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Delete button clicked.");
-            dispatchQueue.EnqueueAsync(async () =>
+            ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
+                "Are you sure you want to delete this item?");
+
+            if (result != ContentDialogResult.Primary)
             {
-                Console.WriteLine("Delete button clicked in dispatcher queue.");
-                ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
-                    "Are you sure you want to delete this item?");
+                return;
+            }
 
-                if (result != ContentDialogResult.Primary)
-                {
-                    Console.WriteLine("User did not confirm deletion.");
-                    return;
-                }
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-                Button button = sender as Button ??
-                                throw new NullReferenceException(
-                                    $"Expected '{nameof(sender)}' to not be null, but it was.");
+            var promptId = (int) button.Tag;
 
-                var promptId = (int) button.Tag;
-                Console.WriteLine($"Deleting prompt with id '{promptId}'...");
-
-                await promptApi.DeleteById(CancellationToken.None, promptId);
-            });
+            await promptApi.DeleteById(CancellationToken.None, promptId);
+            await UpdatePrompts();
         }
     }
 }

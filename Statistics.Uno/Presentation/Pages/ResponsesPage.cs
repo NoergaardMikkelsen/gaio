@@ -47,24 +47,39 @@ public sealed partial class ResponsesPage : Page
 
         protected override void AddControlsToGrid(Grid grid)
         {
+            ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
             DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
                     DataContext, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
-            ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
+            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
             grid.Children.Add(aiSelectionComboBox);
             grid.Children.Add(responsesDataGrid);
+            grid.Children.Add(refreshButton);
+        }
+
+        private Button CreateRefreshButton()
+        {
+            var button = new Button()
+            {
+                Content = "Refresh",
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right,
+            };
+            button.Click += async (_, _) => await Logic.UpdateResponses();
+            return button;
         }
 
         protected override void ConfigureGrid(Grid grid)
         {
             const int rowOneHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight;
+            const int rowThreeHeight = 8;
+            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star));
+                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
