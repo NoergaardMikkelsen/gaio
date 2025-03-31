@@ -1,6 +1,7 @@
 using Statistics.Shared.Extensions;
-using Statistics.Uno.Presentation.Pages.Core;
-using Statistics.Uno.Presentation.ViewModel;
+using Statistics.Uno.Presentation.Core;
+using Statistics.Uno.Presentation.Pages.ViewModel;
+using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -25,7 +26,7 @@ public sealed partial class NavigationPage : Page
         logic.UpdateNavigationFrame();
     }
 
-    private class NavigationPageUi : BasePageUi<NavigationPageLogic, NavigationViewModel>
+    private class NavigationPageUi : BaseUi<NavigationPageLogic, NavigationViewModel>
     {
         private readonly NavigationPageLogic logic;
 

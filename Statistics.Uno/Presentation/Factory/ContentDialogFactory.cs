@@ -1,0 +1,49 @@
+using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.ContentDialogs;
+
+namespace Statistics.Uno.Presentation.Factory;
+
+public static class ContentDialogFactory
+{
+    public static async Task<ContentDialogResult> ShowConfirmationDialog(string title, string content, XamlRoot? root)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = title,
+            Content = content,
+            PrimaryButtonText = "Yes",
+            CloseButtonText = "No",
+            XamlRoot = root,
+        };
+
+        return await dialog.ShowAsync();
+    }
+
+    public static async Task<ContentDialogResult> ShowBuildPromptDialogFromNew(
+        IPromptEndpoint promptEndpoint, XamlRoot? root)
+    {
+        var dialog = new BuildPromptDialog(promptEndpoint)
+        {
+            Title = "New Prompt",
+            XamlRoot = root,
+            PrimaryButtonText = "Create",
+            CloseButtonText = "Cancel",
+        };
+
+        return await dialog.ShowAsync();
+    }
+
+    public static async Task<ContentDialogResult> ShowBuildPromptDialogFromExisting(
+        IPromptEndpoint promptEndpoint, IPrompt prompt, XamlRoot? root)
+    {
+        var dialog = new BuildPromptDialog(promptEndpoint, prompt)
+        {
+            Title = "Edit Prompt",
+            XamlRoot = root,
+            PrimaryButtonText = "Save",
+            CloseButtonText = "Discard",
+        };
+        return await dialog.ShowAsync();
+    }
+}

@@ -1,6 +1,5 @@
-namespace Statistics.Uno.Presentation.ViewModel;
+namespace Statistics.Uno.Presentation.Pages.ViewModel;
 
 public partial class NavigationViewModel : ObservableObject
 {
-    
 }

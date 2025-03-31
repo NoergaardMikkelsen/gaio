@@ -4,8 +4,9 @@ using Microsoft.UI.Dispatching;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Factory;
-using Statistics.Uno.Presentation.Pages.Core;
+using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -36,7 +37,7 @@ public sealed partial class PromptsPage : Page
         logic.UpdatePrompts();
     }
 
-    private class PromptsPageUi : BasePageUi<PromptsPageLogic, PromptsViewModel>
+    private class PromptsPageUi : BaseUi<PromptsPageLogic, PromptsViewModel>
     {
         public PromptsPageUi(PromptsPageLogic logic, PromptsViewModel dataContext) : base(logic, dataContext)
         {
@@ -150,16 +151,18 @@ public sealed partial class PromptsPage : Page
         }
     }
 
-    private class PromptsPageLogic : BasePageLogic
+    private class PromptsPageLogic
     {
         private readonly IPromptEndpoint promptApi;
+        private readonly Page page;
         private PromptsViewModel DataContext { get; }
         private readonly DispatcherQueue dispatchQueue;
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page) : base(page)
+        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page)
         {
             DataContext = dataContext;
             this.promptApi = promptApi;
+            this.page = page;
             dispatchQueue = DispatcherQueue.GetForCurrentThread();
         }
 
@@ -190,8 +193,8 @@ public sealed partial class PromptsPage : Page
 
         public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
-                "Are you sure you want to delete this item?");
+            ContentDialogResult result = await ContentDialogFactory.ShowConfirmationDialog("Delete Confirmation",
+                "Are you sure you want to delete this item?", page.XamlRoot);
 
             if (result != ContentDialogResult.Primary)
             {

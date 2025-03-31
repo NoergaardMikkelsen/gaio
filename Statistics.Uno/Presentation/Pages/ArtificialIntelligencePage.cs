@@ -3,9 +3,10 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Factory;
-using Statistics.Uno.Presentation.Pages.Core;
-using Statistics.Uno.Presentation.ViewModel;
+using Statistics.Uno.Presentation.Pages.ViewModel;
+using ArtificialIntelligenceViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ArtificialIntelligenceViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -40,7 +41,7 @@ public sealed partial class ArtificialIntelligencePage : Page
     }
 
     private class
-        ArtificialIntelligencePageUi : BasePageUi<ArtificialIntelligencePageLogic, ArtificialIntelligenceViewModel>
+        ArtificialIntelligencePageUi : BaseUi<ArtificialIntelligencePageLogic, ArtificialIntelligenceViewModel>
     {
         public ArtificialIntelligencePageUi(
             ArtificialIntelligencePageLogic logic, ArtificialIntelligenceViewModel dataContext) : base(logic,
@@ -159,15 +160,17 @@ public sealed partial class ArtificialIntelligencePage : Page
         }
     }
 
-    private class ArtificialIntelligencePageLogic : BasePageLogic
+    private class ArtificialIntelligencePageLogic
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
+        private readonly Page page;
         private ArtificialIntelligenceViewModel DataContext { get; }
 
         public ArtificialIntelligencePageLogic(
-            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext, Page page) : base(page)
+            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext, Page page)
         {
             this.aiApi = aiApi;
+            this.page = page;
             DataContext = dataContext;
         }
 
@@ -198,8 +201,8 @@ public sealed partial class ArtificialIntelligencePage : Page
 
         public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ContentDialogResult result = await ShowConfirmationDialog("Delete Confirmation",
-                "Are you sure you want to delete this item?");
+            ContentDialogResult result = await ContentDialogFactory.ShowConfirmationDialog("Delete Confirmation",
+                "Are you sure you want to delete this item?", page.XamlRoot);
 
             if (result != ContentDialogResult.Primary)
             {

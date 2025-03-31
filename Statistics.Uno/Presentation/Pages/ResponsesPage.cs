@@ -5,9 +5,10 @@ using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Factory;
-using Statistics.Uno.Presentation.Pages.Core;
-using Statistics.Uno.Presentation.ViewModel;
+using Statistics.Uno.Presentation.Pages.ViewModel;
+using ResponsesViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ResponsesViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -39,7 +40,7 @@ public sealed partial class ResponsesPage : Page
         logic.UpdateResponses();
     }
 
-    private class ResponsesPageUi : BasePageUi<ResponsesPageLogic, ResponsesViewModel>
+    private class ResponsesPageUi : BaseUi<ResponsesPageLogic, ResponsesViewModel>
     {
         public ResponsesPageUi(ResponsesPageLogic logic, ResponsesViewModel dataContext) : base(logic, dataContext)
         {
