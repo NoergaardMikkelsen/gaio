@@ -28,7 +28,7 @@ body:
 
         The MakeShiny API works even if the button is already visible.
     validations:
-      required: true
+      required: false
   - type: textarea
     id: use-case
     attributes:
