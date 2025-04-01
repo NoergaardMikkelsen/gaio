@@ -69,6 +69,7 @@ public class ApiStartup : ApiModularStartup
     /// <inheritdoc />
     public override void ConfigureApplication(IApplicationBuilder app)
     {
+        app.UseMiddleware<RequestLoggingMiddleware>();
         base.ConfigureApplication(app);
     }
 
