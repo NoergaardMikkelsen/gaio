@@ -1,7 +1,9 @@
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Statistics.Uno.Endpoints;
 using Refit;
-using Statistics.Uno.Startup.Converters;
+using Statistics.Shared.Core.Newtonsoft;
+using Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 namespace Statistics.Uno.Startup;
 
@@ -10,14 +12,14 @@ public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoin
     private readonly string baseAddress;
     private static readonly RefitSettings settings = new RefitSettings()
     {
-        ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions()
+        ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings()
         {
+            ContractResolver = new NoNavigationalPropertiesContractResolver(),
             Converters =
             {
                 new ArtificialIntelligenceJsonConverter(),
                 new PromptJsonConverter(),
                 new ResponseJsonConverter(),
-                new ResponseListJsonConverter(),
             },
         }),
     };

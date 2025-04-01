@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using IApplicationBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Newtonsoft.Json.Converters;
+using Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 namespace Statistics.Api.Startup;
 
@@ -15,7 +16,13 @@ public class ApiStartupModule : IApiStartupModule
 
         services.AddControllers().AddNewtonsoftJson(options =>
         {
-            options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            options.SerializerSettings.Converters.AddRange(
+            [
+                new StringEnumConverter(),
+                new ArtificialIntelligenceJsonConverter(),
+                new PromptJsonConverter(),
+                new ResponseJsonConverter(),
+            ]);
             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });
         services.AddCors();
