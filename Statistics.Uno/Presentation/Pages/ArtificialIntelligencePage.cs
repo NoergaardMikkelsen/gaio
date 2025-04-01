@@ -53,7 +53,7 @@ public sealed partial class ArtificialIntelligencePage : Page
         protected override void AddControlsToGrid(Grid grid)
         {
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
-                DataContext, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns,
+                ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns,
                 SetupDataGridRowTemplate).Grid(row: 1, column: 0, columnSpan: 5);
             Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 

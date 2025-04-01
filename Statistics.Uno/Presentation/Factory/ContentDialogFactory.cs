@@ -1,4 +1,5 @@
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.ContentDialogs;
 
@@ -27,8 +28,8 @@ public static class ContentDialogFactory
         {
             Title = "New Prompt",
             XamlRoot = root,
-            PrimaryButtonText = "Create",
-            CloseButtonText = "Cancel",
+            PrimaryButtonText = "Create New",
+            CloseButtonText = "Cancel Creation",
         };
 
         return await dialog.ShowAsync();
@@ -41,8 +42,8 @@ public static class ContentDialogFactory
         {
             Title = "Edit Prompt",
             XamlRoot = root,
-            PrimaryButtonText = "Save",
-            CloseButtonText = "Discard",
+            PrimaryButtonText = "Save Changes",
+            CloseButtonText = "Discard Changes",
         };
         return await dialog.ShowAsync();
     }

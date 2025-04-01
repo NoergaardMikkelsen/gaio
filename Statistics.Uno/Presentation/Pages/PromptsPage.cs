@@ -46,13 +46,37 @@ public sealed partial class PromptsPage : Page
         /// <inheritdoc />
         protected override void AddControlsToGrid(Grid grid)
         {
+            StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
-                    DataContext, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
+                    ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
+            grid.Children.Add(buttonPanel);
             grid.Children.Add(promptsDataGrid);
             grid.Children.Add(refreshButton);
+        }
+
+        private StackPanel CreateButtonsPanel()
+        {
+            var stackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(10),
+            };
+
+            var addButton = new Button()
+            {
+                Content = "Add",
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+
+            addButton.Click += Logic.AddButtonOnClick;
+            stackPanel.Children.Add(addButton);
+
+            return stackPanel;
         }
 
         private Button CreateRefreshButton()
@@ -155,12 +179,12 @@ public sealed partial class PromptsPage : Page
     {
         private readonly IPromptEndpoint promptApi;
         private readonly Page page;
-        private PromptsViewModel DataContext { get; }
+        private PromptsViewModel ViewModel { get; }
         private readonly DispatcherQueue dispatchQueue;
 
         public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page)
         {
-            DataContext = dataContext;
+            ViewModel = dataContext;
             this.promptApi = promptApi;
             this.page = page;
             dispatchQueue = DispatcherQueue.GetForCurrentThread();
@@ -183,12 +207,23 @@ public sealed partial class PromptsPage : Page
                 return;
             }
 
-            DataContext.Prompts = allPrompts;
+            ViewModel.Prompts = allPrompts;
         }
 
-        public void EditButtonOnClick(object sender, RoutedEventArgs e)
+        public async void EditButtonOnClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Edit button clicked.");
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
+
+            var promptId = (int) button.Tag;
+
+            var prompt = ViewModel.Prompts.FirstOrDefault(x => x.Id == promptId) ??
+                         throw new NullReferenceException(
+                             $"Expected to find a prompt with id '{promptId}', but it was not found.");
+
+            await ContentDialogFactory.ShowBuildPromptDialogFromExisting(promptApi, prompt, page.XamlRoot);
+            await UpdatePrompts();
         }
 
         public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
@@ -208,6 +243,12 @@ public sealed partial class PromptsPage : Page
             var promptId = (int) button.Tag;
 
             await promptApi.DeleteById(CancellationToken.None, promptId);
+            await UpdatePrompts();
+        }
+
+        public async void AddButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            await ContentDialogFactory.ShowBuildPromptDialogFromNew(promptApi, page.XamlRoot);
             await UpdatePrompts();
         }
     }

@@ -9,6 +9,9 @@ namespace Statistics.Uno.Endpoints;
 public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TEntity : class, IEntity
     where TSearchable : class, ISearchable
 {
+    [Get("/GetById/id")]
+    Task<ApiResponse<TEntity>> GetById(CancellationToken ct, [Query] int id);
+
     [Post("/GetAllByQuery")]
     Task<ApiResponse<TEntity>> GetAllByQuery(CancellationToken ct, [Body] TSearchable searchable);
 
@@ -20,4 +23,10 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
 
     [Delete("/DeleteById/id")]
     Task<ApiResponse<bool>> DeleteById(CancellationToken ct, [Query] int id);
+
+    [Post("/AddSingle")]
+    Task<ApiResponse<bool>> AddSingle(CancellationToken ct, [Body] TEntity entity);
+
+    [Put("/UpdateSingle")]
+    Task<ApiResponse<bool>> UpdateSingle(CancellationToken ct, [Body] TEntity entity);
 }

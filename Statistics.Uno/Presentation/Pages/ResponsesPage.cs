@@ -8,7 +8,6 @@ using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
-using ResponsesViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ResponsesViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -50,7 +49,7 @@ public sealed partial class ResponsesPage : Page
         {
             ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
             DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
-                    DataContext, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
+                    ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
@@ -145,13 +144,13 @@ public sealed partial class ResponsesPage : Page
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private ArtificialIntelligenceType comboBoxSelection;
-        private ResponsesViewModel DataContext { get; }
+        private ResponsesViewModel ViewModel { get; }
 
         public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, ResponsesViewModel dataContext)
         {
             this.aiApi = aiApi;
-            DataContext = dataContext;
-            DataContext.Responses = new List<IResponse>();
+            ViewModel = dataContext;
+            ViewModel.Responses = new List<IResponse>();
         }
 
         public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -179,7 +178,7 @@ public sealed partial class ResponsesPage : Page
                 return;
             }
 
-            DataContext.Responses = selectedAiEntity.Responses.ToList();
+            ViewModel.Responses = selectedAiEntity.Responses.ToList();
         }
     }
 }

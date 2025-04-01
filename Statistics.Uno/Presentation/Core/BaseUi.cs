@@ -3,12 +3,12 @@ namespace Statistics.Uno.Presentation.Core;
 public abstract class BaseUi<TLogic, TViewModel> where TLogic : class where TViewModel : class
 {
     protected TLogic Logic { get; }
-    protected TViewModel DataContext { get; }
+    protected TViewModel ViewModel { get; }
 
-    protected BaseUi(TLogic logic, TViewModel dataContext)
+    protected BaseUi(TLogic logic, TViewModel viewModel)
     {
         Logic = logic;
-        DataContext = dataContext;
+        ViewModel = viewModel;
     }
 
     public Grid CreateContentGrid()

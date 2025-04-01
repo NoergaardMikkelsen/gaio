@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
+using Statistics.Uno.Presentation.Core.Converters;
 
 namespace Statistics.Uno.Presentation.Factory;
 
@@ -51,8 +52,6 @@ public class SetupRowArguments
 
 public static class DataGridFactory
 {
-    private const string DATE_FORMATTER = "{0:dd/MM/yyyy HH:mm:ss}";
-
     public static DataGrid CreateDataGrid<TViewModel>(
         TViewModel dataContext, string itemsSourcePath, Action<DataGrid> setupColumns,
         Action<DataGrid> setupRowTemplate)
@@ -91,8 +90,7 @@ public static class DataGridFactory
         var binding = new Binding
         {
             Path = bindingPath,
-            Converter = new StringFormatConverter(),
-            ConverterParameter = DATE_FORMATTER,
+            Converter = new UtcDateTimeToLocalStringConverter(),
         };
 
         textBlock.SetBinding(TextBlock.TextProperty, binding);
@@ -135,8 +133,7 @@ public static class DataGridFactory
             var binding = new Binding {Path = bindingPath,};
             if (setupRowArguments.ShouldApplyFormatter(x))
             {
-                binding.Converter = new StringFormatConverter();
-                binding.ConverterParameter = DATE_FORMATTER;
+                binding.Converter = new UtcDateTimeToLocalStringConverter();
             }
 
             block.SetBinding(TextBlock.TextProperty, binding);
