@@ -13,24 +13,23 @@ public partial class BuildKeywordViewModel : ObservableObject
         CreatedDateTime = keyword.CreatedDateTime;
         UpdatedDateTime = keyword.UpdatedDateTime;
         UseRegex = keyword.UseRegex;
+        StartSearch = keyword.StartSearch;
+        EndSearch = keyword.EndSearch;
     }
 
-    [ObservableProperty]
-    private int id;
+    [ObservableProperty] private int id;
 
-    [ObservableProperty]
-    private string text;
+    [ObservableProperty] private string text;
 
-    [ObservableProperty]
-    private uint version;
+    [ObservableProperty] private uint version;
 
-    [ObservableProperty]
-    private DateTime createdDateTime;
+    [ObservableProperty] private DateTime createdDateTime;
 
-    [ObservableProperty]
-    private DateTime updatedDateTime;
+    [ObservableProperty] private DateTime updatedDateTime;
 
-    [ObservableProperty]
-    private bool useRegex;
+    [ObservableProperty] private bool useRegex;
+
+    [ObservableProperty] private DateTime? startSearch;
+
+    [ObservableProperty] private DateTime? endSearch;
 }
-

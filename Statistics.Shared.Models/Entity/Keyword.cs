@@ -21,4 +21,10 @@ public class Keyword : IKeyword
 
     /// <inheritdoc />
     public bool UseRegex { get; set; }
+
+    /// <inheritdoc />
+    public DateTime? StartSearch { get; set; }
+
+    /// <inheritdoc />
+    public DateTime? EndSearch { get; set; }
 }

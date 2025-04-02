@@ -16,8 +16,8 @@ public class BuildKeywordDialog : ContentDialog
 
         DataContext = new BuildKeywordViewModel(keyword);
 
-        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel) DataContext, keywordEndpoint);
-        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel) DataContext, this);
+        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel)DataContext, keywordEndpoint);
+        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel)DataContext, this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
@@ -38,7 +38,7 @@ public class BuildKeywordDialog : ContentDialog
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            grid.RowDefinitions(Enumerable.Repeat(new GridLength(rowHeight, GridUnitType.Star), 6).ToArray());
+            grid.RowDefinitions(Enumerable.Repeat(new GridLength(rowHeight, GridUnitType.Star), 8).ToArray());
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 2).ToArray());
         }
 
@@ -50,12 +50,16 @@ public class BuildKeywordDialog : ContentDialog
             AddLabelAndTextBox(grid, "Text:", nameof(BuildKeywordViewModel.Text), 0,
                 placeholderText: "Enter keyword text here...");
             AddLabelAndCheckBox(grid, "Use Regex:", nameof(BuildKeywordViewModel.UseRegex), 1);
-            AddLabelAndTextBox(grid, "Id:", nameof(BuildKeywordViewModel.Id), 2, false);
-            AddLabelAndTextBox(grid, "Created At:", nameof(BuildKeywordViewModel.CreatedDateTime), 3, false,
+            AddLabelAndTextBox(grid, "Start Search:", nameof(BuildKeywordViewModel.StartSearch), 2, true,
+                dateTimeConverter, "dd/MM/yyyy HH:mm (e.g., 25/12/2023 14:30)");
+            AddLabelAndTextBox(grid, "End Search:", nameof(BuildKeywordViewModel.EndSearch), 3, true, dateTimeConverter,
+                "dd/MM/yyyy HH:mm (e.g., 25/12/2023 14:30)");
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildKeywordViewModel.Id), 4, false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildKeywordViewModel.CreatedDateTime), 5, false,
                 dateTimeConverter);
-            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildKeywordViewModel.UpdatedDateTime), 4, false,
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildKeywordViewModel.UpdatedDateTime), 6, false,
                 dateTimeConverter);
-            AddLabelAndTextBox(grid, "Version:", nameof(BuildKeywordViewModel.Version), 5, false);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildKeywordViewModel.Version), 7, false);
         }
     }
 
@@ -63,7 +67,7 @@ public class BuildKeywordDialog : ContentDialog
     {
         public BuildKeywordDialogLogic(
             IKeyword keyword, BuildKeywordViewModel viewModel, IKeywordEndpoint keywordEndpoint) : base(
-            (Keyword) keyword, viewModel, keywordEndpoint)
+            (Keyword)keyword, viewModel, keywordEndpoint)
         {
         }
 
@@ -71,11 +75,15 @@ public class BuildKeywordDialog : ContentDialog
         {
             entity.Text = viewModel.Text;
             entity.UseRegex = viewModel.UseRegex;
+            entity.StartSearch = viewModel.StartSearch;
+            entity.EndSearch = viewModel.EndSearch;
         }
 
         protected override bool HasChanges()
         {
-            return entity.Text != viewModel.Text || entity.UseRegex != viewModel.UseRegex;
+            return entity.Text != viewModel.Text || entity.UseRegex != viewModel.UseRegex ||
+                   entity.StartSearch != viewModel.StartSearch || entity.EndSearch != viewModel.EndSearch;
         }
     }
 }
+

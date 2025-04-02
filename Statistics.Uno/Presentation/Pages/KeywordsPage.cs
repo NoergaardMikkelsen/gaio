@@ -17,14 +17,16 @@ public sealed partial class KeywordsPage : Page
     {
         KEYWORD_TEXT = 0,
         USE_REGEX = 1,
-        CREATED_AT = 2,
-        LAST_UPDATED_AT = 3,
-        ACTIONS = 4,
+        START_SEARCH = 2,
+        END_SEARCH = 3,
+        CREATED_AT = 4,
+        LAST_UPDATED_AT = 5,
+        ACTIONS = 6,
     }
 
     public KeywordsPage()
     {
-        var app = (App) Application.Current;
+        var app = (App)Application.Current;
 
         IKeywordEndpoint keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
                                       throw new NullReferenceException(
@@ -32,8 +34,8 @@ public sealed partial class KeywordsPage : Page
 
         DataContext = new KeywordsViewModel();
 
-        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel) DataContext, this);
-        var ui = new KeywordsPageUi(logic, (KeywordsViewModel) DataContext);
+        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel)DataContext, this);
+        var ui = new KeywordsPageUi(logic, (KeywordsViewModel)DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
@@ -118,13 +120,15 @@ public sealed partial class KeywordsPage : Page
 
         private string GetColumnBindingPath(int columnNumber)
         {
-            var column = (DataGridColumns) columnNumber;
+            var column = (DataGridColumns)columnNumber;
 
             return column switch
             {
                 DataGridColumns.KEYWORD_TEXT => nameof(Keyword.Text),
                 DataGridColumns.CREATED_AT => nameof(Keyword.CreatedDateTime),
                 DataGridColumns.LAST_UPDATED_AT => nameof(Keyword.UpdatedDateTime),
+                DataGridColumns.START_SEARCH => nameof(Keyword.StartSearch),
+                DataGridColumns.END_SEARCH => nameof(Keyword.EndSearch),
                 DataGridColumns.USE_REGEX => nameof(Keyword.UseRegex),
                 DataGridColumns.ACTIONS => nameof(Keyword.Id),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
@@ -133,12 +137,14 @@ public sealed partial class KeywordsPage : Page
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns) columnNumber;
+            var column = (DataGridColumns)columnNumber;
 
             return column switch
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
+                DataGridColumns.START_SEARCH => new UtcDateTimeToLocalStringConverter(),
+                DataGridColumns.END_SEARCH => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.USE_REGEX => new BooleanToYesNoConverter(),
                 var _ => null,
             };
@@ -153,18 +159,20 @@ public sealed partial class KeywordsPage : Page
 
         private string GetEnumAsString(int columnNumber)
         {
-            return ((DataGridColumns) columnNumber).ToString();
+            return ((DataGridColumns)columnNumber).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
         {
-            var column = (DataGridColumns) columnNumber;
+            var column = (DataGridColumns)columnNumber;
 
             return column switch
             {
                 DataGridColumns.KEYWORD_TEXT => 100,
                 DataGridColumns.CREATED_AT => 25,
                 DataGridColumns.LAST_UPDATED_AT => 25,
+                DataGridColumns.START_SEARCH => 25,
+                DataGridColumns.END_SEARCH => 25,
                 DataGridColumns.USE_REGEX => 15,
                 DataGridColumns.ACTIONS => 25,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
@@ -173,7 +181,7 @@ public sealed partial class KeywordsPage : Page
 
         private FrameworkElement BuildActionsElement(int columnEnumAsInt)
         {
-            var stackPanel = new StackPanel() {Orientation = Orientation.Horizontal,};
+            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal, };
 
             var editButton = new Button()
             {
@@ -238,7 +246,7 @@ public sealed partial class KeywordsPage : Page
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int) button.Tag;
+            var keywordId = (int)button.Tag;
 
             IKeyword keyword = ViewModel.Keywords.FirstOrDefault(x => x.Id == keywordId) ??
                                throw new NullReferenceException(
@@ -262,7 +270,7 @@ public sealed partial class KeywordsPage : Page
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int) button.Tag;
+            var keywordId = (int)button.Tag;
 
             await keywordApi.DeleteById(CancellationToken.None, keywordId);
             await UpdateKeywords();
@@ -275,3 +283,5 @@ public sealed partial class KeywordsPage : Page
         }
     }
 }
+
+
