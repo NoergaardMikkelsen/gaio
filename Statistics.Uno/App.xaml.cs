@@ -15,6 +15,8 @@ public partial class App : Application
     {
         InitializeComponent();
         RequestedTheme = ApplicationTheme.Light;
+
+        
     }
 
     protected Window? MainWindow { get; private set; }
