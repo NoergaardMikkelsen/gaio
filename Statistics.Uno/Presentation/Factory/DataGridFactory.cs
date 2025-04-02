@@ -78,6 +78,9 @@ public static class DataGridFactory
         dataGrid.SetBinding(DataGrid.ItemsSourceProperty,
             new Binding() {Path = itemsSourcePath, Source = dataContext,});
 
+        // Debugging statement to check the data context and items source path
+        Console.WriteLine($"Setting ItemsSource: Path={itemsSourcePath}, DataContext={dataContext}");
+
         return dataGrid;
     }
 
@@ -87,7 +90,9 @@ public static class DataGridFactory
         var textBlock = new TextBlock()
         {
             VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
             Margin = new Thickness(10, 0),
+            TextWrapping = TextWrapping.WrapWholeWords,
         };
 
         var binding = new Binding
@@ -100,6 +105,9 @@ public static class DataGridFactory
         }
 
         textBlock.SetBinding(TextBlock.TextProperty, binding);
+
+        // Debugging statement to check the binding path and header
+        Console.WriteLine($"Creating DateTemplateColumn: Header={header}, BindingPath={bindingPath}");
 
         return new DataGridTemplateColumn()
         {
@@ -123,6 +131,9 @@ public static class DataGridFactory
         {
             column.Binding.Converter = converter;
         }
+
+        // Debugging statement to check the binding path and header
+        Console.WriteLine($"Creating DataTextColumn: Header={header}, BindingPath={bindingPath}");
 
         return column;
     }
