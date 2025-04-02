@@ -54,8 +54,6 @@ public class BuildPromptDialog : ContentDialog
                 isEnabled: false, converter: dateTimeConverter);
             AddLabelAndTextBox(grid, "Version:", nameof(BuildPromptViewModel.Version), 4, isEnabled: false);
         }
-
-
     }
 
     private class BuildPromptDialogLogic : BaseDialogLogic<BuildPromptViewModel, Prompt, SearchablePrompt>

@@ -88,12 +88,9 @@ public static class DataGridFactory
             Binding = new Binding
             {
                 Path = bindingPath,
+                Converter = converter
             },
         };
-        if (converter != null)
-        {
-            column.Binding.Converter = converter;
-        }
 
         return column;
     }
@@ -114,12 +111,11 @@ public static class DataGridFactory
                     throw new InvalidOperationException("No binding path or actions element was provided.");
             }
 
-            var binding = new Binding {Path = bindingPath,};
-            IValueConverter? converter = setupRowArguments.GetValueConverter(x);
-            if (converter != null)
+            var binding = new Binding
             {
-                binding.Converter = converter;
-            }
+                Path = bindingPath,
+                Converter = setupRowArguments.GetValueConverter(x)
+            };
 
             block.SetBinding(TextBlock.TextProperty, binding);
             return block;
