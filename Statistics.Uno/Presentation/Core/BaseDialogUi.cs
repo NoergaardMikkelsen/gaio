@@ -17,7 +17,9 @@ namespace Statistics.Uno.Presentation.Core
             this.dialog.PrimaryButtonClick += Logic.PrimaryButtonClicked;
         }
 
-        protected void AddLabelAndTextBox(Grid grid, string labelText, string placeholderText, string bindingPath, int row, bool isEnabled = true)
+        protected void AddLabelAndTextBox(
+            Grid grid, string labelText, string bindingPath, int row, bool isEnabled = true,
+            IValueConverter? converter = null, string placeholderText = "")
         {
             var label = new TextBlock()
             {
@@ -42,12 +44,15 @@ namespace Statistics.Uno.Presentation.Core
             {
                 Path = new PropertyPath(bindingPath),
                 Mode = BindingMode.TwoWay,
+                Converter = converter
             });
             textBox.Grid(row: row, column: 1);
 
             grid.Children.Add(label);
             grid.Children.Add(textBox);
         }
+
+
 
         protected void AddLabelAndComboBox(Grid grid, string labelText, string bindingPath, int row, IEnumerable<string> itemsSource, IValueConverter converter)
         {

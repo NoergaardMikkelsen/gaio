@@ -43,13 +43,19 @@ public class BuildKeywordDialog : ContentDialog
         /// <inheritdoc />
         protected override void AddControlsToGrid(Grid grid)
         {
-            AddLabelAndTextBox(grid, "Text:", "Enter keyword text here...", nameof(BuildKeywordViewModel.Text), 0);
+            var dateTimeConverter = new UtcDateTimeToLocalStringConverter();
+
+            AddLabelAndTextBox(grid, "Text:", nameof(BuildKeywordViewModel.Text), 0,
+                placeholderText: "Enter keyword text here...");
             AddLabelAndCheckBox(grid, "Use Regex:", nameof(BuildKeywordViewModel.UseRegex), 1);
-            AddLabelAndTextBox(grid, "Id:", "", nameof(BuildKeywordViewModel.Id), 2, false);
-            AddLabelAndTextBox(grid, "Created At:", "", nameof(BuildKeywordViewModel.CreatedDateTime), 3, false);
-            AddLabelAndTextBox(grid, "Last Updated At:", "", nameof(BuildKeywordViewModel.UpdatedDateTime), 4, false);
-            AddLabelAndTextBox(grid, "Version:", "", nameof(BuildKeywordViewModel.Version), 5, false);
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildKeywordViewModel.Id), 2, isEnabled: false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildKeywordViewModel.CreatedDateTime), 3, isEnabled: false,
+                converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildKeywordViewModel.UpdatedDateTime), 4,
+                isEnabled: false, converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildKeywordViewModel.Version), 5, isEnabled: false);
         }
+
     }
 
     private class BuildKeywordDialogLogic : BaseDialogLogic<BuildKeywordViewModel, Keyword, SearchableKeyword>

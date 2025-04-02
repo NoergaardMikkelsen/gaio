@@ -50,14 +50,23 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
         /// <inheritdoc />
         protected override void AddControlsToGrid(Grid grid)
         {
-            AddLabelAndTextBox(grid, "Name:", "Enter AI name here...", nameof(BuildArtificialIntelligenceViewModel.Name), 0);
-            AddLabelAndTextBox(grid, "Key:", "Enter AI key here...", nameof(BuildArtificialIntelligenceViewModel.Key), 1);
-            AddLabelAndComboBox(grid, "AI Type:", nameof(BuildArtificialIntelligenceViewModel.AiType), 2, typeof(ArtificialIntelligenceType).EnumNamesToTitleCase().ToList(), new EnumToIntConverter());
-            AddLabelAndTextBox(grid, "Id:", "", nameof(BuildArtificialIntelligenceViewModel.Id), 3, false);
-            AddLabelAndTextBox(grid, "Created At:", "", nameof(BuildArtificialIntelligenceViewModel.CreatedDateTime), 4, false);
-            AddLabelAndTextBox(grid, "Last Updated At:", "", nameof(BuildArtificialIntelligenceViewModel.UpdatedDateTime), 5, false);
-            AddLabelAndTextBox(grid, "Version:", "", nameof(BuildArtificialIntelligenceViewModel.Version), 6, false);
+            var dateTimeConverter = new UtcDateTimeToLocalStringConverter();
+
+            AddLabelAndTextBox(grid, "Name:", nameof(BuildArtificialIntelligenceViewModel.Name), 0,
+                placeholderText: "Enter AI name here...");
+            AddLabelAndTextBox(grid, "Key:", nameof(BuildArtificialIntelligenceViewModel.Key), 1,
+                placeholderText: "Enter AI key here...");
+            AddLabelAndComboBox(grid, "AI Type:", nameof(BuildArtificialIntelligenceViewModel.AiType), 2,
+                typeof(ArtificialIntelligenceType).EnumNamesToTitleCase().ToList(), new EnumToIntConverter());
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildArtificialIntelligenceViewModel.Id), 3, isEnabled: false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildArtificialIntelligenceViewModel.CreatedDateTime), 4,
+                isEnabled: false, converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildArtificialIntelligenceViewModel.UpdatedDateTime),
+                5, isEnabled: false, converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildArtificialIntelligenceViewModel.Version), 6,
+                isEnabled: false);
         }
+
     }
 
     private class BuildArtificialIntelligenceDialogLogic : BaseDialogLogic<BuildArtificialIntelligenceViewModel, ArtificialIntelligence, SearchableArtificialIntelligence>

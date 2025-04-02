@@ -43,12 +43,19 @@ public class BuildPromptDialog : ContentDialog
         /// <inheritdoc />
         protected override void AddControlsToGrid(Grid grid)
         {
-            AddLabelAndTextBox(grid, "Text:", "Enter prompt text here...", nameof(BuildPromptViewModel.Text), 0);
-            AddLabelAndTextBox(grid, "Id:", "", nameof(BuildPromptViewModel.Id), 1, false);
-            AddLabelAndTextBox(grid, "Created At:", "", nameof(BuildPromptViewModel.CreatedDateTime), 2, false);
-            AddLabelAndTextBox(grid, "Last Updated At:", "", nameof(BuildPromptViewModel.UpdatedDateTime), 3, false);
-            AddLabelAndTextBox(grid, "Version:", "", nameof(BuildPromptViewModel.Version), 4, false);
+            var dateTimeConverter = new UtcDateTimeToLocalStringConverter();
+
+            AddLabelAndTextBox(grid, "Text:", nameof(BuildPromptViewModel.Text), 0,
+                placeholderText: "Enter prompt text here...");
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildPromptViewModel.Id), 1, isEnabled: false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildPromptViewModel.CreatedDateTime), 2, isEnabled: false,
+                converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildPromptViewModel.UpdatedDateTime), 3,
+                isEnabled: false, converter: dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildPromptViewModel.Version), 4, isEnabled: false);
         }
+
+
     }
 
     private class BuildPromptDialogLogic : BaseDialogLogic<BuildPromptViewModel, Prompt, SearchablePrompt>
