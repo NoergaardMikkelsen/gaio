@@ -12,6 +12,7 @@ public sealed partial class NavigationPage : Page
         RESPONSES = 0,
         PROMPTS = 1,
         ARTIFICIAL_INTELLIGENCES = 2,
+        KEYWORDS = 3,
     }
 
     public NavigationPage()
@@ -153,6 +154,10 @@ public sealed partial class NavigationPage : Page
                 case Pages.ARTIFICIAL_INTELLIGENCES:
                     Console.WriteLine($"Navigation to '{nameof(ArtificialIntelligencePage)}'...");
                     navigationFrame!.Navigate(typeof(ArtificialIntelligencePage));
+                    break;
+                case Pages.KEYWORDS:
+                    Console.WriteLine($"Navigation to '{nameof(KeywordsPage)}'...");
+                    navigationFrame!.Navigate(typeof(KeywordsPage));
                     break;
                 default:
                     Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");

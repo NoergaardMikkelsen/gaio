@@ -1,7 +1,6 @@
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
-using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
@@ -12,37 +11,38 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class PromptsPage : Page
+public sealed partial class KeywordsPage : Page
 {
     private enum DataGridColumns
     {
-        PROMPT_TEXT = 0,
-        CREATED_AT = 1,
-        LAST_UPDATED_AT = 2,
-        ACTIONS = 3,
+        KEYWORD_TEXT = 0,
+        USE_REGEX = 1,
+        CREATED_AT = 2,
+        LAST_UPDATED_AT = 3,
+        ACTIONS = 4,
     }
 
-    public PromptsPage()
+    public KeywordsPage()
     {
         var app = (App) Application.Current;
 
-        IPromptEndpoint promptApi = app.Startup.ServiceProvider.GetService<IPromptEndpoint>() ??
-                                    throw new NullReferenceException(
-                                        $"Failed to acquire an instance implementing '{nameof(IPromptEndpoint)}'.");
+        IKeywordEndpoint keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
+                                      throw new NullReferenceException(
+                                          $"Failed to acquire an instance implementing '{nameof(IKeywordEndpoint)}'.");
 
-        DataContext = new PromptsViewModel();
+        DataContext = new KeywordsViewModel();
 
-        var logic = new PromptsPageLogic(promptApi, (PromptsViewModel) DataContext, this);
-        var ui = new PromptsPageUi(logic, (PromptsViewModel) DataContext);
+        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel) DataContext, this);
+        var ui = new KeywordsPageUi(logic, (KeywordsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdatePrompts();
+        logic.UpdateKeywords();
     }
 
-    private class PromptsPageUi : BaseUi<PromptsPageLogic, PromptsViewModel>
+    private class KeywordsPageUi : BaseUi<KeywordsPageLogic, KeywordsViewModel>
     {
-        public PromptsPageUi(PromptsPageLogic logic, PromptsViewModel dataContext) : base(logic, dataContext)
+        public KeywordsPageUi(KeywordsPageLogic logic, KeywordsViewModel dataContext) : base(logic, dataContext)
         {
         }
 
@@ -50,13 +50,13 @@ public sealed partial class PromptsPage : Page
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
-            DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
+            DataGrid keywordsDataGrid = DataGridFactory.CreateDataGrid(
+                    ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
 
             grid.Children.Add(buttonPanel);
-            grid.Children.Add(promptsDataGrid);
+            grid.Children.Add(keywordsDataGrid);
             grid.Children.Add(refreshButton);
         }
 
@@ -91,7 +91,7 @@ public sealed partial class PromptsPage : Page
                 HorizontalAlignment = HorizontalAlignment.Right,
             };
 
-            button.Click += async (_, _) => await Logic.UpdatePrompts();
+            button.Click += async (_, _) => await Logic.UpdateKeywords();
             return button;
         }
 
@@ -122,10 +122,11 @@ public sealed partial class PromptsPage : Page
 
             return column switch
             {
-                DataGridColumns.PROMPT_TEXT => nameof(Prompt.Text),
-                DataGridColumns.CREATED_AT => nameof(Prompt.CreatedDateTime),
-                DataGridColumns.LAST_UPDATED_AT => nameof(Prompt.UpdatedDateTime),
-                DataGridColumns.ACTIONS => nameof(Prompt.Id),
+                DataGridColumns.KEYWORD_TEXT => nameof(Keyword.Text),
+                DataGridColumns.CREATED_AT => nameof(Keyword.CreatedDateTime),
+                DataGridColumns.LAST_UPDATED_AT => nameof(Keyword.UpdatedDateTime),
+                DataGridColumns.USE_REGEX => nameof(Keyword.UseRegex),
+                DataGridColumns.ACTIONS => nameof(Keyword.Id),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -138,6 +139,7 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
+                DataGridColumns.USE_REGEX => new BooleanToYesNoConverter(),
                 var _ => null,
             };
         }
@@ -160,9 +162,10 @@ public sealed partial class PromptsPage : Page
 
             return column switch
             {
-                DataGridColumns.PROMPT_TEXT => 100,
+                DataGridColumns.KEYWORD_TEXT => 100,
                 DataGridColumns.CREATED_AT => 25,
                 DataGridColumns.LAST_UPDATED_AT => 25,
+                DataGridColumns.USE_REGEX => 15,
                 DataGridColumns.ACTIONS => 25,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
@@ -179,7 +182,7 @@ public sealed partial class PromptsPage : Page
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             editButton.Click += Logic.EditButtonOnClick;
-            editButton.Tag(x => x.Binding(nameof(Prompt.Id)));
+            editButton.Tag(x => x.Binding(nameof(Keyword.Id)));
             var deleteButton = new Button()
             {
                 Content = "Delete",
@@ -187,7 +190,7 @@ public sealed partial class PromptsPage : Page
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             deleteButton.Click += Logic.DeleteButtonOnClick;
-            deleteButton.Tag(x => x.Binding(nameof(Prompt.Id)));
+            deleteButton.Tag(x => x.Binding(nameof(Keyword.Id)));
 
             stackPanel.Children.Add(editButton);
             stackPanel.Children.Add(deleteButton);
@@ -196,37 +199,37 @@ public sealed partial class PromptsPage : Page
         }
     }
 
-    private class PromptsPageLogic
+    private class KeywordsPageLogic
     {
-        private readonly IPromptEndpoint promptApi;
+        private readonly IKeywordEndpoint keywordApi;
         private readonly Page page;
-        private PromptsViewModel ViewModel { get; }
+        private KeywordsViewModel ViewModel { get; }
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page)
+        public KeywordsPageLogic(IKeywordEndpoint keywordApi, KeywordsViewModel dataContext, Page page)
         {
             ViewModel = dataContext;
-            this.promptApi = promptApi;
+            this.keywordApi = keywordApi;
             this.page = page;
         }
 
-        internal async Task UpdatePrompts()
+        internal async Task UpdateKeywords()
         {
-            var apiResponse = await promptApi.GetAll(CancellationToken.None);
+            var apiResponse = await keywordApi.GetAll(CancellationToken.None);
 
             if (!apiResponse.IsSuccessful)
             {
                 Console.WriteLine($"Request to Api was not successful. Error is as follows: {apiResponse.Error}");
             }
 
-            var allPrompts = apiResponse.Content;
+            var allKeywords = apiResponse.Content;
 
-            if (allPrompts == null)
+            if (allKeywords == null)
             {
-                Console.WriteLine($"Failed to get all prompt entities.");
+                Console.WriteLine($"Failed to get all keyword entities.");
                 return;
             }
 
-            ViewModel.Prompts = allPrompts;
+            ViewModel.Keywords = allKeywords;
         }
 
         public async void EditButtonOnClick(object sender, RoutedEventArgs e)
@@ -235,14 +238,14 @@ public sealed partial class PromptsPage : Page
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var promptId = (int) button.Tag;
+            var keywordId = (int) button.Tag;
 
-            IPrompt prompt = ViewModel.Prompts.FirstOrDefault(x => x.Id == promptId) ??
-                             throw new NullReferenceException(
-                                 $"Expected to find a prompt with id '{promptId}', but it was not found.");
+            IKeyword keyword = ViewModel.Keywords.FirstOrDefault(x => x.Id == keywordId) ??
+                               throw new NullReferenceException(
+                                   $"Expected to find a keyword with id '{keywordId}', but it was not found.");
 
-            await ContentDialogFactory.ShowBuildPromptDialogFromExisting(promptApi, prompt, page.XamlRoot);
-            await UpdatePrompts();
+            await ContentDialogFactory.ShowBuildKeywordDialogFromExisting(keywordApi, keyword, page.XamlRoot);
+            await UpdateKeywords();
         }
 
         public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
@@ -259,16 +262,16 @@ public sealed partial class PromptsPage : Page
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var promptId = (int) button.Tag;
+            var keywordId = (int) button.Tag;
 
-            await promptApi.DeleteById(CancellationToken.None, promptId);
-            await UpdatePrompts();
+            await keywordApi.DeleteById(CancellationToken.None, keywordId);
+            await UpdateKeywords();
         }
 
         public async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
-            await ContentDialogFactory.ShowBuildPromptDialogFromNew(promptApi, page.XamlRoot);
-            await UpdatePrompts();
+            await ContentDialogFactory.ShowBuildKeywordDialogFromNew(keywordApi, page.XamlRoot);
+            await UpdateKeywords();
         }
     }
 }

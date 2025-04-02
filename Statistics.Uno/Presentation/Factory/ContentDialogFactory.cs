@@ -74,4 +74,30 @@ public static class ContentDialogFactory
         };
         return await dialog.ShowAsync();
     }
+
+    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromExisting(IKeywordEndpoint keywordApi, IKeyword keyword, XamlRoot? root)
+    {
+        var dialog = new BuildKeywordDialog(keywordApi, keyword)
+        {
+            Title = "Edit Keyword",
+            XamlRoot = root,
+            PrimaryButtonText = "Save Changes",
+            CloseButtonText = "Discard Changes",
+        };
+
+        return await dialog.ShowAsync();
+    }
+
+    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromNew(IKeywordEndpoint keywordApi, XamlRoot? root)
+    {
+        var dialog = new BuildKeywordDialog(keywordApi)
+        {
+            Title = "New Keyword",
+            XamlRoot = root,
+            PrimaryButtonText = "Create New",
+            CloseButtonText = "Cancel Creation",
+        };
+
+        return await dialog.ShowAsync();
+    }
 }
