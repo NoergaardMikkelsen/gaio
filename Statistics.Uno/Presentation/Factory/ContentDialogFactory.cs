@@ -47,4 +47,31 @@ public static class ContentDialogFactory
         };
         return await dialog.ShowAsync();
     }
+
+    public static async Task<ContentDialogResult> ShowBuildArtificialIntelligenceDialogFromNew(
+        IArtificialIntelligenceEndpoint aiEndpoint, XamlRoot? root)
+    {
+        var dialog = new BuildArtificialIntelligenceDialog(aiEndpoint)
+        {
+            Title = "New Artificial Intelligence",
+            XamlRoot = root,
+            PrimaryButtonText = "Create New",
+            CloseButtonText = "Cancel Creation",
+        };
+
+        return await dialog.ShowAsync();
+    }
+
+    public static async Task<ContentDialogResult> ShowBuildArtificialIntelligenceDialogFromExisting(
+        IArtificialIntelligenceEndpoint aiEndpoint, IArtificialIntelligence ai, XamlRoot? root)
+    {
+        var dialog = new BuildArtificialIntelligenceDialog(aiEndpoint, ai)
+        {
+            Title = "Edit Artificial Intelligence",
+            XamlRoot = root,
+            PrimaryButtonText = "Save Changes",
+            CloseButtonText = "Discard Changes",
+        };
+        return await dialog.ShowAsync();
+    }
 }

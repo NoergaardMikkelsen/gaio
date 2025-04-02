@@ -9,22 +9,23 @@ public class SetupColumnsArguments
 {
     public SetupColumnsArguments(
         DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, string> getBindingPath,
-        Func<int, bool> isTemplateColumn, Func<int, string> getEnumAsString, Func<int, int> getColumnStarWidth,
-        Func<int, FrameworkElement>? buildActionsElement = null)
+        Func<int, bool> isDateColumn, Func<int, string> getEnumAsString, Func<int, int> getColumnStarWidth, Func<int, IValueConverter?> getValueConverter, Func<int, FrameworkElement>? buildActionsElement = null)
     {
         DataGrid = dataGrid;
         EnumNumbers = enumNumbers;
         GetBindingPath = getBindingPath;
-        IsTemplateColumn = isTemplateColumn;
+        IsDateColumn = isDateColumn;
         GetEnumAsString = getEnumAsString;
         GetColumnStarWidth = getColumnStarWidth;
+        GetValueConverter = getValueConverter;
         BuildActionsElement = buildActionsElement;
     }
 
     public DataGrid DataGrid { get; }
     public IEnumerable<int> EnumNumbers { get; }
     public Func<int, string> GetBindingPath { get; }
-    public Func<int, bool> IsTemplateColumn { get; }
+    public Func<int, bool> IsDateColumn { get; }
+    public Func<int, IValueConverter?> GetValueConverter { get; }
     public Func<int, string> GetEnumAsString { get; }
     public Func<int, int> GetColumnStarWidth { get; }
     public Func<int, FrameworkElement>? BuildActionsElement { get; }
@@ -33,19 +34,19 @@ public class SetupColumnsArguments
 public class SetupRowArguments
 {
     public SetupRowArguments(
-        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, bool> shouldApplyFormatter,
+        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, IValueConverter?> getValueConverter,
         Func<int, string> getBindingPath, Func<int, FrameworkElement>? buildActionsElement = null)
     {
         DataGrid = dataGrid;
         EnumNumbers = enumNumbers;
-        ShouldApplyFormatter = shouldApplyFormatter;
+        GetValueConverter = getValueConverter;
         GetBindingPath = getBindingPath;
         BuildActionsElement = buildActionsElement;
     }
 
     public DataGrid DataGrid { get; }
     public IEnumerable<int> EnumNumbers { get; }
-    public Func<int, bool> ShouldApplyFormatter { get; }
+    public Func<int, IValueConverter?> GetValueConverter { get; }
     public Func<int, string> GetBindingPath { get; }
     public Func<int, FrameworkElement>? BuildActionsElement { get; }
 }
@@ -79,7 +80,8 @@ public static class DataGridFactory
         return dataGrid;
     }
 
-    private static DataGridTemplateColumn CreateDataGridDateTemplateColumn(string bindingPath, string header)
+    private static DataGridTemplateColumn CreateDataGridDateTemplateColumn(string bindingPath, string header,
+        IValueConverter? converter)
     {
         var textBlock = new TextBlock()
         {
@@ -90,8 +92,11 @@ public static class DataGridFactory
         var binding = new Binding
         {
             Path = bindingPath,
-            Converter = new UtcDateTimeToLocalStringConverter(),
         };
+        if (converter != null)
+        {
+            binding.Converter = converter;
+        }
 
         textBlock.SetBinding(TextBlock.TextProperty, binding);
 
@@ -102,9 +107,10 @@ public static class DataGridFactory
         };
     }
 
-    private static DataGridTextColumn CreateDataGridTextColumn(string bindingPath, string header)
+    private static DataGridTextColumn CreateDataGridTextColumn(
+        string bindingPath, string header, IValueConverter? converter)
     {
-        return new DataGridTextColumn()
+        var column = new DataGridTextColumn()
         {
             Header = header,
             Binding = new Binding
@@ -112,6 +118,12 @@ public static class DataGridFactory
                 Path = bindingPath,
             },
         };
+        if (converter != null)
+        {
+            column.Binding.Converter = converter;
+        }
+
+        return column;
     }
 
     public static void SetupDataGridRowTemplate(SetupRowArguments setupRowArguments)
@@ -131,9 +143,10 @@ public static class DataGridFactory
             }
 
             var binding = new Binding {Path = bindingPath,};
-            if (setupRowArguments.ShouldApplyFormatter(x))
+            IValueConverter? converter = setupRowArguments.GetValueConverter(x);
+            if (converter != null)
             {
-                binding.Converter = new UtcDateTimeToLocalStringConverter();
+                binding.Converter = converter;
             }
 
             block.SetBinding(TextBlock.TextProperty, binding);
@@ -149,8 +162,9 @@ public static class DataGridFactory
         foreach (int value in setupColumnsArguments.EnumNumbers)
         {
             string titleCaseEnum = setupColumnsArguments.GetEnumAsString(value).ScreamingSnakeCaseToTitleCase();
-            bool isDateColumn = setupColumnsArguments.IsTemplateColumn(value);
+            bool isDateColumn = setupColumnsArguments.IsDateColumn(value);
             string bindingPath = setupColumnsArguments.GetBindingPath(value);
+            var converter = setupColumnsArguments.GetValueConverter(value);
             DataGridColumn column;
 
             if (bindingPath == nameof(ISearchable.Id) && setupColumnsArguments.BuildActionsElement != null)
@@ -161,8 +175,8 @@ public static class DataGridFactory
             else if (bindingPath != string.Empty)
             {
                 column = isDateColumn
-                    ? CreateDataGridDateTemplateColumn(bindingPath, titleCaseEnum)
-                    : CreateDataGridTextColumn(bindingPath, titleCaseEnum);
+                    ? CreateDataGridDateTemplateColumn(bindingPath, titleCaseEnum, converter)
+                    : CreateDataGridTextColumn(bindingPath, titleCaseEnum, converter);
             }
             else
             {

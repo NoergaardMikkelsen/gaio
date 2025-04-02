@@ -31,7 +31,7 @@ public class BuildPromptDialog : ContentDialog
         {
             this.dialog = dialog;
 
-            this.dialog.PrimaryButtonClick += logic.PrimaryButtonClicked;
+            this.dialog.PrimaryButtonClick += Logic.PrimaryButtonClicked;
         }
 
         /// <inheritdoc />

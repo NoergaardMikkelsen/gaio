@@ -6,6 +6,7 @@ using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
+using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -18,6 +19,7 @@ public sealed partial class ResponsesPage : Page
         PROMPT_TEXT = 0,
         RESPONSE_TEXT = 1,
         CREATED_AT = 2,
+        LAST_UPDATED_AT = 3,
     }
 
     public ResponsesPage()
@@ -86,7 +88,7 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), x => x == (int) DataGridColumns.CREATED_AT,
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn,
                 GetColumnBindingPath));
         }
 
@@ -99,6 +101,7 @@ public sealed partial class ResponsesPage : Page
                 DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
                 DataGridColumns.RESPONSE_TEXT => $"{nameof(Response.Text)}",
                 DataGridColumns.CREATED_AT => $"{nameof(Response.CreatedDateTime)}",
+                DataGridColumns.LAST_UPDATED_AT => $"{nameof(Response.UpdatedDateTime)}",
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -106,8 +109,12 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,
-                x => x == (int) DataGridColumns.CREATED_AT, i => ((DataGridColumns) i).ToString(), GetColumnStarWidth));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,IsDateColumn, GetEnumAsString, GetColumnStarWidth, GetValueConverterForColumn));
+        }
+
+        private string GetEnumAsString(int i)
+        {
+            return ((DataGridColumns) i).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
@@ -119,7 +126,32 @@ public sealed partial class ResponsesPage : Page
                 DataGridColumns.PROMPT_TEXT => 100,
                 DataGridColumns.RESPONSE_TEXT => 100,
                 DataGridColumns.CREATED_AT => 35,
+                DataGridColumns.LAST_UPDATED_AT => 35,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+            };
+        }
+
+        private bool IsDateColumn(int columnNumber)
+        {
+            var column = (DataGridColumns)columnNumber;
+
+            return column switch
+            {
+                DataGridColumns.CREATED_AT => true,
+                DataGridColumns.LAST_UPDATED_AT => true,
+                _ => false,
+            };
+        }
+
+        private IValueConverter? GetValueConverterForColumn(int columnNumber)
+        {
+            var column = (DataGridColumns) columnNumber;
+
+            return column switch
+            {
+                DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
+                DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
+                _ => null,
             };
         }
 

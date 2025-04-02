@@ -5,6 +5,7 @@ using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
+using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -16,7 +17,8 @@ public sealed partial class PromptsPage : Page
     {
         PROMPT_TEXT = 0,
         CREATED_AT = 1,
-        ACTIONS = 2,
+        LAST_UPDATED_AT = 2,
+        ACTIONS = 3,
     }
 
     public PromptsPage()
@@ -109,7 +111,7 @@ public sealed partial class PromptsPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), x => x == (int) DataGridColumns.CREATED_AT,
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn,
                 GetColumnBindingPath, BuildActionsElement));
         }
 
@@ -121,17 +123,34 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.PROMPT_TEXT => nameof(Prompt.Text),
                 DataGridColumns.CREATED_AT => nameof(Prompt.CreatedDateTime),
+                DataGridColumns.LAST_UPDATED_AT => nameof(Prompt.UpdatedDateTime),
                 DataGridColumns.ACTIONS => nameof(Prompt.Id),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+            };
+        }
+
+        private IValueConverter? GetValueConverterForColumn(int columnNumber)
+        {
+            var column = (DataGridColumns) columnNumber;
+
+            return column switch
+            {
+                DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
+                DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
+                _ => null,
             };
         }
 
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,
-                x => x == (int) DataGridColumns.CREATED_AT, i => ((DataGridColumns) i).ToString(), GetColumnStarWidth,
-                BuildActionsElement));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,IsDateColumn, GetEnumAsString, GetColumnStarWidth,
+                GetValueConverterForColumn,BuildActionsElement));
+        }
+
+        private string GetEnumAsString(int columnNumber)
+        {
+            return ((DataGridColumns) columnNumber).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
@@ -142,8 +161,21 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.PROMPT_TEXT => 100,
                 DataGridColumns.CREATED_AT => 25,
+                DataGridColumns.LAST_UPDATED_AT => 25,
                 DataGridColumns.ACTIONS => 25,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+            };
+        }
+
+        private bool IsDateColumn(int columnNumber)
+        {
+            var column = (DataGridColumns) columnNumber;
+
+            return column switch
+            {
+                DataGridColumns.CREATED_AT => true,
+                DataGridColumns.LAST_UPDATED_AT => true,
+                _ => false,
             };
         }
 
