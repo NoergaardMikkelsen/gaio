@@ -16,16 +16,18 @@ public class BuildKeywordDialog : ContentDialog
 
         DataContext = new BuildKeywordViewModel(keyword);
 
-        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel)DataContext, keywordEndpoint);
-        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel)DataContext, this);
+        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel) DataContext, keywordEndpoint);
+        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel) DataContext, this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
 
-    private class BuildKeywordDialogUi : BaseDialogUi<BuildKeywordDialogLogic, BuildKeywordViewModel, Keyword, SearchableKeyword>
+    private class
+        BuildKeywordDialogUi : BaseDialogUi<BuildKeywordDialogLogic, BuildKeywordViewModel, Keyword, SearchableKeyword>
     {
         public BuildKeywordDialogUi(
-            BuildKeywordDialogLogic logic, BuildKeywordViewModel viewModel, ContentDialog dialog) : base(logic, viewModel, dialog)
+            BuildKeywordDialogLogic logic, BuildKeywordViewModel viewModel, ContentDialog dialog) : base(logic,
+            viewModel, dialog)
         {
         }
 
@@ -48,20 +50,20 @@ public class BuildKeywordDialog : ContentDialog
             AddLabelAndTextBox(grid, "Text:", nameof(BuildKeywordViewModel.Text), 0,
                 placeholderText: "Enter keyword text here...");
             AddLabelAndCheckBox(grid, "Use Regex:", nameof(BuildKeywordViewModel.UseRegex), 1);
-            AddLabelAndTextBox(grid, "Id:", nameof(BuildKeywordViewModel.Id), 2, isEnabled: false);
-            AddLabelAndTextBox(grid, "Created At:", nameof(BuildKeywordViewModel.CreatedDateTime), 3, isEnabled: false,
-                converter: dateTimeConverter);
-            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildKeywordViewModel.UpdatedDateTime), 4,
-                isEnabled: false, converter: dateTimeConverter);
-            AddLabelAndTextBox(grid, "Version:", nameof(BuildKeywordViewModel.Version), 5, isEnabled: false);
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildKeywordViewModel.Id), 2, false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildKeywordViewModel.CreatedDateTime), 3, false,
+                dateTimeConverter);
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildKeywordViewModel.UpdatedDateTime), 4, false,
+                dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildKeywordViewModel.Version), 5, false);
         }
-
     }
 
     private class BuildKeywordDialogLogic : BaseDialogLogic<BuildKeywordViewModel, Keyword, SearchableKeyword>
     {
-        public BuildKeywordDialogLogic(IKeyword keyword, BuildKeywordViewModel viewModel, IKeywordEndpoint keywordEndpoint)
-            : base((Keyword) keyword, viewModel, keywordEndpoint)
+        public BuildKeywordDialogLogic(
+            IKeyword keyword, BuildKeywordViewModel viewModel, IKeywordEndpoint keywordEndpoint) : base(
+            (Keyword) keyword, viewModel, keywordEndpoint)
         {
         }
 
