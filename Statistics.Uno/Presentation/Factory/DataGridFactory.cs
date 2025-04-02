@@ -8,14 +8,13 @@ namespace Statistics.Uno.Presentation.Factory;
 public class SetupColumnsArguments
 {
     public SetupColumnsArguments(
-        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, string> getBindingPath, Func<int, bool> isDateColumn,
+        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, string> getBindingPath,
         Func<int, string> getEnumAsString, Func<int, int> getColumnStarWidth,
         Func<int, IValueConverter?> getValueConverter, Func<int, FrameworkElement>? buildActionsElement = null)
     {
         DataGrid = dataGrid;
         EnumNumbers = enumNumbers;
         GetBindingPath = getBindingPath;
-        IsDateColumn = isDateColumn;
         GetEnumAsString = getEnumAsString;
         GetColumnStarWidth = getColumnStarWidth;
         GetValueConverter = getValueConverter;
@@ -25,7 +24,6 @@ public class SetupColumnsArguments
     public DataGrid DataGrid { get; }
     public IEnumerable<int> EnumNumbers { get; }
     public Func<int, string> GetBindingPath { get; }
-    public Func<int, bool> IsDateColumn { get; }
     public Func<int, IValueConverter?> GetValueConverter { get; }
     public Func<int, string> GetEnumAsString { get; }
     public Func<int, int> GetColumnStarWidth { get; }
@@ -83,39 +81,7 @@ public static class DataGridFactory
 
         return dataGrid;
     }
-
-    private static DataGridTemplateColumn CreateDataGridDateTemplateColumn(
-        string bindingPath, string header, IValueConverter? converter)
-    {
-        var textBlock = new TextBlock()
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            Margin = new Thickness(10, 0),
-            TextWrapping = TextWrapping.WrapWholeWords,
-        };
-
-        var binding = new Binding
-        {
-            Path = bindingPath,
-        };
-        if (converter != null)
-        {
-            binding.Converter = converter;
-        }
-
-        textBlock.SetBinding(TextBlock.TextProperty, binding);
-
-        // Debugging statement to check the binding path and header
-        Console.WriteLine($"Creating DateTemplateColumn: Header={header}, BindingPath={bindingPath}");
-
-        return new DataGridTemplateColumn()
-        {
-            Header = header,
-            CellTemplate = new DataTemplate(() => textBlock),
-        };
-    }
-
+    
     private static DataGridTextColumn CreateDataGridTextColumn(
         string bindingPath, string header, IValueConverter? converter)
     {
@@ -174,7 +140,6 @@ public static class DataGridFactory
         foreach (int value in setupColumnsArguments.EnumNumbers)
         {
             string titleCaseEnum = setupColumnsArguments.GetEnumAsString(value).ScreamingSnakeCaseToTitleCase();
-            bool isDateColumn = setupColumnsArguments.IsDateColumn(value);
             string bindingPath = setupColumnsArguments.GetBindingPath(value);
             IValueConverter? converter = setupColumnsArguments.GetValueConverter(value);
             DataGridColumn column;
@@ -186,9 +151,7 @@ public static class DataGridFactory
             }
             else if (bindingPath != string.Empty)
             {
-                column = isDateColumn
-                    ? CreateDataGridDateTemplateColumn(bindingPath, titleCaseEnum, converter)
-                    : CreateDataGridTextColumn(bindingPath, titleCaseEnum, converter);
+                column = CreateDataGridTextColumn(bindingPath, titleCaseEnum, converter);
             }
             else
             {

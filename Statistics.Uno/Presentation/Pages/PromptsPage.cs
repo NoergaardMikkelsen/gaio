@@ -145,7 +145,7 @@ public sealed partial class PromptsPage : Page
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath, IsDateColumn, GetEnumAsString,
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath, GetEnumAsString,
                 GetColumnStarWidth, GetValueConverterForColumn, BuildActionsElement));
         }
 
@@ -165,18 +165,6 @@ public sealed partial class PromptsPage : Page
                 DataGridColumns.LAST_UPDATED_AT => 25,
                 DataGridColumns.ACTIONS => 25,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
-            };
-        }
-
-        private bool IsDateColumn(int columnNumber)
-        {
-            var column = (DataGridColumns) columnNumber;
-
-            return column switch
-            {
-                DataGridColumns.CREATED_AT => true,
-                DataGridColumns.LAST_UPDATED_AT => true,
-                var _ => false,
             };
         }
 
