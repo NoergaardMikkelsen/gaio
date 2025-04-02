@@ -45,6 +45,7 @@ public class CommandlineStartup : CommandlineModularStartup
                 SearchableArtificialIntelligence>());
         AddModule(new CommandlineEntityQueryServiceStartupModule<PromptQueryService, Prompt, SearchablePrompt>());
         AddModule(new CommandlineEntityQueryServiceStartupModule<ResponseQueryService, Response, SearchableResponse>());
+        AddModule(new CommandlineEntityQueryServiceStartupModule<KeywordQueryService, Keyword, SearchableKeyword>());
     }
 
     private SecretsConfig GetSecrets()

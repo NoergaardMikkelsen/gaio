@@ -47,6 +47,7 @@ public class ApiStartup : ApiModularStartup
                 SearchableArtificialIntelligence>());
         AddModule(new ApiEntityQueryServiceStartupModule<PromptQueryService, Prompt, SearchablePrompt>());
         AddModule(new ApiEntityQueryServiceStartupModule<ResponseQueryService, Response, SearchableResponse>());
+        AddModule(new ApiEntityQueryServiceStartupModule<KeywordQueryService, Keyword, SearchableKeyword>());
     }
 
     private IConfiguration BuildConfiguration()

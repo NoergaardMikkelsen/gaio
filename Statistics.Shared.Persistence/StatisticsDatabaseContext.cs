@@ -27,9 +27,11 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
         modelBuilder.ApplyConfiguration(new ArtificialIntelligenceConfiguration(databaseType));
         modelBuilder.ApplyConfiguration(new PromptConfiguration(databaseType));
         modelBuilder.ApplyConfiguration(new ResponseConfiguration(databaseType));
+        modelBuilder.ApplyConfiguration(new KeywordConfiguration(databaseType));
     }
 
     public DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
     public DbSet<Prompt> Prompts { get; set; }
     public DbSet<Response> Responses { get; set; }
+    public DbSet<Keyword> Keywords { get; set; }
 }
