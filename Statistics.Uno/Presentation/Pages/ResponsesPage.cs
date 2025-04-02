@@ -88,8 +88,7 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn,
-                GetColumnBindingPath));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath));
         }
 
         private string GetColumnBindingPath(int columnNumber)
@@ -109,7 +108,8 @@ public sealed partial class ResponsesPage : Page
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,IsDateColumn, GetEnumAsString, GetColumnStarWidth, GetValueConverterForColumn));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath, IsDateColumn, GetEnumAsString,
+                GetColumnStarWidth, GetValueConverterForColumn));
         }
 
         private string GetEnumAsString(int i)
@@ -133,13 +133,13 @@ public sealed partial class ResponsesPage : Page
 
         private bool IsDateColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
                 DataGridColumns.CREATED_AT => true,
                 DataGridColumns.LAST_UPDATED_AT => true,
-                _ => false,
+                var _ => false,
             };
         }
 
@@ -151,7 +151,7 @@ public sealed partial class ResponsesPage : Page
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
-                _ => null,
+                var _ => null,
             };
         }
 

@@ -8,8 +8,9 @@ namespace Statistics.Uno.Presentation.Factory;
 public class SetupColumnsArguments
 {
     public SetupColumnsArguments(
-        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, string> getBindingPath,
-        Func<int, bool> isDateColumn, Func<int, string> getEnumAsString, Func<int, int> getColumnStarWidth, Func<int, IValueConverter?> getValueConverter, Func<int, FrameworkElement>? buildActionsElement = null)
+        DataGrid dataGrid, IEnumerable<int> enumNumbers, Func<int, string> getBindingPath, Func<int, bool> isDateColumn,
+        Func<int, string> getEnumAsString, Func<int, int> getColumnStarWidth,
+        Func<int, IValueConverter?> getValueConverter, Func<int, FrameworkElement>? buildActionsElement = null)
     {
         DataGrid = dataGrid;
         EnumNumbers = enumNumbers;
@@ -80,8 +81,8 @@ public static class DataGridFactory
         return dataGrid;
     }
 
-    private static DataGridTemplateColumn CreateDataGridDateTemplateColumn(string bindingPath, string header,
-        IValueConverter? converter)
+    private static DataGridTemplateColumn CreateDataGridDateTemplateColumn(
+        string bindingPath, string header, IValueConverter? converter)
     {
         var textBlock = new TextBlock()
         {
@@ -129,7 +130,7 @@ public static class DataGridFactory
     public static void SetupDataGridRowTemplate(SetupRowArguments setupRowArguments)
     {
         var stack = new StackPanel();
-        IEnumerable<FrameworkElement> cells = setupRowArguments.EnumNumbers.Select(x =>
+        var cells = setupRowArguments.EnumNumbers.Select(x =>
         {
             var block = new TextBlock() {Margin = new Thickness(10),};
             string bindingPath = setupRowArguments.GetBindingPath(x);
@@ -164,7 +165,7 @@ public static class DataGridFactory
             string titleCaseEnum = setupColumnsArguments.GetEnumAsString(value).ScreamingSnakeCaseToTitleCase();
             bool isDateColumn = setupColumnsArguments.IsDateColumn(value);
             string bindingPath = setupColumnsArguments.GetBindingPath(value);
-            var converter = setupColumnsArguments.GetValueConverter(value);
+            IValueConverter? converter = setupColumnsArguments.GetValueConverter(value);
             DataGridColumn column;
 
             if (bindingPath == nameof(ISearchable.Id) && setupColumnsArguments.BuildActionsElement != null)

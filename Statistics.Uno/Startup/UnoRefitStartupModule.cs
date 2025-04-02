@@ -10,7 +10,8 @@ namespace Statistics.Uno.Startup;
 public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoint : IRefitEndpoint
 {
     private readonly string baseAddress;
-    private static readonly RefitSettings settings = new RefitSettings()
+
+    private static readonly RefitSettings settings = new()
     {
         ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings()
         {
@@ -44,6 +45,5 @@ public class UnoRefitStartupModule<TEndpoint> : IUnoStartupModule where TEndpoin
 
     private void ConfigureRefit(HostBuilderContext context, IServiceCollection services)
     {
-
     }
 }

@@ -19,10 +19,10 @@ public class NoNavigationalPropertiesContractResolver : CamelCasePropertyNamesCo
 
     private bool IsNavigationalProperty(MemberInfo member)
     {
-        var memberType = GetMemberUnderlyingType(member);
+        Type? memberType = GetMemberUnderlyingType(member);
 
         // Check if the member type is a collection or a reference to another entity
-        return typeof(IEnumerable).IsAssignableFrom(memberType) && memberType != typeof(string) ||
+        return (typeof(IEnumerable).IsAssignableFrom(memberType) && memberType != typeof(string)) ||
                (memberType.IsClass && memberType != typeof(string));
     }
 
@@ -32,7 +32,8 @@ public class NoNavigationalPropertiesContractResolver : CamelCasePropertyNamesCo
         {
             FieldInfo field => field.FieldType,
             PropertyInfo property => property.PropertyType,
-            _ => throw new ArgumentException("MemberInfo must be of type FieldInfo or PropertyInfo", nameof(member)),
+            var _ => throw new ArgumentException("MemberInfo must be of type FieldInfo or PropertyInfo",
+                nameof(member)),
         };
     }
 }

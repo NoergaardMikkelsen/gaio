@@ -51,6 +51,6 @@ public class ArtificialIntelligence : IArtificialIntelligence
     public ArtificialIntelligence(int id, List<Response> responses)
     {
         this.id = id;
-        this.Responses = responses.Cast<IResponse>().ToList();
+        Responses = responses.Cast<IResponse>().ToList();
     }
 }

@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
+using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -116,8 +117,8 @@ public sealed partial class ArtificialIntelligencePage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn,
-                GetColumnBindingPath, BuildActionsElement));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath,
+                BuildActionsElement));
         }
 
         private string GetColumnBindingPath(int columnNumber)
@@ -139,8 +140,8 @@ public sealed partial class ArtificialIntelligencePage : Page
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,IsDateColumn, GetEnumAsString, GetColumnStarWidth,GetValueConverterForColumn,
-                BuildActionsElement));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath, IsDateColumn, GetEnumAsString,
+                GetColumnStarWidth, GetValueConverterForColumn, BuildActionsElement));
         }
 
         private string GetEnumAsString(int columnNumber)
@@ -161,7 +162,7 @@ public sealed partial class ArtificialIntelligencePage : Page
                 DataGridColumns.CREATED_AT => 35,
                 DataGridColumns.LAST_UPDATED_AT => 35,
                 DataGridColumns.ACTIONS => 35,
-                _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+                var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
 
@@ -173,20 +174,20 @@ public sealed partial class ArtificialIntelligencePage : Page
             {
                 DataGridColumns.CREATED_AT => true,
                 DataGridColumns.LAST_UPDATED_AT => true,
-                _ => false,
+                var _ => false,
             };
         }
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.AI_TYPE => new EnumToTitleCaseConverter(),
-                _ => null,
+                var _ => null,
             };
         }
 
@@ -260,9 +261,9 @@ public sealed partial class ArtificialIntelligencePage : Page
 
             var aiId = (int) button.Tag;
 
-            var ai = DataContext.ArtificialIntelligences.FirstOrDefault(x => x.Id == aiId) ??
-                     throw new NullReferenceException(
-                         $"Expected to find an artificial intelligence with id '{aiId}', but it was not found.");
+            IArtificialIntelligence ai = DataContext.ArtificialIntelligences.FirstOrDefault(x => x.Id == aiId) ??
+                                         throw new NullReferenceException(
+                                             $"Expected to find an artificial intelligence with id '{aiId}', but it was not found.");
 
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromExisting(aiApi, ai, page.XamlRoot);
             await UpdateArtificialIntelligences();

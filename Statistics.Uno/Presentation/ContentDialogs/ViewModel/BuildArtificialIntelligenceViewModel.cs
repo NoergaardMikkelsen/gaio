@@ -17,24 +17,17 @@ public partial class BuildArtificialIntelligenceViewModel : ObservableObject
         UpdatedDateTime = ai.UpdatedDateTime;
     }
 
-    [ObservableProperty]
-    private int id;
+    [ObservableProperty] private int id;
 
-    [ObservableProperty]
-    private string name;
+    [ObservableProperty] private string name;
 
-    [ObservableProperty]
-    private string key;
+    [ObservableProperty] private string key;
 
-    [ObservableProperty]
-    private ArtificialIntelligenceType aiType;
+    [ObservableProperty] private ArtificialIntelligenceType aiType;
 
-    [ObservableProperty]
-    private uint version;
+    [ObservableProperty] private uint version;
 
-    [ObservableProperty]
-    private DateTime createdDateTime;
+    [ObservableProperty] private DateTime createdDateTime;
 
-    [ObservableProperty]
-    private DateTime updatedDateTime;
+    [ObservableProperty] private DateTime updatedDateTime;
 }

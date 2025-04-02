@@ -11,24 +11,30 @@ namespace Statistics.Uno.Presentation.ContentDialogs;
 
 public class BuildArtificialIntelligenceDialog : ContentDialog
 {
-    public BuildArtificialIntelligenceDialog(IArtificialIntelligenceEndpoint aiEndpoint, IArtificialIntelligence? ai = null)
+    public BuildArtificialIntelligenceDialog(
+        IArtificialIntelligenceEndpoint aiEndpoint, IArtificialIntelligence? ai = null)
     {
         ai ??= new ArtificialIntelligence();
 
         DataContext = new BuildArtificialIntelligenceViewModel(ai);
 
-        var logic = new BuildArtificialIntelligenceDialogLogic(ai, (BuildArtificialIntelligenceViewModel)DataContext, aiEndpoint);
-        var ui = new BuildArtificialIntelligenceDialogUi(logic, (BuildArtificialIntelligenceViewModel)DataContext, this);
+        var logic = new BuildArtificialIntelligenceDialogLogic(ai, (BuildArtificialIntelligenceViewModel) DataContext,
+            aiEndpoint);
+        var ui = new BuildArtificialIntelligenceDialogUi(logic, (BuildArtificialIntelligenceViewModel) DataContext,
+            this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
 
-    private class BuildArtificialIntelligenceDialogUi : BaseUi<BuildArtificialIntelligenceDialogLogic, BuildArtificialIntelligenceViewModel>
+    private class
+        BuildArtificialIntelligenceDialogUi : BaseUi<BuildArtificialIntelligenceDialogLogic,
+        BuildArtificialIntelligenceViewModel>
     {
         private readonly ContentDialog dialog;
 
         public BuildArtificialIntelligenceDialogUi(
-            BuildArtificialIntelligenceDialogLogic logic, BuildArtificialIntelligenceViewModel viewModel, ContentDialog dialog) : base(logic, viewModel)
+            BuildArtificialIntelligenceDialogLogic logic, BuildArtificialIntelligenceViewModel viewModel,
+            ContentDialog dialog) : base(logic, viewModel)
         {
             this.dialog = dialog;
 
@@ -192,12 +198,12 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(10, 5),
                 Width = 200,
-                IsEnabled = false
+                IsEnabled = false,
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding
             {
                 Path = new PropertyPath(nameof(BuildArtificialIntelligenceViewModel.CreatedDateTime)),
-                Converter = new UtcDateTimeToLocalStringConverter()
+                Converter = new UtcDateTimeToLocalStringConverter(),
             });
             textBox.Grid(row: 4, column: 1);
 
@@ -222,12 +228,12 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(10, 5),
                 Width = 200,
-                IsEnabled = false
+                IsEnabled = false,
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding
             {
                 Path = new PropertyPath(nameof(BuildArtificialIntelligenceViewModel.UpdatedDateTime)),
-                Converter = new UtcDateTimeToLocalStringConverter()
+                Converter = new UtcDateTimeToLocalStringConverter(),
             });
             textBox.Grid(row: 5, column: 1);
 
@@ -268,7 +274,9 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
         private readonly IArtificialIntelligenceEndpoint aiEndpoint;
         private readonly IArtificialIntelligence ai;
 
-        public BuildArtificialIntelligenceDialogLogic(IArtificialIntelligence ai, BuildArtificialIntelligenceViewModel viewModel, IArtificialIntelligenceEndpoint aiEndpoint)
+        public BuildArtificialIntelligenceDialogLogic(
+            IArtificialIntelligence ai, BuildArtificialIntelligenceViewModel viewModel,
+            IArtificialIntelligenceEndpoint aiEndpoint)
         {
             this.viewModel = viewModel;
             this.aiEndpoint = aiEndpoint;
@@ -286,11 +294,11 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
 
             if (ai.Id == 0)
             {
-                await aiEndpoint.AddSingle(CancellationToken.None, (ArtificialIntelligence)ai);
+                await aiEndpoint.AddSingle(CancellationToken.None, (ArtificialIntelligence) ai);
             }
             else
             {
-                await aiEndpoint.UpdateSingle(CancellationToken.None, (ArtificialIntelligence)ai);
+                await aiEndpoint.UpdateSingle(CancellationToken.None, (ArtificialIntelligence) ai);
             }
         }
 

@@ -53,7 +53,7 @@ public class Response : IResponse
     public Response(int id, Prompt prompt, ArtificialIntelligence ai)
     {
         this.id = id;
-        this.Prompt = prompt;
-        this.Ai = ai;
+        Prompt = prompt;
+        Ai = ai;
     }
 }

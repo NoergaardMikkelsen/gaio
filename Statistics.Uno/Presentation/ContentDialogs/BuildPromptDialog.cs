@@ -26,8 +26,7 @@ public class BuildPromptDialog : ContentDialog
         private readonly ContentDialog dialog;
 
         public BuildPromptDialogUi(
-            BuildPromptDialogLogic logic, BuildPromptViewModel viewModel, ContentDialog dialog) : base(logic,
-            viewModel)
+            BuildPromptDialogLogic logic, BuildPromptViewModel viewModel, ContentDialog dialog) : base(logic, viewModel)
         {
             this.dialog = dialog;
 
@@ -100,12 +99,12 @@ public class BuildPromptDialog : ContentDialog
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(10, 5),
                 Width = 200,
-                IsEnabled = false
+                IsEnabled = false,
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding
             {
                 Path = new PropertyPath(nameof(BuildPromptViewModel.UpdatedDateTime)),
-                Converter = new UtcDateTimeToLocalStringConverter()
+                Converter = new UtcDateTimeToLocalStringConverter(),
             });
             textBox.Grid(row: 3, column: 1);
 
@@ -131,12 +130,12 @@ public class BuildPromptDialog : ContentDialog
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(10, 5),
                 Width = 200,
-                IsEnabled = false
+                IsEnabled = false,
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding
             {
                 Path = new PropertyPath(nameof(BuildPromptViewModel.CreatedDateTime)),
-                Converter = new UtcDateTimeToLocalStringConverter()
+                Converter = new UtcDateTimeToLocalStringConverter(),
             });
             textBox.Grid(row: 2, column: 1);
 

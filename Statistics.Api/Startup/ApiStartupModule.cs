@@ -16,8 +16,7 @@ public class ApiStartupModule : IApiStartupModule
 
         services.AddControllers().AddNewtonsoftJson(options =>
         {
-            options.SerializerSettings.Converters.AddRange(
-            [
+            options.SerializerSettings.Converters.AddRange([
                 new StringEnumConverter(),
                 new ArtificialIntelligenceJsonConverter(),
                 new PromptJsonConverter(),

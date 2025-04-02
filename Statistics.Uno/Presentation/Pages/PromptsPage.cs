@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Statistics.Shared.Abstraction.Enum;
+using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -111,8 +112,8 @@ public sealed partial class PromptsPage : Page
         private void SetupDataGridRowTemplate(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn,
-                GetColumnBindingPath, BuildActionsElement));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath,
+                BuildActionsElement));
         }
 
         private string GetColumnBindingPath(int columnNumber)
@@ -137,15 +138,15 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
-                _ => null,
+                var _ => null,
             };
         }
 
         private void SetupDataGridColumns(DataGrid dataGrid)
         {
             DataGridFactory.SetupDataGridColumns(new SetupColumnsArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath,IsDateColumn, GetEnumAsString, GetColumnStarWidth,
-                GetValueConverterForColumn,BuildActionsElement));
+                Enum.GetValues<DataGridColumns>().Cast<int>(), GetColumnBindingPath, IsDateColumn, GetEnumAsString,
+                GetColumnStarWidth, GetValueConverterForColumn, BuildActionsElement));
         }
 
         private string GetEnumAsString(int columnNumber)
@@ -175,7 +176,7 @@ public sealed partial class PromptsPage : Page
             {
                 DataGridColumns.CREATED_AT => true,
                 DataGridColumns.LAST_UPDATED_AT => true,
-                _ => false,
+                var _ => false,
             };
         }
 
@@ -250,9 +251,9 @@ public sealed partial class PromptsPage : Page
 
             var promptId = (int) button.Tag;
 
-            var prompt = ViewModel.Prompts.FirstOrDefault(x => x.Id == promptId) ??
-                         throw new NullReferenceException(
-                             $"Expected to find a prompt with id '{promptId}', but it was not found.");
+            IPrompt prompt = ViewModel.Prompts.FirstOrDefault(x => x.Id == promptId) ??
+                             throw new NullReferenceException(
+                                 $"Expected to find a prompt with id '{promptId}', but it was not found.");
 
             await ContentDialogFactory.ShowBuildPromptDialogFromExisting(promptApi, prompt, page.XamlRoot);
             await UpdatePrompts();
