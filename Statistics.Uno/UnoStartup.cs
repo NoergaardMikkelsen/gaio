@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Statistics.Shared.Abstraction.Interfaces.Services;
-using Statistics.Shared.Services.ArtificialIntelligence;
 using Statistics.Shared.Services.Keywords;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Models;

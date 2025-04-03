@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Persistence.Core;

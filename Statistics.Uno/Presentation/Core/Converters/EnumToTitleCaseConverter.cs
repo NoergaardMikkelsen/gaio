@@ -1,6 +1,3 @@
-using System;
-using System.Globalization;
-using System.Linq;
 using Statistics.Shared.Extensions;
 
 namespace Statistics.Uno.Presentation.Core.Converters;

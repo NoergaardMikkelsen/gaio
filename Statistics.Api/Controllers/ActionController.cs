@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
-using Windows.Data.Xml.Dom;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
-using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Api.Controllers;
 

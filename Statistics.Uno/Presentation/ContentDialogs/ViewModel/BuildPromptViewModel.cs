@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
-using Statistics.Shared.Models.Entity;
 
 namespace Statistics.Uno.Presentation.ContentDialogs.ViewModel;
 

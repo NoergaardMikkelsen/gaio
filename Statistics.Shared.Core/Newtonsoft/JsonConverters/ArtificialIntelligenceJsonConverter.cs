@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Statistics.Shared.Abstraction.Enum;
-using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using JsonException = Newtonsoft.Json.JsonException;

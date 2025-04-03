@@ -1,6 +1,3 @@
-using System;
-using Microsoft.UI.Xaml.Data;
-
 namespace Statistics.Uno.Presentation.Core.Converters
 {
     public class EnumToIntConverter : IValueConverter

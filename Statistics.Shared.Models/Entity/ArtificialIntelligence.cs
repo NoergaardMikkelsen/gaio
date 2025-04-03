@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Windows.ApplicationModel.AppService;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 

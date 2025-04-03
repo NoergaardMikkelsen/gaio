@@ -1,7 +1,5 @@
 using Refit;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
-using Statistics.Shared.Models.Entity;
-using Statistics.Shared.Models.Searchable;
 
 namespace Statistics.Uno.Endpoints;
 

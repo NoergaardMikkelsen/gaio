@@ -1,5 +1,4 @@
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
-using Statistics.Uno.Presentation.ContentDialogs;
 
 namespace Statistics.Uno.Presentation.Core
 {

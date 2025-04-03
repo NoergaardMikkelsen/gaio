@@ -1,9 +1,5 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Extensions;
-using Statistics.Uno.Presentation.Pages;
 
 namespace Statistics.Uno.Presentation.Factory
 {

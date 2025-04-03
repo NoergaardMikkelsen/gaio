@@ -1,6 +1,4 @@
-using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Dispatching;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;

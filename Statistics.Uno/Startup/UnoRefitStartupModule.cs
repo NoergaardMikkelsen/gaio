@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Statistics.Uno.Endpoints;
 using Refit;
 using Statistics.Shared.Core.Newtonsoft;

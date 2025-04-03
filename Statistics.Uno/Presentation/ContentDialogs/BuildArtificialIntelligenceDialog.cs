@@ -1,6 +1,5 @@
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
-using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;

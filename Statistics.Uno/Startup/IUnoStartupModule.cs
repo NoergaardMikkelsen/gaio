@@ -1,5 +1,3 @@
-using System.Reflection.Emit;
-using Microsoft.Extensions.DependencyInjection;
 using Statistics.Shared.Abstraction.Interfaces.Startup;
 
 namespace Statistics.Uno.Startup;

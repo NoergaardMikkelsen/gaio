@@ -1,7 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
-using Statistics.Uno.Presentation.Core.Converters;
 
 namespace Statistics.Uno.Presentation.Factory;
 

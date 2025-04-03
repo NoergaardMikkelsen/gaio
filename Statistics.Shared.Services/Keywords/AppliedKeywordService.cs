@@ -5,7 +5,6 @@ using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models;
-using Statistics.Shared.Models.Entity;
 
 namespace Statistics.Shared.Services.Keywords;
 

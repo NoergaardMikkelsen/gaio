@@ -1,7 +1,6 @@
 using Statistics.Shared.Extensions;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Pages.ViewModel;
-using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 

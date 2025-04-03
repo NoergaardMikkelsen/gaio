@@ -1,13 +1,10 @@
-using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Dispatching;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
-using Statistics.Uno.Presentation.Pages.ViewModel;
 using ArtificialIntelligenceViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ArtificialIntelligenceViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;

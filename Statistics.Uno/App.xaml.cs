@@ -1,5 +1,3 @@
-using Statistics.Uno.Models;
-using Statistics.Uno.Presentation;
 using Uno.Resizetizer;
 using NavigationPage = Statistics.Uno.Presentation.Pages.NavigationPage;
 

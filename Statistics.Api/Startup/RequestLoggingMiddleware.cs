@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
 public class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;

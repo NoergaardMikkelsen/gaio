@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Enum.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Persistence.Configuration;

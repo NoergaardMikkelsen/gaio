@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Statistics.Shared.Abstraction.Interfaces.Models;
 
 namespace Statistics.Uno.Presentation.Pages.ViewModel

@@ -1,5 +1,4 @@
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
-using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.ContentDialogs;
 

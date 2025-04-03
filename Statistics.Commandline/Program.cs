@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using Statistics.Shared.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Abstraction.Interfaces.Services;
