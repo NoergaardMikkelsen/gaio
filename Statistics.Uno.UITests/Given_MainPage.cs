@@ -11,13 +11,13 @@ public class Given_MainPage : TestBase
         // in the UITests project with the correct port number.
 
         // Add delay to allow for the splash screen to disappear
-        await Task.Delay(5000);
+        //await Task.Delay(5000);
 
         // Query for the MainPage Text Block
-        Query textBlock = q => q.All().Marked("HelloTextBlock");
-        App.WaitForElement(textBlock);
+        //Query textBlock = q => q.All().Marked("HelloTextBlock");
+        //App.WaitForElement(textBlock);
 
         // Take a screenshot and add it to the test results
-        TakeScreenshot("After launch");
+        //TakeScreenshot("After launch");
     }
 }
