@@ -235,6 +235,7 @@ public sealed partial class ArtificialIntelligencePage : BasePage
                                              $"Expected to find an artificial intelligence with id '{aiId}', but it was not found.");
 
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromExisting(aiApi, ai, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdateArtificialIntelligences();
         }
 
@@ -255,12 +256,14 @@ public sealed partial class ArtificialIntelligencePage : BasePage
             var aiId = (int) button.Tag;
 
             await aiApi.DeleteById(CancellationToken.None, aiId);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdateArtificialIntelligences();
         }
 
         public async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromNew(aiApi, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdateArtificialIntelligences();
         }
     }

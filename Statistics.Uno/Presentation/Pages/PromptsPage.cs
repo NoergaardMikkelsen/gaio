@@ -244,6 +244,7 @@ public sealed partial class PromptsPage : BasePage
                                  $"Expected to find a prompt with id '{promptId}', but it was not found.");
 
             await ContentDialogFactory.ShowBuildPromptDialogFromExisting(promptApi, prompt, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdatePrompts();
         }
 
@@ -264,12 +265,14 @@ public sealed partial class PromptsPage : BasePage
             var promptId = (int) button.Tag;
 
             await promptApi.DeleteById(CancellationToken.None, promptId);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdatePrompts();
         }
 
         public async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
             await ContentDialogFactory.ShowBuildPromptDialogFromNew(promptApi, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(2));
             await UpdatePrompts();
         }
 

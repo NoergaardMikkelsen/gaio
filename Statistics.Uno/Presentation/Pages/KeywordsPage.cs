@@ -234,6 +234,7 @@ public sealed partial class KeywordsPage : BasePage
                                    $"Expected to find a keyword with id '{keywordId}', but it was not found.");
 
             await ContentDialogFactory.ShowBuildKeywordDialogFromExisting(keywordApi, keyword, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdateKeywords();
         }
 
@@ -254,12 +255,14 @@ public sealed partial class KeywordsPage : BasePage
             var keywordId = (int)button.Tag;
 
             await keywordApi.DeleteById(CancellationToken.None, keywordId);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await UpdateKeywords();
         }
 
         public async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
             await ContentDialogFactory.ShowBuildKeywordDialogFromNew(keywordApi, page.XamlRoot);
+            await Task.Delay(TimeSpan.FromSeconds(2));
             await UpdateKeywords();
         }
     }
