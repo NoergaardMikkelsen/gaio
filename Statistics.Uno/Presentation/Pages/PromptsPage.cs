@@ -3,6 +3,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -12,7 +13,7 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class PromptsPage : Page
+public sealed partial class PromptsPage : BasePage
 {
     private enum DataGridColumns
     {
@@ -24,25 +25,17 @@ public sealed partial class PromptsPage : Page
 
     public PromptsPage()
     {
-        GetServices(out IPromptEndpoint promptApi);
+        IPromptEndpoint promptApi = GetPromptApi();
+        IActionEndpoint actionApi = GetActionApi();
 
         DataContext = new PromptsViewModel();
 
-        var logic = new PromptsPageLogic(promptApi, (PromptsViewModel) DataContext, this);
+        var logic = new PromptsPageLogic(promptApi, actionApi, (PromptsViewModel) DataContext, this);
         var ui = new PromptsPageUi(logic, (PromptsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdatePrompts();
-    }
-
-    private void GetServices(out IPromptEndpoint promptApi)
-    {
-        var app = (App) Application.Current;
-
-        promptApi = app.Startup.ServiceProvider.GetService<IPromptEndpoint>() ??
-                    throw new NullReferenceException(
-                        $"Failed to acquire an instance implementing '{nameof(IPromptEndpoint)}'.");
     }
 
     private class PromptsPageUi : BaseUi<PromptsPageLogic, PromptsViewModel>
@@ -64,7 +57,7 @@ public sealed partial class PromptsPage : Page
             grid.Children.Add(promptsDataGrid);
             grid.Children.Add(refreshButtons);
         }
-        
+
         private StackPanel CreateButtonsPanel()
         {
             var stackPanel = new StackPanel()
@@ -80,9 +73,18 @@ public sealed partial class PromptsPage : Page
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
-
             addButton.Click += Logic.AddButtonOnClick;
+
+            var executeAllPromptsButton = new Button()
+            {
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+            executeAllPromptsButton.Content(() => ViewModel.ExecuteAllPromptsButtonText);
+            executeAllPromptsButton.Click += Logic.ExecuteAllPromptsOnClick;
+
             stackPanel.Children.Add(addButton);
+            stackPanel.Children.Add(executeAllPromptsButton);
 
             return stackPanel;
         }
@@ -181,8 +183,18 @@ public sealed partial class PromptsPage : Page
             deleteButton.Click += Logic.DeleteButtonOnClick;
             deleteButton.Tag(x => x.Binding(nameof(Prompt.Id)));
 
+            var executeButton = new Button()
+            {
+                Content = "Execute",
+                Margin = new Thickness(5),
+                HorizontalAlignment = HorizontalAlignment.Center,
+            };
+            executeButton.Click += Logic.ExecutePromptOnClick;
+            executeButton.Tag(x => x.Binding(nameof(Prompt.Id)));
+
             stackPanel.Children.Add(editButton);
             stackPanel.Children.Add(deleteButton);
+            stackPanel.Children.Add(executeButton);
 
             return stackPanel;
         }
@@ -191,13 +203,15 @@ public sealed partial class PromptsPage : Page
     private class PromptsPageLogic
     {
         private readonly IPromptEndpoint promptApi;
+        private readonly IActionEndpoint actionApi;
         private readonly Page page;
         private PromptsViewModel ViewModel { get; }
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, PromptsViewModel dataContext, Page page)
+        public PromptsPageLogic(IPromptEndpoint promptApi, IActionEndpoint actionApi, PromptsViewModel viewModel, PromptsPage page)
         {
-            ViewModel = dataContext;
+            ViewModel = viewModel;
             this.promptApi = promptApi;
+            this.actionApi = actionApi;
             this.page = page;
         }
 
@@ -261,6 +275,32 @@ public sealed partial class PromptsPage : Page
         {
             await ContentDialogFactory.ShowBuildPromptDialogFromNew(promptApi, page.XamlRoot);
             await UpdatePrompts();
+        }
+
+        public async void ExecuteAllPromptsOnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
+
+            ViewModel.ExecuteAllPromptsButtonText = "Executing...";
+            button.IsEnabled = false;
+            await actionApi.ExecuteAllPrompts(CancellationToken.None);
+            ViewModel.ExecuteAllPromptsButtonText = "Execute Prompts";
+            button.IsEnabled = true;
+        }
+
+        public async void ExecutePromptOnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
+
+            var promptId = (int)button.Tag;
+
+            button.IsEnabled = false;
+            await actionApi.ExecutePromptById(CancellationToken.None, promptId);
+            button.IsEnabled = true;
         }
     }
 }

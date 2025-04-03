@@ -11,7 +11,7 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class KeywordsPage : Page
+public sealed partial class KeywordsPage : BasePage
 {
     private enum DataGridColumns
     {
@@ -26,7 +26,7 @@ public sealed partial class KeywordsPage : Page
 
     public KeywordsPage()
     {
-        GetServices(out IKeywordEndpoint keywordApi);
+        IKeywordEndpoint keywordApi = GetKeywordApi();
 
         DataContext = new KeywordsViewModel();
 
@@ -37,16 +37,6 @@ public sealed partial class KeywordsPage : Page
 
         _ = logic.UpdateKeywords();
     }
-
-    private void GetServices(out IKeywordEndpoint keywordApi)
-    {
-        var app = (App) Application.Current;
-
-        keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
-                     throw new NullReferenceException(
-                         $"Failed to acquire an instance implementing '{nameof(IKeywordEndpoint)}'.");
-    }
-
 
     private class KeywordsPageUi : BaseUi<KeywordsPageLogic, KeywordsViewModel>
     {

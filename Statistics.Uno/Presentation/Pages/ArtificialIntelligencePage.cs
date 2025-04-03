@@ -12,7 +12,7 @@ using ArtificialIntelligenceViewModel = Statistics.Uno.Presentation.Pages.ViewMo
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class ArtificialIntelligencePage : Page
+public sealed partial class ArtificialIntelligencePage : BasePage
 {
     private enum DataGridColumns
     {
@@ -26,7 +26,7 @@ public sealed partial class ArtificialIntelligencePage : Page
 
     public ArtificialIntelligencePage()
     {
-        GetServices(out IArtificialIntelligenceEndpoint aiApi);
+        IArtificialIntelligenceEndpoint aiApi = GetAiApi();
 
         DataContext = new ArtificialIntelligenceViewModel();
 
@@ -36,15 +36,6 @@ public sealed partial class ArtificialIntelligencePage : Page
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateArtificialIntelligences();
-    }
-
-    private void GetServices(out IArtificialIntelligenceEndpoint aiApi)
-    {
-        var app = (App) Application.Current;
-
-        aiApi = app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
-                throw new NullReferenceException(
-                    $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
     }
 
     private class

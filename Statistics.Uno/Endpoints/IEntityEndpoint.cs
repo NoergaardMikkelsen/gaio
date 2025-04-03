@@ -27,6 +27,9 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
     [Post("/AddSingle")]
     Task<ApiResponse<bool>> AddSingle(CancellationToken ct, [Body] TEntity entity);
 
+    [Post("/AddMultiple")]
+    Task<ApiResponse<bool>> AddMultiple(CancellationToken ct, [Body] List<TEntity> entities);
+
     [Put("/UpdateSingle")]
     Task<ApiResponse<bool>> UpdateSingle(CancellationToken ct, [Body] TEntity entity);
 }

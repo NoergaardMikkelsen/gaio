@@ -16,7 +16,7 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class AppliedKeywordsPage : Page
+public sealed partial class AppliedKeywordsPage : BasePage
 {
     private enum DataGridColumns
     {
@@ -30,7 +30,9 @@ public sealed partial class AppliedKeywordsPage : Page
 
     public AppliedKeywordsPage()
     {
-        GetServices(out IAppliedKeywordService keywordService, out IResponsesEndpoint responsesApi, out IKeywordEndpoint keywordApi);
+        var keywordService = GetAppliedKeywordService();
+        var responsesApi = GetResponseApi();
+        var keywordApi = GetKeywordApi();
 
         DataContext = new AppliedKeywordsViewModel();
 
@@ -40,24 +42,6 @@ public sealed partial class AppliedKeywordsPage : Page
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateAppliedKeywords();
-    }
-
-    private void GetServices(
-        out IAppliedKeywordService keywordService, out IResponsesEndpoint responsesApi, out IKeywordEndpoint keywordApi)
-    {
-        var app = (App) Application.Current;
-
-        keywordService = app.Startup.ServiceProvider.GetService<IAppliedKeywordService>() ??
-                         throw new NullReferenceException(
-                             $"Failed to acquire an instance implementing '{nameof(IAppliedKeywordService)}'.");
-
-        responsesApi = app.Startup.ServiceProvider.GetService<IResponsesEndpoint>() ??
-                       throw new NullReferenceException(
-                           $"Failed to acquire an instance implementing '{nameof(IResponsesEndpoint)}'.");
-
-        keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
-                     throw new NullReferenceException(
-                         $"Failed to acquire an instance implementing '{nameof(IKeywordEndpoint)}'.");
     }
 
     private class AppliedKeywordsPageUi : BaseUi<AppliedKeywordsPageLogic, AppliedKeywordsViewModel>
@@ -191,14 +175,14 @@ public sealed partial class AppliedKeywordsPage : Page
     private class AppliedKeywordsPageLogic
     {
         private readonly IAppliedKeywordService appliedKeywordService;
-        private readonly IResponsesEndpoint responsesApi;
+        private readonly IResponseEndpoint responsesApi;
         private readonly IKeywordEndpoint keywordApi;
         private ArtificialIntelligenceType comboBoxSelection;
         private AppliedKeywordsViewModel ViewModel { get; }
         private IList<IAppliedKeyword>? appliedKeywordsCache;
 
         public AppliedKeywordsPageLogic(
-            IAppliedKeywordService appliedKeywordService, IResponsesEndpoint responsesApi, IKeywordEndpoint keywordApi,
+            IAppliedKeywordService appliedKeywordService, IResponseEndpoint responsesApi, IKeywordEndpoint keywordApi,
             AppliedKeywordsViewModel dataContext)
         {
             this.appliedKeywordService = appliedKeywordService;

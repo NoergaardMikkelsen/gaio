@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Statistics.Shared.Core\Statistics.Shared.Core.csproj" />
     <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
     <ProjectReference Include="..\Statistics.Shared.Persistence\Statistics.Shared.Persistence.csproj" />
+    <ProjectReference Include="..\Statistics.Shared.Services\Statistics.Shared.Services.csproj" />
     <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
   </ItemGroup>
 

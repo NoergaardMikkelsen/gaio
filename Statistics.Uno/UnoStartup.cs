@@ -18,10 +18,11 @@ public class UnoStartup : UnoModularStartup
 
         Console.WriteLine($"Constructing Startup Class...");
 
-        AddModule(new UnoRefitStartupModule<IResponsesEndpoint>($"{baseAddress}Response"));
+        AddModule(new UnoRefitStartupModule<IResponseEndpoint>($"{baseAddress}Response"));
         AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>($"{baseAddress}ArtificialIntelligence"));
         AddModule(new UnoRefitStartupModule<IPromptEndpoint>($"{baseAddress}Prompt"));
         AddModule(new UnoRefitStartupModule<IKeywordEndpoint>($"{baseAddress}Keyword"));
+        AddModule(new UnoRefitStartupModule<IActionEndpoint>($"{baseAddress}Action"));
     }
 
     /// <inheritdoc />
@@ -29,7 +30,6 @@ public class UnoStartup : UnoModularStartup
     {
         base.ConfigureServices(services);
 
-        services.AddTransient<IMasterArtificialIntelligencePromptService, MasterArtificialIntelligencePromptService>();
         services.AddTransient<IAppliedKeywordService, AppliedKeywordService>();
     }
 

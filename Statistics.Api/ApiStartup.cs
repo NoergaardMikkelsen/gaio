@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Statistics.Api.Startup;
+using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Services;
+using Statistics.Shared.Services.ArtificialIntelligence;
 using IApplicationBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 
 namespace Statistics.Api;
@@ -78,5 +80,7 @@ public class ApiStartup : ApiModularStartup
     public override void ConfigureServices(IServiceCollection services)
     {
         base.ConfigureServices(services);
+
+        services.AddTransient<IMasterArtificialIntelligencePromptService, MasterArtificialIntelligencePromptService>();
     }
 }

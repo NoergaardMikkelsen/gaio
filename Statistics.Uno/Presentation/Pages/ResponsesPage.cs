@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -12,7 +13,7 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
-public sealed partial class ResponsesPage : Page
+public sealed partial class ResponsesPage : BasePage
 {
     private enum DataGridColumns
     {
@@ -24,25 +25,17 @@ public sealed partial class ResponsesPage : Page
 
     public ResponsesPage()
     {
-        GetServices(out IArtificialIntelligenceEndpoint aiApi);
+        IArtificialIntelligenceEndpoint aiApi = GetAiApi();
+        IActionEndpoint actionApi = GetActionApi();
 
         DataContext = new ResponsesViewModel();
 
-        var logic = new ResponsesPageLogic(aiApi, (ResponsesViewModel) DataContext);
+        var logic = new ResponsesPageLogic(aiApi, actionApi, (ResponsesViewModel) DataContext);
         var ui = new ResponsesPageUi(logic, (ResponsesViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateResponses();
-    }
-
-    private void GetServices(out IArtificialIntelligenceEndpoint aiApi)
-    {
-        var app = (App) Application.Current;
-
-        aiApi = app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
-                throw new NullReferenceException(
-                    $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
     }
 
     private class ResponsesPageUi : BaseUi<ResponsesPageLogic, ResponsesViewModel>
@@ -53,6 +46,7 @@ public sealed partial class ResponsesPage : Page
 
         protected override void AddControlsToGrid(Grid grid)
         {
+            StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
                 .Grid(row: 0, column: 4);
             DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
@@ -61,9 +55,32 @@ public sealed partial class ResponsesPage : Page
             StackPanel refreshButtons =
                 CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 2, column: 4);
 
+            grid.Children.Add(buttonPanel);
             grid.Children.Add(aiSelectionComboBox);
             grid.Children.Add(responsesDataGrid);
             grid.Children.Add(refreshButtons);
+        }
+
+        private StackPanel CreateButtonsPanel()
+        {
+            var stackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(10),
+            };
+
+            var executeAllPromptsButton = new Button()
+            {
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+            executeAllPromptsButton.Content(()=> ViewModel.ExecuteAllPromptsButtonText);
+            executeAllPromptsButton.Click += Logic.ExecuteAllPromptsOnClick;
+
+            stackPanel.Children.Add(executeAllPromptsButton);
+
+            return stackPanel;
         }
 
         protected override void ConfigureGrid(Grid grid)
@@ -141,12 +158,14 @@ public sealed partial class ResponsesPage : Page
     private class ResponsesPageLogic
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
+        private readonly IActionEndpoint actionApi;
         private ArtificialIntelligenceType comboBoxSelection;
         private ResponsesViewModel ViewModel { get; }
 
-        public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, ResponsesViewModel dataContext)
+        public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
         {
             this.aiApi = aiApi;
+            this.actionApi = actionApi;
             ViewModel = dataContext;
             ViewModel.Responses = new List<IResponse>();
         }
@@ -178,6 +197,20 @@ public sealed partial class ResponsesPage : Page
             }
 
             ViewModel.Responses = selectedAiEntity.Responses.ToList();
+        }
+
+        public async void ExecuteAllPromptsOnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button ??
+                            throw new NullReferenceException(
+                                $"Expected '{nameof(sender)}' to not be null, but it was.");
+
+            ViewModel.ExecuteAllPromptsButtonText = "Executing...";
+            button.IsEnabled = false;
+            await actionApi.ExecuteAllPrompts(CancellationToken.None);
+            ViewModel.ExecuteAllPromptsButtonText = "Execute Prompts";
+            button.IsEnabled = true;
+            await UpdateResponses();
         }
     }
 }
