@@ -9,6 +9,9 @@ public class AppliedKeyword : IAppliedKeyword
     public string Text { get; set; }
 
     /// <inheritdoc />
+    public bool UsesRegex { get; set; }
+
+    /// <inheritdoc />
     public ArtificialIntelligenceType AiType { get; set; }
 
     /// <inheritdoc />

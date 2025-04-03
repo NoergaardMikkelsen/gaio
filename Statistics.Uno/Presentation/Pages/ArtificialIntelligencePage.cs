@@ -26,12 +26,7 @@ public sealed partial class ArtificialIntelligencePage : Page
 
     public ArtificialIntelligencePage()
     {
-        var app = (App) Application.Current;
-
-        IArtificialIntelligenceEndpoint aiApi =
-            app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
-            throw new NullReferenceException(
-                $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
+        GetServices(out IArtificialIntelligenceEndpoint aiApi);
 
         DataContext = new ArtificialIntelligenceViewModel();
 
@@ -40,7 +35,16 @@ public sealed partial class ArtificialIntelligencePage : Page
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdateArtificialIntelligences();
+        _ = logic.UpdateArtificialIntelligences();
+    }
+
+    private void GetServices(out IArtificialIntelligenceEndpoint aiApi)
+    {
+        var app = (App) Application.Current;
+
+        aiApi = app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
+                throw new NullReferenceException(
+                    $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
     }
 
     private class
@@ -59,11 +63,12 @@ public sealed partial class ArtificialIntelligencePage : Page
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
                 ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns,
                 SetupDataGridRowTemplate).Grid(row: 1, column: 0, columnSpan: 5);
-            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateArtificialIntelligences())
+                .Grid(row: 2, column: 4);
 
             grid.Children.Add(buttonPanel);
             grid.Children.Add(aiDataGrid);
-            grid.Children.Add(refreshButton);
+            grid.Children.Add(refreshButtons);
         }
 
         private StackPanel CreateButtonsPanel()
@@ -86,18 +91,6 @@ public sealed partial class ArtificialIntelligencePage : Page
             stackPanel.Children.Add(addButton);
 
             return stackPanel;
-        }
-
-        private Button CreateRefreshButton()
-        {
-            var button = new Button()
-            {
-                Content = "Refresh",
-                Margin = new Thickness(5),
-                HorizontalAlignment = HorizontalAlignment.Right,
-            };
-            button.Click += async (_, _) => await Logic.UpdateArtificialIntelligences();
-            return button;
         }
 
         /// <inheritdoc />

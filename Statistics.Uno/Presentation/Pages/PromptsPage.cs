@@ -24,11 +24,7 @@ public sealed partial class PromptsPage : Page
 
     public PromptsPage()
     {
-        var app = (App) Application.Current;
-
-        IPromptEndpoint promptApi = app.Startup.ServiceProvider.GetService<IPromptEndpoint>() ??
-                                    throw new NullReferenceException(
-                                        $"Failed to acquire an instance implementing '{nameof(IPromptEndpoint)}'.");
+        GetServices(out IPromptEndpoint promptApi);
 
         DataContext = new PromptsViewModel();
 
@@ -37,7 +33,16 @@ public sealed partial class PromptsPage : Page
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdatePrompts();
+        _ = logic.UpdatePrompts();
+    }
+
+    private void GetServices(out IPromptEndpoint promptApi)
+    {
+        var app = (App) Application.Current;
+
+        promptApi = app.Startup.ServiceProvider.GetService<IPromptEndpoint>() ??
+                    throw new NullReferenceException(
+                        $"Failed to acquire an instance implementing '{nameof(IPromptEndpoint)}'.");
     }
 
     private class PromptsPageUi : BaseUi<PromptsPageLogic, PromptsViewModel>
@@ -53,13 +58,13 @@ public sealed partial class PromptsPage : Page
             DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
-            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdatePrompts()).Grid(row: 2, column: 4);
 
             grid.Children.Add(buttonPanel);
             grid.Children.Add(promptsDataGrid);
-            grid.Children.Add(refreshButton);
+            grid.Children.Add(refreshButtons);
         }
-
+        
         private StackPanel CreateButtonsPanel()
         {
             var stackPanel = new StackPanel()
@@ -80,19 +85,6 @@ public sealed partial class PromptsPage : Page
             stackPanel.Children.Add(addButton);
 
             return stackPanel;
-        }
-
-        private Button CreateRefreshButton()
-        {
-            var button = new Button()
-            {
-                Content = "Refresh",
-                Margin = new Thickness(10),
-                HorizontalAlignment = HorizontalAlignment.Right,
-            };
-
-            button.Click += async (_, _) => await Logic.UpdatePrompts();
-            return button;
         }
 
         /// <inheritdoc />

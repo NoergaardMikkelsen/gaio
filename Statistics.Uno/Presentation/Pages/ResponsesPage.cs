@@ -24,12 +24,7 @@ public sealed partial class ResponsesPage : Page
 
     public ResponsesPage()
     {
-        var app = (App) Application.Current;
-
-        IArtificialIntelligenceEndpoint aiApi =
-            app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
-            throw new NullReferenceException(
-                $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
+        GetServices(out IArtificialIntelligenceEndpoint aiApi);
 
         DataContext = new ResponsesViewModel();
 
@@ -38,7 +33,16 @@ public sealed partial class ResponsesPage : Page
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdateResponses();
+        _ = logic.UpdateResponses();
+    }
+
+    private void GetServices(out IArtificialIntelligenceEndpoint aiApi)
+    {
+        var app = (App) Application.Current;
+
+        aiApi = app.Startup.ServiceProvider.GetService<IArtificialIntelligenceEndpoint>() ??
+                throw new NullReferenceException(
+                    $"Failed to acquire an instance implementing '{nameof(IArtificialIntelligenceEndpoint)}'.");
     }
 
     private class ResponsesPageUi : BaseUi<ResponsesPageLogic, ResponsesViewModel>
@@ -49,27 +53,17 @@ public sealed partial class ResponsesPage : Page
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            ComboBox aiSelectionComboBox = CreateAiSelectionComboBox().Grid(row: 0, column: 4);
+            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
+                .Grid(row: 0, column: 4);
             DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
-            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
+            StackPanel refreshButtons =
+                CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 2, column: 4);
 
             grid.Children.Add(aiSelectionComboBox);
             grid.Children.Add(responsesDataGrid);
-            grid.Children.Add(refreshButton);
-        }
-
-        private Button CreateRefreshButton()
-        {
-            var button = new Button()
-            {
-                Content = "Refresh",
-                Margin = new Thickness(10),
-                HorizontalAlignment = HorizontalAlignment.Right,
-            };
-            button.Click += async (_, _) => await Logic.UpdateResponses();
-            return button;
+            grid.Children.Add(refreshButtons);
         }
 
         protected override void ConfigureGrid(Grid grid)
@@ -112,9 +106,9 @@ public sealed partial class ResponsesPage : Page
                 GetColumnStarWidth, GetValueConverterForColumn));
         }
 
-        private string GetEnumAsString(int i)
+        private string GetEnumAsString(int columnNumber)
         {
-            return ((DataGridColumns) i).ToString();
+            return ((DataGridColumns) columnNumber).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
@@ -142,22 +136,6 @@ public sealed partial class ResponsesPage : Page
                 var _ => null,
             };
         }
-
-        private ComboBox CreateAiSelectionComboBox()
-        {
-            var comboBox = new ComboBox()
-            {
-                Margin = new Thickness(10), BorderBrush = new SolidColorBrush(Colors.White),
-            };
-
-            var options = typeof(ArtificialIntelligenceType).EnumNamesToTitleCase();
-
-            comboBox.ItemsSource = options;
-            comboBox.SelectionChanged += Logic.ComboBoxOnSelectionChanged;
-            comboBox.SelectedIndex = (int) ArtificialIntelligenceType.OPEN_AI;
-
-            return comboBox;
-        }
     }
 
     private class ResponsesPageLogic
@@ -179,6 +157,7 @@ public sealed partial class ResponsesPage : Page
                                 throw new NullReferenceException(
                                     $"Expected '{nameof(sender)}' to not be null, but it was.");
             comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
+            UpdateResponses();
         }
 
         internal async Task UpdateResponses()

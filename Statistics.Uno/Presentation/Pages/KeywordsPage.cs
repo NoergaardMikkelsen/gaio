@@ -26,21 +26,27 @@ public sealed partial class KeywordsPage : Page
 
     public KeywordsPage()
     {
-        var app = (App)Application.Current;
-
-        IKeywordEndpoint keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
-                                      throw new NullReferenceException(
-                                          $"Failed to acquire an instance implementing '{nameof(IKeywordEndpoint)}'.");
+        GetServices(out IKeywordEndpoint keywordApi);
 
         DataContext = new KeywordsViewModel();
 
-        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel)DataContext, this);
-        var ui = new KeywordsPageUi(logic, (KeywordsViewModel)DataContext);
+        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel) DataContext, this);
+        var ui = new KeywordsPageUi(logic, (KeywordsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        logic.UpdateKeywords();
+        _ = logic.UpdateKeywords();
     }
+
+    private void GetServices(out IKeywordEndpoint keywordApi)
+    {
+        var app = (App) Application.Current;
+
+        keywordApi = app.Startup.ServiceProvider.GetService<IKeywordEndpoint>() ??
+                     throw new NullReferenceException(
+                         $"Failed to acquire an instance implementing '{nameof(IKeywordEndpoint)}'.");
+    }
+
 
     private class KeywordsPageUi : BaseUi<KeywordsPageLogic, KeywordsViewModel>
     {
@@ -55,11 +61,11 @@ public sealed partial class KeywordsPage : Page
             DataGrid keywordsDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns, SetupDataGridRowTemplate)
                 .Grid(row: 1, column: 0, columnSpan: 5);
-            Button refreshButton = CreateRefreshButton().Grid(row: 2, column: 4);
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateKeywords()).Grid(row: 2, column: 4);
 
             grid.Children.Add(buttonPanel);
             grid.Children.Add(keywordsDataGrid);
-            grid.Children.Add(refreshButton);
+            grid.Children.Add(refreshButtons);
         }
 
         private StackPanel CreateButtonsPanel()
@@ -82,19 +88,6 @@ public sealed partial class KeywordsPage : Page
             stackPanel.Children.Add(addButton);
 
             return stackPanel;
-        }
-
-        private Button CreateRefreshButton()
-        {
-            var button = new Button()
-            {
-                Content = "Refresh",
-                Margin = new Thickness(10),
-                HorizontalAlignment = HorizontalAlignment.Right,
-            };
-
-            button.Click += async (_, _) => await Logic.UpdateKeywords();
-            return button;
         }
 
         /// <inheritdoc />

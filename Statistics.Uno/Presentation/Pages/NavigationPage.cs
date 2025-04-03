@@ -13,6 +13,7 @@ public sealed partial class NavigationPage : Page
         PROMPTS = 1,
         ARTIFICIAL_INTELLIGENCES = 2,
         KEYWORDS = 3,
+        APPLIED_KEYWORDS = 4
     }
 
     public NavigationPage()
@@ -141,29 +142,18 @@ public sealed partial class NavigationPage : Page
         {
             AssertNavigationFrameIsSet();
 
-            switch (selectedPage)
+            Page newPage = selectedPage switch
             {
-                case Pages.RESPONSES:
-                    Console.WriteLine($"Navigation to '{nameof(ResponsesPage)}'...");
-                    navigationFrame!.Navigate(typeof(ResponsesPage));
-                    break;
-                case Pages.PROMPTS:
-                    Console.WriteLine($"Navigation to '{nameof(PromptsPage)}'...");
-                    navigationFrame!.Navigate(typeof(PromptsPage));
-                    break;
-                case Pages.ARTIFICIAL_INTELLIGENCES:
-                    Console.WriteLine($"Navigation to '{nameof(ArtificialIntelligencePage)}'...");
-                    navigationFrame!.Navigate(typeof(ArtificialIntelligencePage));
-                    break;
-                case Pages.KEYWORDS:
-                    Console.WriteLine($"Navigation to '{nameof(KeywordsPage)}'...");
-                    navigationFrame!.Navigate(typeof(KeywordsPage));
-                    break;
-                default:
-                    Console.WriteLine($"Navigation to '{nameof(DefaultPage)}'...");
-                    navigationFrame!.Navigate(typeof(DefaultPage));
-                    break;
-            }
+                Pages.RESPONSES => new ResponsesPage(),
+                Pages.PROMPTS => new PromptsPage(),
+                Pages.ARTIFICIAL_INTELLIGENCES => new ArtificialIntelligencePage(),
+                Pages.KEYWORDS => new KeywordsPage(),
+                Pages.APPLIED_KEYWORDS => new AppliedKeywordsPage(),
+                _ => new DefaultPage()
+            };
+
+            Console.WriteLine($"Navigation to '{newPage.GetType().Name}'...");
+            navigationFrame!.Navigate(newPage.GetType());
         }
     }
 }
