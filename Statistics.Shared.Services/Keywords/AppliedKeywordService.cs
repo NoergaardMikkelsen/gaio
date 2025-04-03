@@ -3,6 +3,7 @@ using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
+using Statistics.Shared.Extensions;
 using Statistics.Shared.Models;
 using Statistics.Shared.Models.Entity;
 
@@ -21,7 +22,7 @@ public class AppliedKeywordService : IAppliedKeywordService
 
         var appliedKeywordsByType = await Task.WhenAll(generateAppliedKeywordsTasks);
 
-        return appliedKeywordsByType.SelectMany(x => x);
+        return appliedKeywordsByType.Flatten();
     }
 
     private async Task<IEnumerable<IAppliedKeyword>> GenerateAppliedKeywordsForAiType(

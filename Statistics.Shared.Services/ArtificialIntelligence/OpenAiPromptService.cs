@@ -29,8 +29,25 @@ public class OpenAiPromptService : BasePromptService, IArtificialIntelligencePro
         return completedPrompts.Select((x, index) => BuildResponseFromChatCompletion(x.Value, index, ai, promptList));
     }
 
+    /// <inheritdoc />
+    public async Task<IResponse> ExecutePrompt(IArtificialIntelligence ai, IPrompt prompt)
+    {
+        ValidateSuppliedAi(ai);
+
+        var client = new ChatClient(MODEL, ai.Key);
+
+        var chatCompletion = await client.CompleteChatAsync(prompt.Text);
+
+        return BuildResponseFromChatCompletion(chatCompletion, ai, prompt);
+    }
+
     private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, int index, IArtificialIntelligence ai, IEnumerable<IPrompt> prompts)
     {
         return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompts.ToList()[index].Id);
+    }
+
+    private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, IArtificialIntelligence ai, IPrompt prompt)
+    {
+        return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompt.Id);
     }
 }

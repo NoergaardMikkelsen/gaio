@@ -1,6 +1,7 @@
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
+using Statistics.Shared.Extensions;
 
 namespace Statistics.Shared.Services.ArtificialIntelligence;
 
@@ -8,12 +9,14 @@ public class MasterArtificialIntelligencePromptService : IMasterArtificialIntell
 {
     private readonly Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService> promptServices;
 
-    public MasterArtificialIntelligencePromptService()
+    public MasterArtificialIntelligencePromptService(
+        Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>? promptServices = null)
     {
-        promptServices = new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>()
-        {
-            {ArtificialIntelligenceType.OPEN_AI, new OpenAiPromptService()},
-        };
+        this.promptServices = promptServices ??
+                              new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>()
+                              {
+                                  {ArtificialIntelligenceType.OPEN_AI, new OpenAiPromptService()},
+                              };
     }
 
     /// <inheritdoc />
@@ -29,6 +32,20 @@ public class MasterArtificialIntelligencePromptService : IMasterArtificialIntell
             tasks.Add(service.ExecutePrompts(ai, enumeratedPrompts));
         }
 
-        return (await Task.WhenAll(tasks)).SelectMany(x => x).ToList();
+        return (await Task.WhenAll(tasks)).Flatten();
+    }
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<IResponse>> PromptSuppliedAis(IEnumerable<IArtificialIntelligence> ais, IPrompt prompt)
+    {
+        var tasks = new List<Task<IResponse>>();
+
+        foreach (IArtificialIntelligence ai in ais)
+        {
+            IArtificialIntelligencePromptService service = promptServices.First(pair => pair.Key == ai.AiType).Value;
+            tasks.Add(service.ExecutePrompt(ai, prompt));
+        }
+
+        return await Task.WhenAll(tasks);
     }
 }
