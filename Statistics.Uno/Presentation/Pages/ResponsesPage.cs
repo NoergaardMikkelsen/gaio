@@ -92,9 +92,9 @@ public sealed partial class ResponsesPage : Page
             return column switch
             {
                 DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
-                DataGridColumns.RESPONSE_TEXT => $"{nameof(Response.Text)}",
-                DataGridColumns.CREATED_AT => $"{nameof(Response.CreatedDateTime)}",
-                DataGridColumns.LAST_UPDATED_AT => $"{nameof(Response.UpdatedDateTime)}",
+                DataGridColumns.RESPONSE_TEXT => nameof(Response.Text),
+                DataGridColumns.CREATED_AT => nameof(Response.CreatedDateTime),
+                DataGridColumns.LAST_UPDATED_AT => nameof(Response.UpdatedDateTime),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -157,7 +157,7 @@ public sealed partial class ResponsesPage : Page
                                 throw new NullReferenceException(
                                     $"Expected '{nameof(sender)}' to not be null, but it was.");
             comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
-            UpdateResponses();
+            _ = UpdateResponses();
         }
 
         internal async Task UpdateResponses()

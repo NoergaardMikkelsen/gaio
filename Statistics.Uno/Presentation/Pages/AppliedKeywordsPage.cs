@@ -136,12 +136,12 @@ public sealed partial class AppliedKeywordsPage : Page
 
             return column switch
             {
-                DataGridColumns.TEXT => $"{nameof(AppliedKeyword.Text)}",
-                DataGridColumns.USES_REGEX => $"{nameof(AppliedKeyword.UsesRegex)}",
-                DataGridColumns.TOTAL_RESPONSES_COUNT => $"{nameof(AppliedKeyword.TotalResponsesCount)}",
-                DataGridColumns.MATCHING_RESPONSES_COUNT => $"{nameof(AppliedKeyword.MatchingResponsesCount)}",
-                DataGridColumns.START_SEARCH => $"{nameof(AppliedKeyword.StartSearch)}",
-                DataGridColumns.END_SEARCH => $"{nameof(AppliedKeyword.EndSearch)}",
+                DataGridColumns.TEXT => nameof(AppliedKeyword.Text),
+                DataGridColumns.USES_REGEX => nameof(AppliedKeyword.UsesRegex),
+                DataGridColumns.TOTAL_RESPONSES_COUNT => nameof(AppliedKeyword.TotalResponsesCount),
+                DataGridColumns.MATCHING_RESPONSES_COUNT => nameof(AppliedKeyword.MatchingResponsesCount),
+                DataGridColumns.START_SEARCH => nameof(AppliedKeyword.StartSearch),
+                DataGridColumns.END_SEARCH => nameof(AppliedKeyword.EndSearch),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
