@@ -1,25 +1,13 @@
 using Statistics.Shared.Abstraction.Enum;
-using Statistics.Shared.Abstraction.Interfaces.Models;
 
-namespace Statistics.Shared.Models;
+namespace Statistics.Shared.Abstraction.Interfaces.Models;
 
-public class AppliedKeyword : IAppliedKeyword
+public interface IAppliedKeyword
 {
-    /// <inheritdoc />
     public string Text { get; set; }
-
-    /// <inheritdoc />
     public ArtificialIntelligenceType AiType { get; set; }
-
-    /// <inheritdoc />
     public int TotalResponsesCount { get; set; }
-
-    /// <inheritdoc />
     public int MatchingResponsesCount { get; set; }
-
-    /// <inheritdoc />
     public DateTime? StartSearch { get; set; }
-
-    /// <inheritdoc />
     public DateTime? EndSearch { get; set; }
 }

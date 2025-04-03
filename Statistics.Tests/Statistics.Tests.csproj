@@ -21,4 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Statistics.Uno\Statistics.Uno.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Service\" />
+  </ItemGroup>
 </Project>
