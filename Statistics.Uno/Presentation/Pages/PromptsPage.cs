@@ -6,6 +6,7 @@ using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
+using Statistics.Uno.Services.Core;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -21,12 +22,15 @@ public sealed partial class PromptsPage : BasePage
 
     public PromptsPage()
     {
+        Console.WriteLine($"Building {nameof(PromptsPage)}...");
+
         IPromptEndpoint promptApi = GetPromptApi();
         IActionEndpoint actionApi = GetActionApi();
+        ISignalrService signalrService = GetSignalrService();
 
         DataContext = new PromptsViewModel();
 
-        var logic = new PromptsPageLogic(promptApi, actionApi, (PromptsViewModel) DataContext, this);
+        var logic = new PromptsPageLogic(promptApi, actionApi, signalrService, (PromptsViewModel) DataContext, this);
         var ui = new PromptsPageUi(logic, (PromptsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -200,15 +204,26 @@ public sealed partial class PromptsPage : BasePage
     {
         private readonly IPromptEndpoint promptApi;
         private readonly IActionEndpoint actionApi;
+        private readonly ISignalrService signalrService;
         private readonly Page page;
         private PromptsViewModel ViewModel { get; }
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, IActionEndpoint actionApi, PromptsViewModel viewModel, PromptsPage page)
+        public PromptsPageLogic(
+            IPromptEndpoint promptApi, IActionEndpoint actionApi, ISignalrService signalrService,
+            PromptsViewModel viewModel, PromptsPage page)
         {
             ViewModel = viewModel;
             this.promptApi = promptApi;
             this.actionApi = actionApi;
+            this.signalrService = signalrService;
             this.page = page;
+
+            signalrService.PromptsChanged += OnPromptsChanged;
+        }
+
+        private async void OnPromptsChanged(object? sender, string e)
+        {
+            await UpdatePrompts();
         }
 
         internal async Task UpdatePrompts()
@@ -295,7 +310,7 @@ public sealed partial class PromptsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var promptId = (int)button.Tag;
+            var promptId = (int) button.Tag;
 
             button.IsEnabled = false;
             await actionApi.ExecutePromptById(CancellationToken.None, promptId);

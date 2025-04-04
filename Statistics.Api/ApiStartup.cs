@@ -13,7 +13,7 @@ namespace Statistics.Api;
 
 public class ApiStartup : ApiModularStartup
 {
-    private const string LOG_FILE = "Storage/satistics.log";
+    private const string LOG_FILE = "Storage/statistics.log";
 
     public ApiStartup() : base()
     {
@@ -24,24 +24,7 @@ public class ApiStartup : ApiModularStartup
         AddModule(new ApiStartupModule());
         AddModule(new SwaggerStartupModule("AI Statistics Api"));
 
-        AddModule(new ApiDatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
-        {
-            SecretsConfig secrets = GetSecrets();
-
-            if (string.IsNullOrEmpty(secrets.ConnectionString))
-            {
-                throw new ArgumentNullException(nameof(secrets.ConnectionString),
-                    "The connection string in the secrets was empty");
-            }
-
-            options.UseNpgsql(secrets.ConnectionString);
-            Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
-
-#if DEBUG
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-#endif
-        }));
+        AddModule(new ApiDatabaseContextStartupModule<StatisticsDatabaseContext>(SetupDatabaseConnection));
 
         AddModule(
             new ApiEntityQueryServiceStartupModule<ArtificialIntelligenceQueryService, ArtificialIntelligence,
@@ -49,6 +32,27 @@ public class ApiStartup : ApiModularStartup
         AddModule(new ApiEntityQueryServiceStartupModule<PromptQueryService, Prompt, SearchablePrompt>());
         AddModule(new ApiEntityQueryServiceStartupModule<ResponseQueryService, Response, SearchableResponse>());
         AddModule(new ApiEntityQueryServiceStartupModule<KeywordQueryService, Keyword, SearchableKeyword>());
+
+        AddModule(new ApiSignalrStartupModule());
+    }
+
+    private void SetupDatabaseConnection(DbContextOptionsBuilder options)
+    {
+        SecretsConfig secrets = GetSecrets();
+
+        if (string.IsNullOrEmpty(secrets.ConnectionString))
+        {
+            throw new ArgumentNullException(nameof(secrets.ConnectionString),
+                "The connection string in the secrets was empty");
+        }
+
+        options.UseNpgsql(secrets.ConnectionString);
+        Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
+
+#if DEBUG
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
+#endif
     }
 
     private IConfiguration BuildConfiguration()

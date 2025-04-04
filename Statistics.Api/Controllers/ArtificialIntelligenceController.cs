@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Statistics.Api.Hubs;
+using Statistics.Shared.Abstraction.Enum;
+using Statistics.Shared.Abstraction.Interfaces;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -13,7 +17,9 @@ public class ArtificialIntelligenceController : EntityController<ArtificialIntel
     /// <inheritdoc />
     public ArtificialIntelligenceController(
         IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> entityService,
-        ILogger<ArtificialIntelligenceController> logger) : base(entityService, logger)
+        ILogger<ArtificialIntelligenceController> logger,
+        IHubContext<NotificationHub, INotificationHub> hubContext) : base(entityService, logger, hubContext,
+        SignalrEvent.ARTIFICIAL_INTELLIGENCES_CHANGED)
     {
     }
 }

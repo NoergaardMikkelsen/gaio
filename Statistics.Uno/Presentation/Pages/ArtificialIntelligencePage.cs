@@ -5,6 +5,7 @@ using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
+using Statistics.Uno.Services.Core;
 using ArtificialIntelligenceViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ArtificialIntelligenceViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
@@ -23,11 +24,15 @@ public sealed partial class ArtificialIntelligencePage : BasePage
 
     public ArtificialIntelligencePage()
     {
+        Console.WriteLine($"Building {nameof(ArtificialIntelligencePage)}...");
+
         IArtificialIntelligenceEndpoint aiApi = GetAiApi();
+        ISignalrService signalrService = GetSignalrService();
 
         DataContext = new ArtificialIntelligenceViewModel();
 
-        var logic = new ArtificialIntelligencePageLogic(aiApi, (ArtificialIntelligenceViewModel) DataContext, this);
+        var logic = new ArtificialIntelligencePageLogic(aiApi, signalrService,
+            (ArtificialIntelligenceViewModel) DataContext, this);
         var ui = new ArtificialIntelligencePageUi(logic, (ArtificialIntelligenceViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -191,15 +196,25 @@ public sealed partial class ArtificialIntelligencePage : BasePage
     private class ArtificialIntelligencePageLogic
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
+        private readonly ISignalrService signalrService;
         private readonly Page page;
         private ArtificialIntelligenceViewModel DataContext { get; }
 
         public ArtificialIntelligencePageLogic(
-            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext, Page page)
+            IArtificialIntelligenceEndpoint aiApi, ISignalrService signalrService,
+            ArtificialIntelligenceViewModel dataContext, Page page)
         {
             this.aiApi = aiApi;
+            this.signalrService = signalrService;
             this.page = page;
             DataContext = dataContext;
+
+            signalrService.ArtificialIntelligenceChanged += OnArtificialIntelligenceChanged;
+        }
+
+        private async void OnArtificialIntelligenceChanged(object? sender, string e)
+        {
+            await UpdateArtificialIntelligences();
         }
 
         internal async Task UpdateArtificialIntelligences()

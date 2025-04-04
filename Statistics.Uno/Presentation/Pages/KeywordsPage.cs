@@ -6,6 +6,7 @@ using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
+using Statistics.Uno.Services.Core;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -24,11 +25,14 @@ public sealed partial class KeywordsPage : BasePage
 
     public KeywordsPage()
     {
+        Console.WriteLine($"Building {nameof(KeywordsPage)}...");
+
         IKeywordEndpoint keywordApi = GetKeywordApi();
+        ISignalrService signalrService = GetSignalrService();
 
         DataContext = new KeywordsViewModel();
 
-        var logic = new KeywordsPageLogic(keywordApi, (KeywordsViewModel) DataContext, this);
+        var logic = new KeywordsPageLogic(keywordApi, signalrService, (KeywordsViewModel) DataContext, this);
         var ui = new KeywordsPageUi(logic, (KeywordsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -101,7 +105,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private string GetColumnBindingPath(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -118,7 +122,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -140,12 +144,12 @@ public sealed partial class KeywordsPage : BasePage
 
         private string GetEnumAsString(int columnNumber)
         {
-            return ((DataGridColumns)columnNumber).ToString();
+            return ((DataGridColumns) columnNumber).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -162,7 +166,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private FrameworkElement BuildActionsElement(int columnEnumAsInt)
         {
-            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal, };
+            var stackPanel = new StackPanel() {Orientation = Orientation.Horizontal,};
 
             var editButton = new Button()
             {
@@ -191,14 +195,24 @@ public sealed partial class KeywordsPage : BasePage
     private class KeywordsPageLogic
     {
         private readonly IKeywordEndpoint keywordApi;
+        private readonly ISignalrService signalrService;
         private readonly Page page;
         private KeywordsViewModel ViewModel { get; }
 
-        public KeywordsPageLogic(IKeywordEndpoint keywordApi, KeywordsViewModel dataContext, Page page)
+        public KeywordsPageLogic(
+            IKeywordEndpoint keywordApi, ISignalrService signalrService, KeywordsViewModel dataContext, Page page)
         {
             ViewModel = dataContext;
             this.keywordApi = keywordApi;
+            this.signalrService = signalrService;
             this.page = page;
+
+            signalrService.KeywordsChanged += OnKeywordsChanged;
+        }
+
+        private async void OnKeywordsChanged(object? sender, string e)
+        {
+            await UpdateKeywords();
         }
 
         internal async Task UpdateKeywords()
@@ -227,7 +241,7 @@ public sealed partial class KeywordsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int)button.Tag;
+            var keywordId = (int) button.Tag;
 
             IKeyword keyword = ViewModel.Keywords.FirstOrDefault(x => x.Id == keywordId) ??
                                throw new NullReferenceException(
@@ -252,7 +266,7 @@ public sealed partial class KeywordsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int)button.Tag;
+            var keywordId = (int) button.Tag;
 
             await keywordApi.DeleteById(CancellationToken.None, keywordId);
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -267,5 +281,3 @@ public sealed partial class KeywordsPage : BasePage
         }
     }
 }
-
-

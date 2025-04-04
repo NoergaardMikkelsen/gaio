@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR.Client;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Services.Keywords;
 using Statistics.Uno.Endpoints;
@@ -13,15 +14,20 @@ public class UnoStartup : UnoModularStartup
 
     public UnoStartup()
     {
-        const string baseAddress = $"https://localhost:7016/api/";
+        const string baseAddress = $"https://localhost:7016/";
+        const string baseApiAddress = $"{baseAddress}api/";
 
         Console.WriteLine($"Constructing Startup Class...");
 
-        AddModule(new UnoRefitStartupModule<IResponseEndpoint>($"{baseAddress}Response"));
-        AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>($"{baseAddress}ArtificialIntelligence"));
-        AddModule(new UnoRefitStartupModule<IPromptEndpoint>($"{baseAddress}Prompt"));
-        AddModule(new UnoRefitStartupModule<IKeywordEndpoint>($"{baseAddress}Keyword"));
-        AddModule(new UnoRefitStartupModule<IActionEndpoint>($"{baseAddress}Action"));
+        AddModule(new UnoRefitStartupModule<IResponseEndpoint>($"{baseApiAddress}Response"));
+        AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>(
+            $"{baseApiAddress}ArtificialIntelligence"));
+        AddModule(new UnoRefitStartupModule<IPromptEndpoint>($"{baseApiAddress}Prompt"));
+        AddModule(new UnoRefitStartupModule<IKeywordEndpoint>($"{baseApiAddress}Keyword"));
+        AddModule(new UnoRefitStartupModule<IActionEndpoint>($"{baseApiAddress}Action"));
+
+        AddModule(new UnoSignalrStartupModule(() =>
+            new HubConnectionBuilder().WithUrl($"{baseAddress}NotificationHub").Build()));
     }
 
     /// <inheritdoc />

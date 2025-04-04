@@ -11,6 +11,7 @@ using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
+using Statistics.Uno.Services.Core;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -28,14 +29,18 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
     public AppliedKeywordsPage()
     {
-        var keywordService = GetAppliedKeywordService();
-        var responsesApi = GetResponseApi();
-        var keywordApi = GetKeywordApi();
+        Console.WriteLine($"Building {nameof(AppliedKeywordsPage)}...");
+
+        IAppliedKeywordService keywordService = GetAppliedKeywordService();
+        IResponseEndpoint responsesApi = GetResponseApi();
+        IKeywordEndpoint keywordApi = GetKeywordApi();
+        ISignalrService signalrService = GetSignalrService();
 
         DataContext = new AppliedKeywordsViewModel();
 
-        var logic = new AppliedKeywordsPageLogic(keywordService, responsesApi, keywordApi, (AppliedKeywordsViewModel)DataContext);
-        var ui = new AppliedKeywordsPageUi(logic, (AppliedKeywordsViewModel)DataContext);
+        var logic = new AppliedKeywordsPageLogic(keywordService, responsesApi, keywordApi, signalrService,
+            (AppliedKeywordsViewModel) DataContext);
+        var ui = new AppliedKeywordsPageUi(logic, (AppliedKeywordsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
@@ -44,7 +49,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
     private class AppliedKeywordsPageUi : BaseUi<AppliedKeywordsPageLogic, AppliedKeywordsViewModel>
     {
-        public AppliedKeywordsPageUi(AppliedKeywordsPageLogic logic, AppliedKeywordsViewModel dataContext) : base(logic, dataContext)
+        public AppliedKeywordsPageUi(AppliedKeywordsPageLogic logic, AppliedKeywordsViewModel dataContext) : base(logic,
+            dataContext)
         {
         }
 
@@ -114,7 +120,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         private string GetColumnBindingPath(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -137,12 +143,12 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         private string GetEnumAsString(int i)
         {
-            return ((DataGridColumns)i).ToString();
+            return ((DataGridColumns) i).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -158,7 +164,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -181,13 +187,26 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         public AppliedKeywordsPageLogic(
             IAppliedKeywordService appliedKeywordService, IResponseEndpoint responsesApi, IKeywordEndpoint keywordApi,
-            AppliedKeywordsViewModel dataContext)
+            ISignalrService signalrService, AppliedKeywordsViewModel dataContext)
         {
             this.appliedKeywordService = appliedKeywordService;
             this.responsesApi = responsesApi;
             this.keywordApi = keywordApi;
             ViewModel = dataContext;
             ViewModel.AppliedKeywords = new List<IAppliedKeyword>();
+
+            signalrService.KeywordsChanged += OnKeywordsChanged;
+            signalrService.ResponsesChanged += OnResponsesChanged;
+        }
+
+        private async void OnResponsesChanged(object? sender, string e)
+        {
+            await UpdateAppliedKeywords(true);
+        }
+
+        private async void OnKeywordsChanged(object? sender, string e)
+        {
+            await UpdateAppliedKeywords(true);
         }
 
         public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -195,16 +214,18 @@ public sealed partial class AppliedKeywordsPage : BasePage
             ComboBox comboBox = sender as ComboBox ??
                                 throw new NullReferenceException(
                                     $"Expected '{nameof(sender)}' to not be null, but it was.");
-            comboBoxSelection = (ArtificialIntelligenceType)comboBox.SelectedIndex;
+            comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
             _ = UpdateAppliedKeywords();
         }
 
         internal async Task UpdateAppliedKeywords(bool forceUpdate = false)
         {
-            if (forceUpdate || appliedKeywordsCache == null || (appliedKeywordsCache != null && !appliedKeywordsCache.Any()))
+            if (forceUpdate || appliedKeywordsCache == null ||
+                (appliedKeywordsCache != null && !appliedKeywordsCache.Any()))
             {
                 await UpdateAppliedKeywordsCache();
             }
+
             ViewModel.AppliedKeywords = appliedKeywordsCache!.Where(ak => ak.AiType == comboBoxSelection).ToList();
         }
 
@@ -221,7 +242,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
                 responsesResponse.Content ?? throw new InvalidOperationException())).ToList();
         }
 
-        private void EnsureSuccessStatusCode<TEntity>(ApiResponse<List<TEntity>> response) where TEntity : class, IEntity
+        private void EnsureSuccessStatusCode<TEntity>(ApiResponse<List<TEntity>> response)
+            where TEntity : class, IEntity
         {
             if (response.StatusCode != HttpStatusCode.OK)
             {

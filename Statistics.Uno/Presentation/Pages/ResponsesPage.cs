@@ -8,6 +8,7 @@ using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
+using Statistics.Uno.Services.Core;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -23,12 +24,15 @@ public sealed partial class ResponsesPage : BasePage
 
     public ResponsesPage()
     {
+        Console.WriteLine($"Building {nameof(ResponsesPage)}...");
+
         IArtificialIntelligenceEndpoint aiApi = GetAiApi();
         IActionEndpoint actionApi = GetActionApi();
+        ISignalrService signalrService = GetSignalrService();
 
         DataContext = new ResponsesViewModel();
 
-        var logic = new ResponsesPageLogic(aiApi, actionApi, (ResponsesViewModel) DataContext);
+        var logic = new ResponsesPageLogic(aiApi, actionApi, signalrService, (ResponsesViewModel) DataContext);
         var ui = new ResponsesPageUi(logic, (ResponsesViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -73,7 +77,7 @@ public sealed partial class ResponsesPage : BasePage
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
-            executeAllPromptsButton.Content(()=> ViewModel.ExecuteAllPromptsButtonText);
+            executeAllPromptsButton.Content(() => ViewModel.ExecuteAllPromptsButtonText);
             executeAllPromptsButton.Click += Logic.ExecuteAllPromptsOnClick;
 
             stackPanel.Children.Add(executeAllPromptsButton);
@@ -157,15 +161,26 @@ public sealed partial class ResponsesPage : BasePage
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private readonly IActionEndpoint actionApi;
+        private readonly ISignalrService signalrService;
         private ArtificialIntelligenceType comboBoxSelection;
         private ResponsesViewModel ViewModel { get; }
 
-        public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
+        public ResponsesPageLogic(
+            IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ISignalrService signalrService,
+            ResponsesViewModel dataContext)
         {
             this.aiApi = aiApi;
             this.actionApi = actionApi;
+            this.signalrService = signalrService;
             ViewModel = dataContext;
             ViewModel.Responses = new List<IResponse>();
+
+            signalrService.ResponsesChanged += OnResponsesChanged;
+        }
+
+        private async void OnResponsesChanged(object? sender, string e)
+        {
+            await UpdateResponses();
         }
 
         public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)

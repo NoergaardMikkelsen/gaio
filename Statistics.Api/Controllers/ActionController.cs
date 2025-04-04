@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Statistics.Api.Hubs;
+using Statistics.Shared.Abstraction.Enum;
+using Statistics.Shared.Abstraction.Interfaces;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
@@ -13,17 +17,21 @@ public class ActionController : ControllerBase
     private readonly IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService;
     private readonly IEntityQueryService<Prompt, SearchablePrompt> promptService;
     private readonly IEntityQueryService<Response, SearchableResponse> responseService;
+    private readonly IHubContext<NotificationHub, INotificationHub> hubContext;
     private readonly IMasterArtificialIntelligencePromptService masterAiPromptService;
     private readonly ILogger<ActionController> logger;
 
-    public ActionController(IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService,
+    public ActionController(
+        IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService,
         IEntityQueryService<Prompt, SearchablePrompt> promptService,
         IEntityQueryService<Response, SearchableResponse> responseService,
-        IMasterArtificialIntelligencePromptService masterAiPromptService,ILogger<ActionController> logger)
+        IHubContext<NotificationHub, INotificationHub> hubContext,
+        IMasterArtificialIntelligencePromptService masterAiPromptService, ILogger<ActionController> logger)
     {
         this.aiService = aiService;
         this.promptService = promptService;
         this.responseService = responseService;
+        this.hubContext = hubContext;
         this.masterAiPromptService = masterAiPromptService;
         this.logger = logger;
     }
@@ -39,13 +47,14 @@ public class ActionController : ControllerBase
             var responses = await masterAiPromptService.PromptSuppliedAis(ais, prompts);
 
             await responseService.AddEntities(responses.Cast<Response>());
+            await hubContext.Clients.All.SendEntityChangedNotification(SignalrEvent.RESPONSES_CHANGED,
+                $"One or more Responses have been added.");
 
             return Ok();
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to execute all prompts.");
+            logger.LogError(e, "An exception was caught while attempting to execute all prompts.");
             throw;
         }
     }
@@ -55,12 +64,14 @@ public class ActionController : ControllerBase
     {
         try
         {
-            var prompt = await promptService.GetEntity(new SearchablePrompt() { Id = id });
+            Prompt prompt = await promptService.GetEntity(new SearchablePrompt() {Id = id,});
             var ais = await aiService.GetEntities(new SearchableArtificialIntelligence());
 
             var responses = await masterAiPromptService.PromptSuppliedAis(ais, prompt);
 
             await responseService.AddEntities(responses.Cast<Response>());
+            await hubContext.Clients.All.SendEntityChangedNotification(SignalrEvent.RESPONSES_CHANGED,
+                $"One or more Responses have been added.");
 
             return Ok();
         }

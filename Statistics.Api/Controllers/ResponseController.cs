@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Statistics.Api.Hubs;
+using Statistics.Shared.Abstraction.Enum;
+using Statistics.Shared.Abstraction.Interfaces;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -11,8 +15,9 @@ public class ResponseController : EntityController<Response, SearchableResponse,
 {
     /// <inheritdoc />
     public ResponseController(
-        IEntityQueryService<Response, SearchableResponse> entityService, ILogger<ResponseController> logger) : base(
-        entityService, logger)
+        IEntityQueryService<Response, SearchableResponse> entityService, ILogger<ResponseController> logger,
+        IHubContext<NotificationHub, INotificationHub> hubContext) : base(entityService, logger, hubContext,
+        SignalrEvent.RESPONSES_CHANGED)
     {
     }
 }

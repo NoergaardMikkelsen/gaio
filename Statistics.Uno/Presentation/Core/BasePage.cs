@@ -1,5 +1,6 @@
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Services.Core;
 
 namespace Statistics.Uno.Presentation.Core;
 
@@ -54,5 +55,10 @@ public abstract class BasePage : Page
                    $"Failed to acquire an instance implementing '{nameof(IAppliedKeywordService)}'.");
     }
 
-
+    protected ISignalrService GetSignalrService()
+    {
+        return App.Startup.ServiceProvider.GetService<ISignalrService>() ??
+               throw new NullReferenceException(
+                   $"Failed to acquire an instance implementing '{nameof(ISignalrService)}'.");
+    }
 }

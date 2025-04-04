@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Statistics.Api.Hubs;
+using Statistics.Shared.Abstraction.Enum;
+using Statistics.Shared.Abstraction.Interfaces;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 
 namespace Statistics.Api.Controllers;
@@ -8,11 +12,17 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
 {
     private readonly IEntityQueryService<TEntity, TSearchable> entityService;
     private readonly ILogger<TController> logger;
+    private readonly IHubContext<NotificationHub, INotificationHub> hubContext;
+    private readonly SignalrEvent entitySignalrEventType;
 
-    protected EntityController(IEntityQueryService<TEntity, TSearchable> entityService, ILogger<TController> logger)
+    protected EntityController(
+        IEntityQueryService<TEntity, TSearchable> entityService, ILogger<TController> logger,
+        IHubContext<NotificationHub, INotificationHub> hubContext, SignalrEvent entitySignalrEventType)
     {
         this.entityService = entityService;
         this.logger = logger;
+        this.hubContext = hubContext;
+        this.entitySignalrEventType = entitySignalrEventType;
     }
 
     [HttpGet]
@@ -84,6 +94,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.AddEntity(entity);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity of type {nameof(TEntity)} was added.");
             return Ok();
         }
         catch (Exception e)
@@ -100,6 +112,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.AddEntities(entities);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity or more of type {nameof(TEntity)} was added.");
             return Ok();
         }
         catch (Exception e)
@@ -116,6 +130,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.UpdateEntity(entity);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity of type {nameof(TEntity)} was updated.");
             return Ok();
         }
         catch (Exception e)
@@ -132,6 +148,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.UpdateEntities(entities);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity or more of type {nameof(TEntity)} was updated.");
             return Ok();
         }
         catch (Exception e)
@@ -148,6 +166,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.DeleteEntity(searchable);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity of type {nameof(TEntity)} was deleted.");
             return Ok();
         }
         catch (Exception e)
@@ -164,6 +184,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         try
         {
             await entityService.DeleteEntityById(id);
+            await hubContext.Clients.All.SendEntityChangedNotification(entitySignalrEventType,
+                $"An entity of type {nameof(TEntity)} was deleted.");
             return Ok();
         }
         catch (Exception e)
