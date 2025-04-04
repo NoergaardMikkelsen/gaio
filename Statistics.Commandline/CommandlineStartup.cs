@@ -10,7 +10,6 @@ using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Services;
-using Statistics.Shared.Services.ArtificialIntelligence;
 
 namespace Statistics.Commandline;
 
