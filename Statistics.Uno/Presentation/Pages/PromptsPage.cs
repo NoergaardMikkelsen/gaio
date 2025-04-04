@@ -45,8 +45,8 @@ public sealed partial class PromptsPage : BasePage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
-            DataGrid promptsDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, SetupDataGridRowTemplate)
+            DataGrid promptsDataGrid = DataGridFactory
+                .CreateDataGrid(ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdatePrompts()).Grid(row: 2, column: 4);
 
@@ -100,13 +100,6 @@ public sealed partial class PromptsPage : BasePage
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private void SetupDataGridRowTemplate(DataGrid dataGrid)
-        {
-            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath,
-                BuildActionsElement));
-        }
-
         private string GetColumnBindingPath(int columnNumber)
         {
             var column = (DataGridColumns) columnNumber;
@@ -154,7 +147,7 @@ public sealed partial class PromptsPage : BasePage
                 DataGridColumns.PROMPT_TEXT => 100,
                 DataGridColumns.CREATED_AT => 25,
                 DataGridColumns.LAST_UPDATED_AT => 25,
-                DataGridColumns.ACTIONS => 25,
+                DataGridColumns.ACTIONS => 35,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }

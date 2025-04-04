@@ -28,14 +28,15 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
     public AppliedKeywordsPage()
     {
-        var keywordService = GetAppliedKeywordService();
-        var responsesApi = GetResponseApi();
-        var keywordApi = GetKeywordApi();
+        IAppliedKeywordService keywordService = GetAppliedKeywordService();
+        IResponseEndpoint responsesApi = GetResponseApi();
+        IKeywordEndpoint keywordApi = GetKeywordApi();
 
         DataContext = new AppliedKeywordsViewModel();
 
-        var logic = new AppliedKeywordsPageLogic(keywordService, responsesApi, keywordApi, (AppliedKeywordsViewModel)DataContext);
-        var ui = new AppliedKeywordsPageUi(logic, (AppliedKeywordsViewModel)DataContext);
+        var logic = new AppliedKeywordsPageLogic(keywordService, responsesApi, keywordApi,
+            (AppliedKeywordsViewModel) DataContext);
+        var ui = new AppliedKeywordsPageUi(logic, (AppliedKeywordsViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
@@ -44,7 +45,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
     private class AppliedKeywordsPageUi : BaseUi<AppliedKeywordsPageLogic, AppliedKeywordsViewModel>
     {
-        public AppliedKeywordsPageUi(AppliedKeywordsPageLogic logic, AppliedKeywordsViewModel dataContext) : base(logic, dataContext)
+        public AppliedKeywordsPageUi(AppliedKeywordsPageLogic logic, AppliedKeywordsViewModel dataContext) : base(logic,
+            dataContext)
         {
         }
 
@@ -53,8 +55,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
             ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
                 .Grid(row: 0, column: 4);
             DataGrid appliedKeywordsDataGrid = DataGridFactory.CreateDataGrid(
-                ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns,
-                SetupDataGridRowTemplate).Grid(row: 1, column: 0, columnSpan: 5);
+                    ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns)
+                .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel().Grid(row: 2, column: 4);
 
             grid.Children.Add(aiSelectionComboBox);
@@ -106,15 +108,9 @@ public sealed partial class AppliedKeywordsPage : BasePage
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private void SetupDataGridRowTemplate(DataGrid dataGrid)
-        {
-            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath));
-        }
-
         private string GetColumnBindingPath(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -137,12 +133,12 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         private string GetEnumAsString(int i)
         {
-            return ((DataGridColumns)i).ToString();
+            return ((DataGridColumns) i).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -158,7 +154,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -195,16 +191,18 @@ public sealed partial class AppliedKeywordsPage : BasePage
             ComboBox comboBox = sender as ComboBox ??
                                 throw new NullReferenceException(
                                     $"Expected '{nameof(sender)}' to not be null, but it was.");
-            comboBoxSelection = (ArtificialIntelligenceType)comboBox.SelectedIndex;
+            comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
             _ = UpdateAppliedKeywords();
         }
 
         internal async Task UpdateAppliedKeywords(bool forceUpdate = false)
         {
-            if (forceUpdate || appliedKeywordsCache == null || (appliedKeywordsCache != null && !appliedKeywordsCache.Any()))
+            if (forceUpdate || appliedKeywordsCache == null ||
+                (appliedKeywordsCache != null && !appliedKeywordsCache.Any()))
             {
                 await UpdateAppliedKeywordsCache();
             }
+
             ViewModel.AppliedKeywords = appliedKeywordsCache!.Where(ak => ak.AiType == comboBoxSelection).ToList();
         }
 
@@ -221,7 +219,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
                 responsesResponse.Content ?? throw new InvalidOperationException())).ToList();
         }
 
-        private void EnsureSuccessStatusCode<TEntity>(ApiResponse<List<TEntity>> response) where TEntity : class, IEntity
+        private void EnsureSuccessStatusCode<TEntity>(ApiResponse<List<TEntity>> response)
+            where TEntity : class, IEntity
         {
             if (response.StatusCode != HttpStatusCode.OK)
             {

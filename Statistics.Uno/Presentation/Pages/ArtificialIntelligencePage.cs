@@ -5,7 +5,7 @@ using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
-using ArtificialIntelligenceViewModel = Statistics.Uno.Presentation.Pages.ViewModel.ArtificialIntelligenceViewModel;
+using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -49,8 +49,8 @@ public sealed partial class ArtificialIntelligencePage : BasePage
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
-                ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns,
-                SetupDataGridRowTemplate).Grid(row: 1, column: 0, columnSpan: 5);
+                    ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns)
+                .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateArtificialIntelligences())
                 .Grid(row: 2, column: 4);
 
@@ -93,13 +93,6 @@ public sealed partial class ArtificialIntelligencePage : BasePage
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
                 new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
-        }
-
-        private void SetupDataGridRowTemplate(DataGrid dataGrid)
-        {
-            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath,
-                BuildActionsElement));
         }
 
         private string GetColumnBindingPath(int columnNumber)

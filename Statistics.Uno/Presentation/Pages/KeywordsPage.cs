@@ -46,8 +46,8 @@ public sealed partial class KeywordsPage : BasePage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
-            DataGrid keywordsDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns, SetupDataGridRowTemplate)
+            DataGrid keywordsDataGrid = DataGridFactory
+                .CreateDataGrid(ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateKeywords()).Grid(row: 2, column: 4);
 
@@ -92,16 +92,9 @@ public sealed partial class KeywordsPage : BasePage
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
-        private void SetupDataGridRowTemplate(DataGrid dataGrid)
-        {
-            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath,
-                BuildActionsElement));
-        }
-
         private string GetColumnBindingPath(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -118,7 +111,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private IValueConverter? GetValueConverterForColumn(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -140,12 +133,12 @@ public sealed partial class KeywordsPage : BasePage
 
         private string GetEnumAsString(int columnNumber)
         {
-            return ((DataGridColumns)columnNumber).ToString();
+            return ((DataGridColumns) columnNumber).ToString();
         }
 
         private int GetColumnStarWidth(int columnNumber)
         {
-            var column = (DataGridColumns)columnNumber;
+            var column = (DataGridColumns) columnNumber;
 
             return column switch
             {
@@ -162,7 +155,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private FrameworkElement BuildActionsElement(int columnEnumAsInt)
         {
-            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal, };
+            var stackPanel = new StackPanel() {Orientation = Orientation.Horizontal,};
 
             var editButton = new Button()
             {
@@ -227,7 +220,7 @@ public sealed partial class KeywordsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int)button.Tag;
+            var keywordId = (int) button.Tag;
 
             IKeyword keyword = ViewModel.Keywords.FirstOrDefault(x => x.Id == keywordId) ??
                                throw new NullReferenceException(
@@ -252,7 +245,7 @@ public sealed partial class KeywordsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var keywordId = (int)button.Tag;
+            var keywordId = (int) button.Tag;
 
             await keywordApi.DeleteById(CancellationToken.None, keywordId);
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -267,5 +260,3 @@ public sealed partial class KeywordsPage : BasePage
         }
     }
 }
-
-

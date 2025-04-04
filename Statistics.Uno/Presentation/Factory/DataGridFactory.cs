@@ -53,7 +53,7 @@ public static class DataGridFactory
 {
     public static DataGrid CreateDataGrid<TViewModel>(
         TViewModel dataContext, string itemsSourcePath, Action<DataGrid> setupColumns,
-        Action<DataGrid> setupRowTemplate)
+        Action<DataGrid>? setupRowTemplate = null)
     {
         var dataGrid = new DataGrid()
         {
@@ -70,14 +70,14 @@ public static class DataGridFactory
         };
 
         setupColumns(dataGrid);
-        setupRowTemplate(dataGrid);
+        setupRowTemplate?.Invoke(dataGrid);
 
         dataGrid.SetBinding(DataGrid.ItemsSourceProperty,
             new Binding() {Path = itemsSourcePath, Source = dataContext,});
 
         return dataGrid;
     }
-    
+
     private static DataGridTextColumn CreateDataGridTextColumn(
         string bindingPath, string header, IValueConverter? converter)
     {
@@ -87,7 +87,7 @@ public static class DataGridFactory
             Binding = new Binding
             {
                 Path = bindingPath,
-                Converter = converter
+                Converter = converter,
             },
         };
 
@@ -113,7 +113,7 @@ public static class DataGridFactory
             var binding = new Binding
             {
                 Path = bindingPath,
-                Converter = setupRowArguments.GetValueConverter(x)
+                Converter = setupRowArguments.GetValueConverter(x),
             };
 
             block.SetBinding(TextBlock.TextProperty, binding);

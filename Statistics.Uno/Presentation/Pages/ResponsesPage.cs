@@ -48,8 +48,8 @@ public sealed partial class ResponsesPage : BasePage
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
                 .Grid(row: 0, column: 4);
-            DataGrid responsesDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, SetupDataGridRowTemplate)
+            DataGrid responsesDataGrid = DataGridFactory
+                .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons =
                 CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 2, column: 4);
@@ -93,12 +93,6 @@ public sealed partial class ResponsesPage : BasePage
             grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
                 new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
-        }
-
-        private void SetupDataGridRowTemplate(DataGrid dataGrid)
-        {
-            DataGridFactory.SetupDataGridRowTemplate(new SetupRowArguments(dataGrid,
-                Enum.GetValues<DataGridColumns>().Cast<int>(), GetValueConverterForColumn, GetColumnBindingPath));
         }
 
         private string GetColumnBindingPath(int columnNumber)
