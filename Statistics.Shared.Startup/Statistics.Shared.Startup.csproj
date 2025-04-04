@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Refit.Newtonsoft.Json" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Statistics.Shared.Abstraction\Statistics.Shared.Abstraction.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Core\Statistics.Shared.Core.csproj" />
     </ItemGroup>
 
 </Project>

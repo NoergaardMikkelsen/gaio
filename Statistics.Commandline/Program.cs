@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Statistics.Shared.Abstraction.Interfaces.Persistence;
-using Statistics.Shared.Abstraction.Interfaces.Services;
-using Statistics.Shared.Models.Entity;
-using Statistics.Shared.Models.Searchable;
+using Refit;
+using Statistics.Shared.Abstraction.Interfaces.Refit;
+using System.Threading;
 
 namespace Statistics.Commandline;
 
@@ -16,7 +15,7 @@ internal class Program
         var program = new Program();
 
         program.Run(args).GetAwaiter().GetResult();
-        Console.ReadKey();
+        Thread.Sleep(TimeSpan.FromMinutes(1));
     }
 
     private async Task Run(string[] args)
@@ -31,56 +30,14 @@ internal class Program
         using IHost host = builder.Build();
         Console.WriteLine("Host has been build...");
 
-        await ExecuteAllPrompts();
+        var actionEndpoint = host.Services.GetRequiredService<IActionEndpoint>();
+
+        var response = await actionEndpoint.ExecuteAllPrompts(CancellationToken.None);
+
+        Console.WriteLine(response.IsSuccessStatusCode
+            ? "Successfully executed all prompts."
+            : "Failed to execute all prompts.");
 
         await host.RunAsync();
-    }
-
-    private async Task ExecuteAllPrompts()
-    {
-        GetServicesOrThrow(out var promptEntityService, out var aiEntityService, out var responseEntityService,
-            out IMasterArtificialIntelligencePromptService masterAiService);
-
-        var allAis = await aiEntityService.GetEntities(new SearchableArtificialIntelligence());
-        var artificialIntelligences = allAis.ToList();
-        if (!artificialIntelligences.Any())
-        {
-            return;
-        }
-
-        var allPrompts = await promptEntityService.GetEntities(new SearchablePrompt());
-        var prompts = allPrompts.ToList();
-        if (!prompts.Any())
-        {
-            return;
-        }
-
-        var aiResponses = await masterAiService.PromptSuppliedAis(artificialIntelligences, prompts);
-        var responses = aiResponses.ToList();
-        if (!responses.Any())
-        {
-            return;
-        }
-
-        await responseEntityService.AddEntities(responses.Cast<Response>().ToList());
-    }
-
-    private void GetServicesOrThrow(
-        out IEntityQueryService<Prompt, SearchablePrompt> promptEntityService,
-        out IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiEntityService,
-        out IEntityQueryService<Response, SearchableResponse> responseEntityService,
-        out IMasterArtificialIntelligencePromptService masterAiService)
-    {
-        promptEntityService = Startup.ServiceProvider.GetService<IEntityQueryService<Prompt, SearchablePrompt>>() ??
-                              throw new InvalidOperationException();
-        aiEntityService = Startup.ServiceProvider
-                              .GetService<
-                                  IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence>>() ??
-                          throw new InvalidOperationException();
-        responseEntityService =
-            Startup.ServiceProvider.GetService<IEntityQueryService<Response, SearchableResponse>>() ??
-            throw new InvalidOperationException();
-        masterAiService = Startup.ServiceProvider.GetService<IMasterArtificialIntelligencePromptService>() ??
-                          throw new InvalidOperationException();
     }
 }

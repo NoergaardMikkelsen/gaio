@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Statistics.Commandline.Startup;
+using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -19,31 +20,31 @@ public class CommandlineStartup : CommandlineModularStartup
     {
         Console.WriteLine($"Constructing Startup Class...");
 
-        AddModule(new CommandlineDatabaseContextStartupModule<StatisticsDatabaseContext>(options =>
+        const string baseAddress = $"https://localhost:7016/api/";
+
+        AddModule(new CommandlineRefitStartupModule<IActionEndpoint>($"{baseAddress}Action"));
+
+        // Kept to allow this project to be used for Migration generation.
+        AddModule(new CommandlineDatabaseContextStartupModule<StatisticsDatabaseContext>(SetupDatabaseConnection));
+    }
+
+    private void SetupDatabaseConnection(DbContextOptionsBuilder options)
+    {
+        SecretsConfig secrets = GetSecrets();
+
+        if (string.IsNullOrEmpty(secrets.ConnectionString))
         {
-            SecretsConfig secrets = GetSecrets();
+            throw new ArgumentNullException(nameof(secrets.ConnectionString),
+                "The connection string in the secrets was empty");
+        }
 
-            if (string.IsNullOrEmpty(secrets.ConnectionString))
-            {
-                throw new ArgumentNullException(nameof(secrets.ConnectionString),
-                    "The connection string in the secrets was empty");
-            }
-
-            options.UseNpgsql(secrets.ConnectionString);
-            Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
+        options.UseNpgsql(secrets.ConnectionString);
+        Console.WriteLine($"Connected to database with connection string '{secrets.ConnectionString}'");
 
 #if DEBUG
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
 #endif
-        }));
-
-        AddModule(
-            new CommandlineEntityQueryServiceStartupModule<ArtificialIntelligenceQueryService, ArtificialIntelligence,
-                SearchableArtificialIntelligence>());
-        AddModule(new CommandlineEntityQueryServiceStartupModule<PromptQueryService, Prompt, SearchablePrompt>());
-        AddModule(new CommandlineEntityQueryServiceStartupModule<ResponseQueryService, Response, SearchableResponse>());
-        AddModule(new CommandlineEntityQueryServiceStartupModule<KeywordQueryService, Keyword, SearchableKeyword>());
     }
 
     private SecretsConfig GetSecrets()
@@ -57,8 +58,6 @@ public class CommandlineStartup : CommandlineModularStartup
     public override void ConfigureServices(IServiceCollection services)
     {
         base.ConfigureServices(services);
-
-        services.AddTransient<IMasterArtificialIntelligencePromptService, MasterArtificialIntelligencePromptService>();
     }
 
     /// <inheritdoc />

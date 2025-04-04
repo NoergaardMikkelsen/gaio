@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Models.Entity;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -203,7 +204,8 @@ public sealed partial class PromptsPage : BasePage
         private readonly Page page;
         private PromptsViewModel ViewModel { get; }
 
-        public PromptsPageLogic(IPromptEndpoint promptApi, IActionEndpoint actionApi, PromptsViewModel viewModel, PromptsPage page)
+        public PromptsPageLogic(
+            IPromptEndpoint promptApi, IActionEndpoint actionApi, PromptsViewModel viewModel, PromptsPage page)
         {
             ViewModel = viewModel;
             this.promptApi = promptApi;
@@ -295,7 +297,7 @@ public sealed partial class PromptsPage : BasePage
                             throw new NullReferenceException(
                                 $"Expected '{nameof(sender)}' to not be null, but it was.");
 
-            var promptId = (int)button.Tag;
+            var promptId = (int) button.Tag;
 
             button.IsEnabled = false;
             await actionApi.ExecutePromptById(CancellationToken.None, promptId);

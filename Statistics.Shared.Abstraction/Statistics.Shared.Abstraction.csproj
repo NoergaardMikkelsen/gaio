@@ -14,6 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Refit" />
         <PackageReference Include="Uno.Extensions.Hosting.WinUI" />
     </ItemGroup>
 

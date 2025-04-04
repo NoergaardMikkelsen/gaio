@@ -1,3 +1,4 @@
+using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Uno.Endpoints;
 
@@ -53,6 +54,4 @@ public abstract class BasePage : Page
                throw new NullReferenceException(
                    $"Failed to acquire an instance implementing '{nameof(IAppliedKeywordService)}'.");
     }
-
-
 }

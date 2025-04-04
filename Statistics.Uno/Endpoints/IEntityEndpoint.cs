@@ -1,5 +1,6 @@
 using Refit;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
+using Statistics.Shared.Abstraction.Interfaces.Refit;
 
 namespace Statistics.Uno.Endpoints;
 

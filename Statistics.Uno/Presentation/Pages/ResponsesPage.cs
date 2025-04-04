@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
@@ -73,7 +74,7 @@ public sealed partial class ResponsesPage : BasePage
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
-            executeAllPromptsButton.Content(()=> ViewModel.ExecuteAllPromptsButtonText);
+            executeAllPromptsButton.Content(() => ViewModel.ExecuteAllPromptsButtonText);
             executeAllPromptsButton.Click += Logic.ExecuteAllPromptsOnClick;
 
             stackPanel.Children.Add(executeAllPromptsButton);
@@ -160,7 +161,8 @@ public sealed partial class ResponsesPage : BasePage
         private ArtificialIntelligenceType comboBoxSelection;
         private ResponsesViewModel ViewModel { get; }
 
-        public ResponsesPageLogic(IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
+        public ResponsesPageLogic(
+            IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
         {
             this.aiApi = aiApi;
             this.actionApi = actionApi;

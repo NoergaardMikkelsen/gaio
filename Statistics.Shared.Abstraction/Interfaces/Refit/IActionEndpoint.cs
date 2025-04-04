@@ -1,7 +1,6 @@
 using Refit;
 
-namespace Statistics.Uno.Endpoints;
-
+namespace Statistics.Shared.Abstraction.Interfaces.Refit;
 
 [Headers("Content-Type: application/json")]
 public interface IActionEndpoint : IRefitEndpoint
