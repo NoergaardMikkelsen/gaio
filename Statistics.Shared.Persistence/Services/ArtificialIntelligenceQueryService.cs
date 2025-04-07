@@ -25,12 +25,12 @@ public class ArtificialIntelligenceQueryService : BaseEntityQueryService<Statist
     {
         if (!string.IsNullOrWhiteSpace(searchable.Key))
         {
-            query = query.Where(x => x.Key.Contains(searchable.Key));
+            query = query.Where(x => x.Key.ToLower().Contains(searchable.Key.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(searchable.Name))
         {
-            query = query.Where(x => x.Name.Contains(searchable.Name));
+            query = query.Where(x => x.Name.ToLower().Contains(searchable.Name.ToLower()));
         }
 
         return query;
