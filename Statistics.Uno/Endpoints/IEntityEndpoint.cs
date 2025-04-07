@@ -1,6 +1,7 @@
 using Refit;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
+using Statistics.Shared.Models.Searchable;
 
 namespace Statistics.Uno.Endpoints;
 
@@ -13,6 +14,9 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
 
     [Post("/GetAllByQuery")]
     Task<ApiResponse<List<TEntity>>> GetAllByQuery(CancellationToken ct, [Body] TSearchable searchable);
+
+    [Post("/GetAllByComplexQuery")]
+    Task<ApiResponse<List<TEntity>>> GetAllByComplexQuery(CancellationToken ct, [Body] ComplexSearchable complexSearchable);
 
     [Post("/GetByQuery")]
     Task<ApiResponse<TEntity>> GetByQuery(CancellationToken ct, [Body] TSearchable searchable);

@@ -1,3 +1,4 @@
+using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using System.Collections.Generic;
 
@@ -13,6 +14,7 @@ public partial class ResponsesViewModel : ObservableObject
     [ObservableProperty] private IEnumerable<IResponse> responses;
     [ObservableProperty] private string executeAllPromptsButtonText;
     [ObservableProperty] private string? searchableResponseText;
+    [ObservableProperty] private ArtificialIntelligenceType selectedAiType;
 
     public event EventHandler<string>? SearchableResponseTextChanged;
 

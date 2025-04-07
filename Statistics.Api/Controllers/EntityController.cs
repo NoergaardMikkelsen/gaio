@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
+using Statistics.Shared.Models.Searchable;
 
 namespace Statistics.Api.Controllers;
 
 public abstract class EntityController<TEntity, TSearchable, TController> : ControllerBase
     where TEntity : class, IEntity where TSearchable : class, ISearchable, new() where TController : ControllerBase
 {
-    private readonly IEntityQueryService<TEntity, TSearchable> entityService;
+    protected readonly IEntityQueryService<TEntity, TSearchable> entityService;
     private readonly ILogger<TController> logger;
 
     protected EntityController(IEntityQueryService<TEntity, TSearchable> entityService, ILogger<TController> logger)
@@ -77,6 +78,30 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
             throw;
         }
     }
+
+
+    /// <summary>
+    /// Get all entities matching specified complex query of the controllers type.
+    /// If Searchable properties for child entities are supplied, then it will also limit result by those.
+    /// </summary>
+    /// <param name="complexSearchable"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<IActionResult> GetAllByComplexQuery([FromBody] ComplexSearchable complexSearchable)
+    {
+        try
+        {
+            var entities = await GetEntitiesByComplexQuery(complexSearchable);
+            return Ok(entities);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e,
+                "An exception was caught while attempting to get entities matching specified complex query of the controllers type.");
+            throw;
+        }
+    }
+    protected abstract Task<IEnumerable<TEntity>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable);
 
     [HttpPost]
     public async Task<IActionResult> AddSingle([FromBody] TEntity entity)

@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
@@ -23,12 +24,12 @@ public sealed partial class ResponsesPage : BasePage
 
     public ResponsesPage()
     {
-        IArtificialIntelligenceEndpoint aiApi = GetAiApi();
+        IResponseEndpoint responseApi = GetResponseApi();
         IActionEndpoint actionApi = GetActionApi();
 
         DataContext = new ResponsesViewModel();
 
-        var logic = new ResponsesPageLogic(aiApi, actionApi, (ResponsesViewModel) DataContext);
+        var logic = new ResponsesPageLogic(responseApi, actionApi, (ResponsesViewModel) DataContext);
         var ui = new ResponsesPageUi(logic, (ResponsesViewModel) DataContext);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
@@ -45,7 +46,7 @@ public sealed partial class ResponsesPage : BasePage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
-            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
+            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(nameof(ResponsesViewModel.SelectedAiType))
                 .Grid(row: 0, column: 4);
             StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid responsesDataGrid = DataGridFactory
@@ -159,33 +160,23 @@ public sealed partial class ResponsesPage : BasePage
 
     private class ResponsesPageLogic
     {
-        private readonly IArtificialIntelligenceEndpoint aiApi;
+        private readonly IResponseEndpoint responseApi;
         private readonly IActionEndpoint actionApi;
-        private ArtificialIntelligenceType comboBoxSelection;
         private ResponsesViewModel ViewModel { get; }
 
-        public ResponsesPageLogic(
-            IArtificialIntelligenceEndpoint aiApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
+        public ResponsesPageLogic(IResponseEndpoint responseApi, IActionEndpoint actionApi, ResponsesViewModel dataContext)
         {
-            this.aiApi = aiApi;
+            this.responseApi = responseApi;
             this.actionApi = actionApi;
             ViewModel = dataContext;
             ViewModel.Responses = new List<IResponse>();
         }
 
-        public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox comboBox = sender as ComboBox ??
-                                throw new NullReferenceException(
-                                    $"Expected '{nameof(sender)}' to not be null, but it was.");
-            comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
-            _ = UpdateResponses();
-        }
-
         internal async Task UpdateResponses()
         {
-            var apiResponse = await aiApi.GetByQuery(CancellationToken.None,
-                new SearchableArtificialIntelligence() {AiType = comboBoxSelection,});
+            IComplexSearchable complexSearchable = BuildComplexSearchable();
+
+            var apiResponse = await responseApi.GetAllByComplexQuery(CancellationToken.None, (ComplexSearchable) complexSearchable);
 
             if (!apiResponse.IsSuccessful)
             {
@@ -193,15 +184,27 @@ public sealed partial class ResponsesPage : BasePage
                 return;
             }
 
-            ArtificialIntelligence? selectedAiEntity = apiResponse.Content;
+            List<Response> responses = apiResponse.Content;
 
-            if (selectedAiEntity == null)
+            if (responses == null)
             {
-                Console.WriteLine($"Failed to get selected Artificial Intelligence entity.");
+                Console.WriteLine($"Failed to get selected Responses entities.");
                 return;
             }
 
-            ViewModel.Responses = selectedAiEntity.Responses.ToList();
+            ViewModel.Responses = responses;
+        }
+
+        private IComplexSearchable BuildComplexSearchable()
+        {
+            return new ComplexSearchable()
+            {
+                SearchableResponse = new SearchableResponse(), SearchableArtificialIntelligence =
+                    new SearchableArtificialIntelligence()
+                    {
+                        AiType = ViewModel.SelectedAiType,
+                    },
+            };
         }
 
         public async void ExecuteAllPromptsOnClick(object sender, RoutedEventArgs e)

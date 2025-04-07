@@ -21,6 +21,7 @@ public class ApiStartupModule : IApiStartupModule
                 new ArtificialIntelligenceJsonConverter(),
                 new PromptJsonConverter(),
                 new ResponseJsonConverter(),
+                new ComplexSearchableJsonConverter(),
             ]);
             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });

@@ -23,7 +23,7 @@ public class ArtificialIntelligence : IArtificialIntelligence
     public string Key { get; set; }
 
     /// <inheritdoc />
-    public ArtificialIntelligenceType AiType { get; set; }
+    public ArtificialIntelligenceType? AiType { get; set; }
 
     /// <inheritdoc />
     public uint Version { get; set; }

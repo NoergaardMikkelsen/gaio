@@ -52,7 +52,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
+            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(nameof(AppliedKeywordsViewModel.SelectedAiType))
                 .Grid(row: 0, column: 4);
             DataGrid appliedKeywordsDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns)
@@ -167,7 +167,6 @@ public sealed partial class AppliedKeywordsPage : BasePage
         private readonly IAppliedKeywordService appliedKeywordService;
         private readonly IResponseEndpoint responsesApi;
         private readonly IKeywordEndpoint keywordApi;
-        private ArtificialIntelligenceType comboBoxSelection;
         private AppliedKeywordsViewModel ViewModel { get; }
         private static IList<IAppliedKeyword>? _appliedKeywordsCache;
 
@@ -182,15 +181,6 @@ public sealed partial class AppliedKeywordsPage : BasePage
             ViewModel.AppliedKeywords = new List<IAppliedKeyword>();
         }
 
-        public void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox comboBox = sender as ComboBox ??
-                                throw new NullReferenceException(
-                                    $"Expected '{nameof(sender)}' to not be null, but it was.");
-            comboBoxSelection = (ArtificialIntelligenceType) comboBox.SelectedIndex;
-            _ = UpdateAppliedKeywords();
-        }
-
         internal async Task UpdateAppliedKeywords(bool forceUpdate = false)
         {
             if (forceUpdate || _appliedKeywordsCache == null || !_appliedKeywordsCache.Any())
@@ -198,7 +188,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
                 await UpdateAppliedKeywordsCache();
             }
 
-            ViewModel.AppliedKeywords = _appliedKeywordsCache!.Where(ak => ak.AiType == comboBoxSelection).ToList();
+            ViewModel.AppliedKeywords = _appliedKeywordsCache!.Where(ak => ak.AiType == ViewModel.SelectedAiType).ToList();
         }
 
         private async Task UpdateAppliedKeywordsCache()

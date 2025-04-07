@@ -15,7 +15,7 @@ public class SearchableArtificialIntelligence : ISearchableArtificialIntelligenc
     public string Key { get; set; }
 
     /// <inheritdoc />
-    public ArtificialIntelligenceType AiType { get; set; }
+    public ArtificialIntelligenceType? AiType { get; set; }
 
     public SearchableArtificialIntelligence()
     {

@@ -7,5 +7,5 @@ public interface ISearchableArtificialIntelligence : ISearchable
 {
     string Name { get; set; }
     string Key { get; set; }
-    ArtificialIntelligenceType AiType { get; set; }
+    ArtificialIntelligenceType? AiType { get; set; }
 }

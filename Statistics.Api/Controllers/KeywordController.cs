@@ -13,4 +13,16 @@ public class KeywordController : EntityController<Keyword, SearchableKeyword, Ke
     public KeywordController(IEntityQueryService<Keyword, SearchableKeyword> entityService, ILogger<KeywordController> logger) : base(entityService, logger)
     {
     }
+
+    /// <inheritdoc />
+    protected override async Task<IEnumerable<Keyword>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable)
+    {
+        if (complexSearchable.SearchableKeyword is null)
+            throw new ArgumentNullException(nameof(complexSearchable.SearchableKeyword));
+
+        var entities = (await entityService.GetEntities((SearchableKeyword) complexSearchable.SearchableKeyword))
+            .AsEnumerable();
+
+        return entities;
+    }
 }

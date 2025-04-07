@@ -18,5 +18,6 @@ public class ArtificialIntelligenceConfiguration : EntityConfiguration<Artificia
         base.Configure(builder);
 
         builder.HasIndex(x => x.AiType).IsUnique();
+        builder.Property(x => x.AiType).IsRequired();
     }
 }
