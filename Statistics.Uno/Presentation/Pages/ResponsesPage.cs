@@ -19,7 +19,6 @@ public sealed partial class ResponsesPage : BasePage
         PROMPT_TEXT = 0,
         RESPONSE_TEXT = 1,
         CREATED_AT = 2,
-        LAST_UPDATED_AT = 3,
     }
 
     public ResponsesPage()
@@ -48,26 +47,37 @@ public sealed partial class ResponsesPage : BasePage
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(Logic.ComboBoxOnSelectionChanged)
                 .Grid(row: 0, column: 4);
+            StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid responsesDataGrid = DataGridFactory
                 .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns)
-                .Grid(row: 1, column: 0, columnSpan: 5);
+                .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel refreshButtons =
-                CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 2, column: 4);
+                CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 3, column: 4);
 
             grid.Children.Add(buttonPanel);
             grid.Children.Add(aiSelectionComboBox);
+            grid.Children.Add(inputPanel);
             grid.Children.Add(responsesDataGrid);
             grid.Children.Add(refreshButtons);
         }
 
+        private StackPanel CreateInputPanel()
+        {
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
+
+            StackPanel textPanel = StackPanelFactory.CreateLabeledFieldPanel("Response Text:",
+                "Limit data grids content by content of 'Response Text'...",
+                nameof(ResponsesViewModel.SearchableResponseText));
+            ViewModel.SearchableResponseTextChanged += Logic.SearchFieldChanged;
+
+            stackPanel.Children.Add(textPanel);
+
+            return stackPanel;
+        }
+
         private StackPanel CreateButtonsPanel()
         {
-            var stackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(10),
-            };
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
             var executeAllPromptsButton = new Button()
             {
@@ -84,14 +94,16 @@ public sealed partial class ResponsesPage : BasePage
 
         protected override void ConfigureGrid(Grid grid)
         {
-            const int rowOneHeight = 8;
-            const int rowThreeHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
+            const int rowOneHeight = 10;
+            const int rowTwoHeight = 10;
+            const int rowFourHeight = 10;
+            const int rowThreeHeight = 100 - rowOneHeight - rowTwoHeight - rowFourHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
+            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Auto),
+                new GridLength(rowTwoHeight, GridUnitType.Auto), new GridLength(rowThreeHeight, GridUnitType.Star),
+                new GridLength(rowFourHeight, GridUnitType.Auto));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -104,7 +116,6 @@ public sealed partial class ResponsesPage : BasePage
                 DataGridColumns.PROMPT_TEXT => $"{nameof(Response.Prompt)}.{nameof(Prompt.Text)}",
                 DataGridColumns.RESPONSE_TEXT => nameof(Response.Text),
                 DataGridColumns.CREATED_AT => nameof(Response.CreatedDateTime),
-                DataGridColumns.LAST_UPDATED_AT => nameof(Response.UpdatedDateTime),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -130,7 +141,6 @@ public sealed partial class ResponsesPage : BasePage
                 DataGridColumns.PROMPT_TEXT => 100,
                 DataGridColumns.RESPONSE_TEXT => 100,
                 DataGridColumns.CREATED_AT => 35,
-                DataGridColumns.LAST_UPDATED_AT => 35,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -142,7 +152,6 @@ public sealed partial class ResponsesPage : BasePage
             return column switch
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
-                DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
                 var _ => null,
             };
         }
@@ -177,9 +186,11 @@ public sealed partial class ResponsesPage : BasePage
         {
             var apiResponse = await aiApi.GetByQuery(CancellationToken.None,
                 new SearchableArtificialIntelligence() {AiType = comboBoxSelection,});
+
             if (!apiResponse.IsSuccessful)
             {
                 Console.WriteLine($"Request to Api was not successful. Error is as follows: {apiResponse.Error}");
+                return;
             }
 
             ArtificialIntelligence? selectedAiEntity = apiResponse.Content;
@@ -204,6 +215,16 @@ public sealed partial class ResponsesPage : BasePage
             await actionApi.ExecuteAllPrompts(CancellationToken.None);
             ViewModel.ExecuteAllPromptsButtonText = "Execute Prompts";
             button.IsEnabled = true;
+            await UpdateResponses();
+        }
+
+        public async void SearchFieldChanged(object? sender, string e)
+        {
+            if (e.Length < 5)
+            {
+                return;
+            }
+
             await UpdateResponses();
         }
     }

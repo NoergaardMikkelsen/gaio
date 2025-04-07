@@ -1,6 +1,8 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Models.Entity;
+using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
@@ -46,24 +48,35 @@ public sealed partial class KeywordsPage : BasePage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
+            StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid keywordsDataGrid = DataGridFactory
                 .CreateDataGrid(ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns)
-                .Grid(row: 1, column: 0, columnSpan: 5);
-            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateKeywords()).Grid(row: 2, column: 4);
+                .Grid(row: 2, column: 0, columnSpan: 5);
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateKeywords()).Grid(row: 3, column: 4);
 
             grid.Children.Add(buttonPanel);
+            grid.Children.Add(inputPanel);
             grid.Children.Add(keywordsDataGrid);
             grid.Children.Add(refreshButtons);
         }
 
+        private StackPanel CreateInputPanel()
+        {
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
+
+            StackPanel textPanel = StackPanelFactory.CreateLabeledFieldPanel("Keyword Text",
+                "Limit data grids content by content of 'Keyword Text'...",
+                nameof(KeywordsViewModel.SearchableKeywordText));
+            ViewModel.SearchableKeywordTextChanged += Logic.SearchFieldChanged;
+
+            stackPanel.Children.Add(textPanel);
+
+            return stackPanel;
+        }
+
         private StackPanel CreateButtonsPanel()
         {
-            var stackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(10),
-            };
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
             var addButton = new Button()
             {
@@ -81,14 +94,16 @@ public sealed partial class KeywordsPage : BasePage
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
-            const int rowOneHeight = 8;
-            const int rowThreeHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
+            const int rowOneHeight = 10;
+            const int rowTwoHeight = 10;
+            const int rowFourHeight = 10;
+            const int rowThreeHeight = 100 - rowOneHeight - rowTwoHeight - rowFourHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
+            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Auto),
+                new GridLength(rowTwoHeight, GridUnitType.Auto), new GridLength(rowThreeHeight, GridUnitType.Star),
+                new GridLength(rowFourHeight, GridUnitType.Auto));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -155,7 +170,7 @@ public sealed partial class KeywordsPage : BasePage
 
         private FrameworkElement BuildActionsElement(int columnEnumAsInt)
         {
-            var stackPanel = new StackPanel() {Orientation = Orientation.Horizontal,};
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
             var editButton = new Button()
             {
@@ -187,20 +202,23 @@ public sealed partial class KeywordsPage : BasePage
         private readonly Page page;
         private KeywordsViewModel ViewModel { get; }
 
-        public KeywordsPageLogic(IKeywordEndpoint keywordApi, KeywordsViewModel dataContext, Page page)
+        public KeywordsPageLogic(IKeywordEndpoint keywordApi, KeywordsViewModel viewModel, Page page)
         {
-            ViewModel = dataContext;
+            ViewModel = viewModel;
             this.keywordApi = keywordApi;
             this.page = page;
         }
 
         internal async Task UpdateKeywords()
         {
-            var apiResponse = await keywordApi.GetAll(CancellationToken.None);
+            ISearchableKeyword searchable = BuildSearchableKeyword();
+
+            var apiResponse = await keywordApi.GetAllByQuery(CancellationToken.None, (SearchableKeyword) searchable);
 
             if (!apiResponse.IsSuccessful)
             {
                 Console.WriteLine($"Request to Api was not successful. Error is as follows: {apiResponse.Error}");
+                return;
             }
 
             var allKeywords = apiResponse.Content;
@@ -212,6 +230,14 @@ public sealed partial class KeywordsPage : BasePage
             }
 
             ViewModel.Keywords = allKeywords;
+        }
+
+        private ISearchableKeyword BuildSearchableKeyword()
+        {
+            return new SearchableKeyword()
+            {
+                Text = ViewModel.SearchableKeywordText ?? string.Empty,
+            };
         }
 
         public async void EditButtonOnClick(object sender, RoutedEventArgs e)
@@ -256,6 +282,16 @@ public sealed partial class KeywordsPage : BasePage
         {
             await ContentDialogFactory.ShowBuildKeywordDialogFromNew(keywordApi, page.XamlRoot);
             await Task.Delay(TimeSpan.FromSeconds(2));
+            await UpdateKeywords();
+        }
+
+        public async void SearchFieldChanged(object? sender, string e)
+        {
+            if (e.Length < 5)
+            {
+                return;
+            }
+
             await UpdateKeywords();
         }
     }

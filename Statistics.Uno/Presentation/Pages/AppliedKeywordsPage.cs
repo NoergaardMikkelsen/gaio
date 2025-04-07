@@ -66,12 +66,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         protected override StackPanel CreateRefreshButtonsPanel(Func<Task>? refreshAction = null)
         {
-            var stackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(10),
-            };
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
+            stackPanel.HorizontalAlignment = HorizontalAlignment.Right;
 
             var forceButton = new Button()
             {
@@ -103,8 +99,8 @@ public sealed partial class AppliedKeywordsPage : BasePage
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
+            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Auto),
+                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Auto));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -173,16 +169,16 @@ public sealed partial class AppliedKeywordsPage : BasePage
         private readonly IKeywordEndpoint keywordApi;
         private ArtificialIntelligenceType comboBoxSelection;
         private AppliedKeywordsViewModel ViewModel { get; }
-        private IList<IAppliedKeyword>? appliedKeywordsCache;
+        private static IList<IAppliedKeyword>? _appliedKeywordsCache;
 
         public AppliedKeywordsPageLogic(
             IAppliedKeywordService appliedKeywordService, IResponseEndpoint responsesApi, IKeywordEndpoint keywordApi,
-            AppliedKeywordsViewModel dataContext)
+            AppliedKeywordsViewModel viewModel)
         {
             this.appliedKeywordService = appliedKeywordService;
             this.responsesApi = responsesApi;
             this.keywordApi = keywordApi;
-            ViewModel = dataContext;
+            ViewModel = viewModel;
             ViewModel.AppliedKeywords = new List<IAppliedKeyword>();
         }
 
@@ -197,13 +193,12 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         internal async Task UpdateAppliedKeywords(bool forceUpdate = false)
         {
-            if (forceUpdate || appliedKeywordsCache == null ||
-                (appliedKeywordsCache != null && !appliedKeywordsCache.Any()))
+            if (forceUpdate || _appliedKeywordsCache == null || !_appliedKeywordsCache.Any())
             {
                 await UpdateAppliedKeywordsCache();
             }
 
-            ViewModel.AppliedKeywords = appliedKeywordsCache!.Where(ak => ak.AiType == comboBoxSelection).ToList();
+            ViewModel.AppliedKeywords = _appliedKeywordsCache!.Where(ak => ak.AiType == comboBoxSelection).ToList();
         }
 
         private async Task UpdateAppliedKeywordsCache()
@@ -214,7 +209,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
             var responsesResponse = await responsesApi.GetAll(CancellationToken.None);
             EnsureSuccessStatusCode(responsesResponse);
 
-            appliedKeywordsCache = (await appliedKeywordService.CalculateAppliedKeywords(
+            _appliedKeywordsCache = (await appliedKeywordService.CalculateAppliedKeywords(
                 keywordsResponse.Content ?? throw new InvalidOperationException(),
                 responsesResponse.Content ?? throw new InvalidOperationException())).ToList();
         }

@@ -1,6 +1,8 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Models.Entity;
+using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
@@ -48,25 +50,43 @@ public sealed partial class ArtificialIntelligencePage : BasePage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
+            StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns)
-                .Grid(row: 1, column: 0, columnSpan: 5);
+                .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateArtificialIntelligences())
-                .Grid(row: 2, column: 4);
+                .Grid(row: 3, column: 4);
+
 
             grid.Children.Add(buttonPanel);
+            grid.Children.Add(inputPanel);
             grid.Children.Add(aiDataGrid);
             grid.Children.Add(refreshButtons);
         }
 
+        private StackPanel CreateInputPanel()
+        {
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
+
+            StackPanel namePanel = StackPanelFactory.CreateLabeledFieldPanel("Name:",
+                "Limit data grids content by content of 'Name'...",
+                nameof(ArtificialIntelligenceViewModel.SearchableAiName));
+            ViewModel.SearchableAiNameChanged += Logic.SearchFieldChanged;
+
+            StackPanel keyPanel = StackPanelFactory.CreateLabeledFieldPanel("Key:",
+                "Limit data grids content by content of 'Key'...",
+                nameof(ArtificialIntelligenceViewModel.SearchableAiKey));
+            ViewModel.SearchableAiKeyChanged += Logic.SearchFieldChanged;
+
+            stackPanel.Children.Add(namePanel);
+            stackPanel.Children.Add(keyPanel);
+
+            return stackPanel;
+        }
+
         private StackPanel CreateButtonsPanel()
         {
-            var stackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(10),
-            };
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
             var addButton = new Button()
             {
@@ -84,14 +104,16 @@ public sealed partial class ArtificialIntelligencePage : BasePage
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
-            const int rowOneHeight = 8;
-            const int rowThreeHeight = 8;
-            const int rowTwoHeight = 100 - rowOneHeight - rowThreeHeight;
+            const int rowOneHeight = 10;
+            const int rowTwoHeight = 10;
+            const int rowFourHeight = 10;
+            const int rowThreeHeight = 100 - rowOneHeight - rowTwoHeight - rowFourHeight;
             const int columnWidth = 100;
 
             grid.SafeArea(SafeArea.InsetMask.VisibleBounds);
-            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Star),
-                new GridLength(rowTwoHeight, GridUnitType.Star), new GridLength(rowThreeHeight, GridUnitType.Star));
+            grid.RowDefinitions(new GridLength(rowOneHeight, GridUnitType.Auto),
+                new GridLength(rowTwoHeight, GridUnitType.Auto), new GridLength(rowThreeHeight, GridUnitType.Star),
+                new GridLength(rowFourHeight, GridUnitType.Auto));
             grid.ColumnDefinitions(Enumerable.Repeat(new GridLength(columnWidth, GridUnitType.Star), 5).ToArray());
         }
 
@@ -155,7 +177,7 @@ public sealed partial class ArtificialIntelligencePage : BasePage
 
         private FrameworkElement BuildActionsElement(int columnEnumAsInt)
         {
-            var stackPanel = new StackPanel() {Orientation = Orientation.Horizontal,};
+            StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
             var editButton = new Button()
             {
@@ -185,23 +207,27 @@ public sealed partial class ArtificialIntelligencePage : BasePage
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private readonly Page page;
-        private ArtificialIntelligenceViewModel DataContext { get; }
+        private ArtificialIntelligenceViewModel ViewModel { get; }
 
         public ArtificialIntelligencePageLogic(
-            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel dataContext, Page page)
+            IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel viewModel, Page page)
         {
             this.aiApi = aiApi;
             this.page = page;
-            DataContext = dataContext;
+            ViewModel = viewModel;
         }
 
         internal async Task UpdateArtificialIntelligences()
         {
-            var apiResponse = await aiApi.GetAll(CancellationToken.None);
+            ISearchableArtificialIntelligence searchable = BuildSearchableArtificialIntelligences();
+
+            var apiResponse =
+                await aiApi.GetAllByQuery(CancellationToken.None, (SearchableArtificialIntelligence) searchable);
 
             if (!apiResponse.IsSuccessful)
             {
                 Console.WriteLine($"Request to Api was not successful. Error is as follows: {apiResponse.Error}");
+                return;
             }
 
             var allAis = apiResponse.Content;
@@ -212,7 +238,15 @@ public sealed partial class ArtificialIntelligencePage : BasePage
                 return;
             }
 
-            DataContext.ArtificialIntelligences = allAis;
+            ViewModel.ArtificialIntelligences = allAis;
+        }
+
+        private ISearchableArtificialIntelligence BuildSearchableArtificialIntelligences()
+        {
+            return new SearchableArtificialIntelligence()
+            {
+                Key = ViewModel.SearchableAiKey ?? "", Name = ViewModel.SearchableAiName ?? "",
+            };
         }
 
         public async void EditButtonOnClick(object sender, RoutedEventArgs e)
@@ -223,7 +257,7 @@ public sealed partial class ArtificialIntelligencePage : BasePage
 
             var aiId = (int) button.Tag;
 
-            IArtificialIntelligence ai = DataContext.ArtificialIntelligences.FirstOrDefault(x => x.Id == aiId) ??
+            IArtificialIntelligence ai = ViewModel.ArtificialIntelligences.FirstOrDefault(x => x.Id == aiId) ??
                                          throw new NullReferenceException(
                                              $"Expected to find an artificial intelligence with id '{aiId}', but it was not found.");
 
@@ -257,6 +291,16 @@ public sealed partial class ArtificialIntelligencePage : BasePage
         {
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromNew(aiApi, page.XamlRoot);
             await Task.Delay(TimeSpan.FromSeconds(1));
+            await UpdateArtificialIntelligences();
+        }
+
+        public async void SearchFieldChanged(object? sender, string e)
+        {
+            if (e.Length < 5)
+            {
+                return;
+            }
+
             await UpdateArtificialIntelligences();
         }
     }

@@ -12,7 +12,7 @@ public sealed partial class NavigationPage : Page
         PROMPTS = 1,
         ARTIFICIAL_INTELLIGENCES = 2,
         KEYWORDS = 3,
-        APPLIED_KEYWORDS = 4
+        APPLIED_KEYWORDS = 4,
     }
 
     public NavigationPage()
@@ -148,7 +148,7 @@ public sealed partial class NavigationPage : Page
                 Pages.ARTIFICIAL_INTELLIGENCES => new ArtificialIntelligencePage(),
                 Pages.KEYWORDS => new KeywordsPage(),
                 Pages.APPLIED_KEYWORDS => new AppliedKeywordsPage(),
-                _ => new DefaultPage()
+                var _ => new DefaultPage(),
             };
 
             Console.WriteLine($"Navigation to '{newPage.GetType().Name}'...");
