@@ -9,4 +9,9 @@ public class SearchableKeyword : ISearchableKeyword
 
     /// <inheritdoc />
     public string Text { get; set; }
+
+    public SearchableKeyword()
+    {
+        Text = string.Empty;
+    }
 }
