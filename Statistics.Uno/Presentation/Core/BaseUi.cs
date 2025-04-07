@@ -1,3 +1,5 @@
+using Statistics.Uno.Presentation.Factory;
+
 namespace Statistics.Uno.Presentation.Core;
 
 public abstract class BaseUi<TLogic, TViewModel> where TLogic : class where TViewModel : class
@@ -32,12 +34,8 @@ public abstract class BaseUi<TLogic, TViewModel> where TLogic : class where TVie
             throw new ArgumentNullException(nameof(refreshAction));
         }
 
-        var stackPanel = new StackPanel()
-        {
-            Orientation = Orientation.Horizontal,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            Margin = new Thickness(10),
-        };
+        StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
+        stackPanel.HorizontalAlignment = HorizontalAlignment.Right;
 
         var button = new Button()
         {
