@@ -16,10 +16,11 @@ public class ActionController : ControllerBase
     private readonly IMasterArtificialIntelligencePromptService masterAiPromptService;
     private readonly ILogger<ActionController> logger;
 
-    public ActionController(IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService,
+    public ActionController(
+        IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService,
         IEntityQueryService<Prompt, SearchablePrompt> promptService,
         IEntityQueryService<Response, SearchableResponse> responseService,
-        IMasterArtificialIntelligencePromptService masterAiPromptService,ILogger<ActionController> logger)
+        IMasterArtificialIntelligencePromptService masterAiPromptService, ILogger<ActionController> logger)
     {
         this.aiService = aiService;
         this.promptService = promptService;
@@ -44,8 +45,7 @@ public class ActionController : ControllerBase
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to execute all prompts.");
+            logger.LogError(e, "An exception was caught while attempting to execute all prompts.");
             throw;
         }
     }
@@ -55,7 +55,7 @@ public class ActionController : ControllerBase
     {
         try
         {
-            var prompt = await promptService.GetEntity(new SearchablePrompt() { Id = id });
+            Prompt prompt = await promptService.GetEntity(new SearchablePrompt() {Id = id,});
             var ais = await aiService.GetEntities(new SearchableArtificialIntelligence());
 
             var responses = await masterAiPromptService.PromptSuppliedAis(ais, prompt);

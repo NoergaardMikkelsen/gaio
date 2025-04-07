@@ -14,7 +14,7 @@ public class RequestLoggingMiddleware
         var requestBodyStream = new MemoryStream();
         await context.Request.Body.CopyToAsync(requestBodyStream);
         requestBodyStream.Seek(0, SeekOrigin.Begin);
-        var requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
+        string requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
         requestBodyStream.Seek(0, SeekOrigin.Begin);
         context.Request.Body = requestBodyStream;
 

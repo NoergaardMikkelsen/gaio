@@ -40,12 +40,14 @@ public class OpenAiPromptService : BasePromptService, IArtificialIntelligencePro
         return BuildResponseFromChatCompletion(chatCompletion, ai, prompt);
     }
 
-    private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, int index, IArtificialIntelligence ai, IEnumerable<IPrompt> prompts)
+    private IResponse BuildResponseFromChatCompletion(
+        ChatCompletion chatCompletion, int index, IArtificialIntelligence ai, IEnumerable<IPrompt> prompts)
     {
         return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompts.ToList()[index].Id);
     }
 
-    private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, IArtificialIntelligence ai, IPrompt prompt)
+    private IResponse BuildResponseFromChatCompletion(
+        ChatCompletion chatCompletion, IArtificialIntelligence ai, IPrompt prompt)
     {
         return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompt.Id);
     }

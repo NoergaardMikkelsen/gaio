@@ -74,7 +74,8 @@ public static class ContentDialogFactory
         return await dialog.ShowAsync();
     }
 
-    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromExisting(IKeywordEndpoint keywordApi, IKeyword keyword, XamlRoot? root)
+    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromExisting(
+        IKeywordEndpoint keywordApi, IKeyword keyword, XamlRoot? root)
     {
         var dialog = new BuildKeywordDialog(keywordApi, keyword)
         {
@@ -87,7 +88,8 @@ public static class ContentDialogFactory
         return await dialog.ShowAsync();
     }
 
-    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromNew(IKeywordEndpoint keywordApi, XamlRoot? root)
+    public static async Task<ContentDialogResult> ShowBuildKeywordDialogFromNew(
+        IKeywordEndpoint keywordApi, XamlRoot? root)
     {
         var dialog = new BuildKeywordDialog(keywordApi)
         {
