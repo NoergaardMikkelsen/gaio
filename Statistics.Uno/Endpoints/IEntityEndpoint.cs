@@ -12,7 +12,7 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
     Task<ApiResponse<TEntity>> GetById(CancellationToken ct, [Query] int id);
 
     [Post("/GetAllByQuery")]
-    Task<ApiResponse<TEntity>> GetAllByQuery(CancellationToken ct, [Body] TSearchable searchable);
+    Task<ApiResponse<List<TEntity>>> GetAllByQuery(CancellationToken ct, [Body] TSearchable searchable);
 
     [Post("/GetByQuery")]
     Task<ApiResponse<TEntity>> GetByQuery(CancellationToken ct, [Body] TSearchable searchable);
