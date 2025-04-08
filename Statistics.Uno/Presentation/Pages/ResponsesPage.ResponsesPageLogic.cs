@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
@@ -22,7 +24,6 @@ public sealed partial class ResponsesPage
             this.responseApi = responseApi;
             this.actionApi = actionApi;
             ViewModel = dataContext;
-            ViewModel.Responses = new List<IResponse>();
             updateCancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -54,7 +55,7 @@ public sealed partial class ResponsesPage
                     return;
                 }
 
-                ViewModel.Responses = responses;
+                ViewModel.Responses = new ObservableCollection<IResponse>(responses);
             }
             catch (OperationCanceledException)
             {
@@ -101,6 +102,11 @@ public sealed partial class ResponsesPage
             }
 
             await UpdateResponses();
+        }
+
+        public void SortItems(object? sender, DataGridColumnEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

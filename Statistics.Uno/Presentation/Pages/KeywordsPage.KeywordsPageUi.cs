@@ -21,7 +21,7 @@ public sealed partial class KeywordsPage
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid keywordsDataGrid = DataGridFactory
-                .CreateDataGrid(ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns)
+                .CreateDataGrid(ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
             StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateKeywords()).Grid(row: 3, column: 4);

@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Models.Searchable;
@@ -53,7 +55,7 @@ public sealed partial class KeywordsPage
                     return;
                 }
 
-                ViewModel.Keywords = allKeywords;
+                ViewModel.Keywords = new ObservableCollection<IKeyword>(allKeywords);
             }
             catch (OperationCanceledException)
             {
@@ -126,6 +128,11 @@ public sealed partial class KeywordsPage
             }
 
             await UpdateKeywords();
+        }
+
+        public void SortItems(object? sender, DataGridColumnEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

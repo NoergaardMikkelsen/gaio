@@ -27,12 +27,12 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
             },
         };
 
@@ -43,7 +43,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -59,12 +59,12 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
             },
         };
 
@@ -75,7 +75,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -91,13 +91,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
         };
@@ -109,7 +109,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -125,13 +125,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
         };
@@ -143,7 +143,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -159,13 +159,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
         };
@@ -177,7 +177,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -193,13 +193,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
         };
@@ -211,7 +211,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -231,13 +231,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
         };
@@ -249,7 +249,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });
@@ -269,13 +269,13 @@ public class AppliedKeywordServiceTests
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
         };
@@ -287,7 +287,7 @@ public class AppliedKeywordServiceTests
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(new
         {
             Text = "test",
-            AiType = ArtificialIntelligenceType.OPEN_AI,
+            AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
             MatchingResponsesCount = 1,
             TotalResponsesCount = 2,
         });

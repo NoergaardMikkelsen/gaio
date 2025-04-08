@@ -15,7 +15,8 @@ public class MasterArtificialIntelligencePromptService : IMasterArtificialIntell
         this.promptServices = promptServices ??
                               new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>()
                               {
-                                  {ArtificialIntelligenceType.OPEN_AI, new OpenAiPromptService()},
+                                  {ArtificialIntelligenceType.OPEN_AI_NO_WEB, new OpenAiNoWebPromptService()},
+                                    {ArtificialIntelligenceType.OPEN_AI_WEB, new OpenAiWebPromptService()},
                               };
     }
 

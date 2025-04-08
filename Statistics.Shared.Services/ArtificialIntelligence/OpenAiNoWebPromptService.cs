@@ -5,12 +5,12 @@ using Statistics.Shared.Abstraction.Interfaces.Services;
 
 namespace Statistics.Shared.Services.ArtificialIntelligence;
 
-public class OpenAiPromptService : BasePromptService, IArtificialIntelligencePromptService
+public class OpenAiNoWebPromptService : BasePromptService, IArtificialIntelligencePromptService
 {
     private const string MODEL = "gpt-4o";
 
     /// <inheritdoc />
-    public OpenAiPromptService() : base(ArtificialIntelligenceType.OPEN_AI)
+    public OpenAiNoWebPromptService() : base(ArtificialIntelligenceType.OPEN_AI_NO_WEB)
     {
     }
 

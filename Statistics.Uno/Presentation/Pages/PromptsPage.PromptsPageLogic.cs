@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
@@ -57,7 +59,7 @@ public sealed partial class PromptsPage
                     return;
                 }
 
-                ViewModel.Prompts = allPrompts;
+                ViewModel.Prompts = new ObservableCollection<IPrompt>(allPrompts);
             }
             catch (OperationCanceledException)
             {
@@ -158,6 +160,11 @@ public sealed partial class PromptsPage
             }
 
             await UpdatePrompts();
+        }
+
+        public void SortItems(object? sender, DataGridColumnEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

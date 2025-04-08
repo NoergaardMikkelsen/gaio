@@ -22,7 +22,7 @@ public sealed partial class ResponsesPage
                 .Grid(row: 0, column: 4);
             StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid responsesDataGrid = DataGridFactory
-                .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns)
+                .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel refreshButtons =
                 CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 3, column: 4);
@@ -138,7 +138,7 @@ public sealed partial class ResponsesPage
 
             return column switch
             {
-                DataGridColumns.PROMPT_TEXT => 100,
+                DataGridColumns.PROMPT_TEXT => 70,
                 DataGridColumns.RESPONSE_TEXT => 100,
                 DataGridColumns.CREATED_AT => 35,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),

@@ -18,7 +18,7 @@ public class MasterArtificialIntelligencePromptServiceTests
         mockOpenAiPromptService = new Mock<IArtificialIntelligencePromptService>();
         var promptServices = new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>
         {
-            {ArtificialIntelligenceType.OPEN_AI, mockOpenAiPromptService.Object},
+            {ArtificialIntelligenceType.OPEN_AI_NO_WEB, mockOpenAiPromptService.Object},
         };
 
         service = new MasterArtificialIntelligencePromptService(promptServices);
@@ -29,7 +29,7 @@ public class MasterArtificialIntelligencePromptServiceTests
     {
         // Arrange
         var ai = new Mock<IArtificialIntelligence>();
-        ai.SetupGet(a => a.AiType).Returns(ArtificialIntelligenceType.OPEN_AI);
+        ai.SetupGet(a => a.AiType).Returns(ArtificialIntelligenceType.OPEN_AI_NO_WEB);
 
         var prompt1 = new Mock<IPrompt>();
         var prompt2 = new Mock<IPrompt>();
@@ -54,7 +54,7 @@ public class MasterArtificialIntelligencePromptServiceTests
     {
         // Arrange
         var ai = new Mock<IArtificialIntelligence>();
-        ai.SetupGet(a => a.AiType).Returns(ArtificialIntelligenceType.OPEN_AI);
+        ai.SetupGet(a => a.AiType).Returns(ArtificialIntelligenceType.OPEN_AI_NO_WEB);
 
         var prompt = new Mock<IPrompt>();
 

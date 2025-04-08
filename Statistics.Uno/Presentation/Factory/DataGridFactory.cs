@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
@@ -52,7 +53,8 @@ public class SetupRowArguments
 public static class DataGridFactory
 {
     public static DataGrid CreateDataGrid<TViewModel>(
-        TViewModel dataContext, string itemsSourcePath, Action<DataGrid> setupColumns,
+        TViewModel viewModel, string itemsSourcePath, Action<DataGrid> setupColumns,
+        EventHandler<DataGridColumnEventArgs> sortItems,
         Action<DataGrid>? setupRowTemplate = null)
     {
         var dataGrid = new DataGrid()
@@ -72,8 +74,17 @@ public static class DataGridFactory
         setupColumns(dataGrid);
         setupRowTemplate?.Invoke(dataGrid);
 
-        dataGrid.SetBinding(DataGrid.ItemsSourceProperty,
-            new Binding() {Path = itemsSourcePath, Source = dataContext,});
+        dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = itemsSourcePath, Source = viewModel});
+
+        dataGrid.Sorting += sortItems;
+
+        foreach (var column in dataGrid.Columns)
+        {
+            if (column.Header.ToString() == "Actions") // Disable sorting for "Actions" column
+            {
+                column.CanUserSort = false;
+            }
+        }
 
         return dataGrid;
     }

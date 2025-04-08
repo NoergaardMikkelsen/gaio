@@ -1,5 +1,9 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
+using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Factory;
@@ -54,7 +58,7 @@ public sealed partial class ArtificialIntelligencePage
                     return;
                 }
 
-                ViewModel.ArtificialIntelligences = allAis;
+                ViewModel.ArtificialIntelligences = new ObservableCollection<IArtificialIntelligence>(allAis);
             }
             catch (OperationCanceledException)
             {
@@ -128,6 +132,17 @@ public sealed partial class ArtificialIntelligencePage
             }
 
             await UpdateArtificialIntelligences();
+        }
+
+        public void SortItems(object? sender, DataGridColumnEventArgs e)
+        {
+            
+        }
+
+        // Helper method to get the value of a property by name
+        private static object? GetPropertyValue(object obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName)?.GetValue(obj);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -10,7 +11,7 @@ public partial class PromptsViewModel : ObservableObject
         ExecuteAllPromptsButtonText = "Execute Prompts";
     }
 
-    [ObservableProperty] private IEnumerable<IPrompt> prompts;
+    [ObservableProperty] private ObservableCollection<IPrompt> prompts;
     [ObservableProperty] private string executeAllPromptsButtonText;
     [ObservableProperty] private string? searchablePromptText;
     [ObservableProperty] private string? updatingText;

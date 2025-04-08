@@ -24,7 +24,7 @@ public sealed partial class ArtificialIntelligencePage
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
             StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid aiDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns)
+                    ViewModel, nameof(ArtificialIntelligenceViewModel.ArtificialIntelligences), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
 
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
@@ -164,7 +164,7 @@ public sealed partial class ArtificialIntelligencePage
             {
                 DataGridColumns.CREATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
-                DataGridColumns.AI_TYPE => new EnumToTitleCaseConverter(),
+                DataGridColumns.AI_TYPE => new ArtificialIntelligenceTypeToHumanReadableConverter(),
                 var _ => null,
             };
         }

@@ -21,7 +21,7 @@ public sealed partial class AppliedKeywordsPage
             ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(nameof(AppliedKeywordsViewModel.SelectedAiType))
                 .Grid(row: 0, column: 4);
             DataGrid appliedKeywordsDataGrid = DataGridFactory.CreateDataGrid(
-                    ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns)
+                    ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 1, column: 0, columnSpan: 5);
             StackPanel refreshButtons = CreateRefreshButtonsPanel().Grid(row: 2, column: 4);
 
@@ -77,7 +77,7 @@ public sealed partial class AppliedKeywordsPage
             return column switch
             {
                 DataGridColumns.TEXT => nameof(AppliedKeyword.Text),
-                DataGridColumns.USES_REGEX => nameof(AppliedKeyword.UsesRegex),
+                DataGridColumns.USES_REGULAR_EXPRESSION => nameof(AppliedKeyword.UsesRegex),
                 DataGridColumns.TOTAL_RESPONSES_COUNT => nameof(AppliedKeyword.TotalResponsesCount),
                 DataGridColumns.MATCHING_RESPONSES_COUNT => nameof(AppliedKeyword.MatchingResponsesCount),
                 DataGridColumns.START_SEARCH => nameof(AppliedKeyword.StartSearch),
@@ -104,8 +104,8 @@ public sealed partial class AppliedKeywordsPage
 
             return column switch
             {
-                DataGridColumns.TEXT => 100,
-                DataGridColumns.USES_REGEX => 15,
+                DataGridColumns.TEXT => 80,
+                DataGridColumns.USES_REGULAR_EXPRESSION => 25,
                 DataGridColumns.TOTAL_RESPONSES_COUNT => 35,
                 DataGridColumns.MATCHING_RESPONSES_COUNT => 35,
                 DataGridColumns.START_SEARCH => 40,
@@ -120,7 +120,7 @@ public sealed partial class AppliedKeywordsPage
 
             return column switch
             {
-                DataGridColumns.USES_REGEX => new BooleanToYesNoConverter(),
+                DataGridColumns.USES_REGULAR_EXPRESSION => new BooleanToYesNoConverter(),
                 DataGridColumns.START_SEARCH => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.END_SEARCH => new UtcDateTimeToLocalStringConverter(),
                 var _ => null,

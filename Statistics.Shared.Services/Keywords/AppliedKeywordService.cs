@@ -72,6 +72,7 @@ public class AppliedKeywordService : IAppliedKeywordService
         {
             AiType = type,
             Text = keyword.Text,
+            UsesRegex = true,
             StartSearch = keyword.StartSearch,
             EndSearch = keyword.EndSearch,
             MatchingResponsesCount = matchingResponses.Count(),
@@ -89,6 +90,7 @@ public class AppliedKeywordService : IAppliedKeywordService
         {
             AiType = type,
             Text = keyword.Text,
+            UsesRegex = true,
             StartSearch = keyword.StartSearch,
             EndSearch = keyword.EndSearch,
             MatchingResponsesCount = matchingResponses.Count(),
@@ -106,6 +108,7 @@ public class AppliedKeywordService : IAppliedKeywordService
         {
             AiType = type,
             Text = keyword.Text,
+            UsesRegex = true,
             StartSearch = keyword.StartSearch,
             EndSearch = keyword.EndSearch,
             MatchingResponsesCount = matchingResponses.Count(),
@@ -124,6 +127,7 @@ public class AppliedKeywordService : IAppliedKeywordService
         {
             AiType = type,
             Text = keyword.Text,
+            UsesRegex = true,
             StartSearch = keyword.StartSearch,
             EndSearch = keyword.EndSearch,
             MatchingResponsesCount = matchingResponses.Count(),

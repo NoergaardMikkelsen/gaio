@@ -14,17 +14,21 @@ public static class ComboBoxFactory
             BorderBrush = new SolidColorBrush(Colors.White),
         };
 
-        var options = typeof(ArtificialIntelligenceType).EnumNamesToTitleCase();
-        comboBox.ItemsSource = options;
+        var converter = new ArtificialIntelligenceTypeToHumanReadableConverter();
+        // Create a collection of human-readable strings for the ComboBox items
+        var aiTypes = Enum.GetValues<ArtificialIntelligenceType>().Select(aiType => converter.Convert(aiType, typeof(string), null, null))
+            .ToList();
 
-        var binding = new Binding()
+        comboBox.ItemsSource = aiTypes;
+
+        var indexBinding = new Binding()
         {
             Mode = BindingMode.TwoWay,
             Path = new PropertyPath(bindingPath),
             UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
             Converter = new EnumToIntConverter(),
         };
-        comboBox.SetBinding(ComboBox.SelectedIndexProperty, binding);
+        comboBox.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
 
         return comboBox;
     }

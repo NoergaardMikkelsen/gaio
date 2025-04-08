@@ -11,7 +11,7 @@ public sealed partial class AppliedKeywordsPage : BasePage
     private enum DataGridColumns
     {
         TEXT = 0,
-        USES_REGEX = 1,
+        USES_REGULAR_EXPRESSION = 1,
         MATCHING_RESPONSES_COUNT = 2,
         TOTAL_RESPONSES_COUNT = 3,
         START_SEARCH = 4,
