@@ -8,6 +8,7 @@ public partial class ArtificialIntelligenceViewModel : ObservableObject
     [ObservableProperty] private IEnumerable<IArtificialIntelligence> artificialIntelligences;
     [ObservableProperty] private string? searchableAiName;
     [ObservableProperty] private string? searchableAiKey;
+    [ObservableProperty] private string? updatingText;
 
     public event EventHandler<string>? SearchableAiNameChanged;
     public event EventHandler<string>? SearchableAiKeyChanged;

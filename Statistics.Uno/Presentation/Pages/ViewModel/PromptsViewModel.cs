@@ -13,6 +13,7 @@ public partial class PromptsViewModel : ObservableObject
     [ObservableProperty] private IEnumerable<IPrompt> prompts;
     [ObservableProperty] private string executeAllPromptsButtonText;
     [ObservableProperty] private string? searchablePromptText;
+    [ObservableProperty] private string? updatingText;
 
     public event EventHandler<string>? SearchablePromptTextChanged;
 

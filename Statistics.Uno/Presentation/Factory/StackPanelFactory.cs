@@ -17,6 +17,7 @@ public static class StackPanelFactory
             Margin = new Thickness(5),
             VerticalAlignment = VerticalAlignment.Center,
             PlaceholderText = placeholderText,
+            Width = 400,
         };
         inputBox.SetBinding(TextBox.TextProperty, new Binding
         {

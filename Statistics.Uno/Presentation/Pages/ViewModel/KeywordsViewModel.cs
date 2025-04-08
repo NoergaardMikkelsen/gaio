@@ -7,6 +7,7 @@ public partial class KeywordsViewModel : ObservableObject
 {
     [ObservableProperty] private IEnumerable<IKeyword> keywords;
     [ObservableProperty] private string? searchableKeywordText;
+    [ObservableProperty] private string? updatingText;
 
     public event EventHandler<string>? SearchableKeywordTextChanged;
 

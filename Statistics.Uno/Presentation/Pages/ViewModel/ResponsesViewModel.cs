@@ -13,13 +13,22 @@ public partial class ResponsesViewModel : ObservableObject
 
     [ObservableProperty] private IEnumerable<IResponse> responses;
     [ObservableProperty] private string executeAllPromptsButtonText;
+    [ObservableProperty] private string? searchablePromptText;
     [ObservableProperty] private string? searchableResponseText;
     [ObservableProperty] private ArtificialIntelligenceType selectedAiType;
+    [ObservableProperty] private string? updatingText;
 
+    public event EventHandler<string>? SearchablePromptTextChanged;
     public event EventHandler<string>? SearchableResponseTextChanged;
 
     partial void OnSearchableResponseTextChanged(string? value)
     {
         SearchableResponseTextChanged?.Invoke(this, value ?? string.Empty);
     }
+
+    partial void OnSearchablePromptTextChanged(string? value)
+    {
+        SearchablePromptTextChanged?.Invoke(this, value ?? string.Empty);
+    }
+
 }
