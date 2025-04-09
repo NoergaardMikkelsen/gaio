@@ -21,10 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Statistics.Api\Statistics.Api.csproj" />
     <ProjectReference Include="..\Statistics.Uno\Statistics.Uno.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Service\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>
