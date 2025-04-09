@@ -1,11 +1,19 @@
+using System.Text.Json.Serialization;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Shared.Models.Entity;
 
 public class Keyword : IKeyword
 {
+    private int id;
+
     /// <inheritdoc />
-    public int Id { get; set; }
+    public int Id
+    {
+        get => id;
+        set => throw new InvalidOperationException(
+            $"{nameof(Id)} cannot be changed after creation of {nameof(ArtificialIntelligence)} entity");
+    }
 
     /// <inheritdoc />
     public string Text { get; set; }
@@ -27,4 +35,19 @@ public class Keyword : IKeyword
 
     /// <inheritdoc />
     public DateTime? EndSearch { get; set; }
+
+    public Keyword()
+    {
+        
+    }
+
+    /// <summary>
+    /// Constructor for Entity Framework Core and Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    [JsonConstructor]
+    public Keyword(int id)
+    {
+        this.id = id;
+    }
 }

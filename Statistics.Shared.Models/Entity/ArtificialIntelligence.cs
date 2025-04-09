@@ -52,4 +52,13 @@ public class ArtificialIntelligence : IArtificialIntelligence
         this.id = id;
         Responses = responses.Cast<IResponse>().ToList();
     }
+
+    /// <summary>
+    /// Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public ArtificialIntelligence(int id)
+    {
+        this.id = id;
+    }
 }

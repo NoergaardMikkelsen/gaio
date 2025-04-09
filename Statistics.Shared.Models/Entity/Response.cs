@@ -56,4 +56,13 @@ public class Response : IResponse
         Prompt = prompt;
         Ai = ai;
     }
+
+    /// <summary>
+    /// Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public Response(int id)
+    {
+        this.id = id;
+    }
 }

@@ -8,6 +8,8 @@ namespace Statistics.Shared.Persistence;
 
 public class StatisticsDatabaseContext : BaseDatabaseContext
 {
+
+
     public StatisticsDatabaseContext(DbContextOptions options) : base(options)
     {
         //Console.WriteLine($"Completed Construction of Database Context. - {JsonConvert.SerializeObject(options)}");
@@ -28,8 +30,8 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
         modelBuilder.ApplyConfiguration(new KeywordConfiguration(databaseType));
     }
 
-    public DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
-    public DbSet<Prompt> Prompts { get; set; }
-    public DbSet<Response> Responses { get; set; }
-    public DbSet<Keyword> Keywords { get; set; }
+    public virtual DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
+    public virtual DbSet<Prompt> Prompts { get; set; }
+    public virtual DbSet<Response> Responses { get; set; }
+    public virtual DbSet<Keyword> Keywords { get; set; }
 }

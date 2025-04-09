@@ -10,6 +10,11 @@ using Statistics.Shared.Abstraction.Interfaces.Services;
 
 namespace Statistics.Shared.Services.ArtificialIntelligence;
 
+/// <summary>
+/// As of 09-04-2025, OpenAI's nuget package with web search capabilities is only in preview.
+/// It also has little to no real explanation of how to use it - yet.
+/// This service therefore acts just like <see cref="OpenAiNoWebPromptService"/>, for now.
+/// </summary>
 public class OpenAiWebPromptService : BasePromptService, IArtificialIntelligencePromptService
 {
     private const string MODEL = "gpt-4o";
