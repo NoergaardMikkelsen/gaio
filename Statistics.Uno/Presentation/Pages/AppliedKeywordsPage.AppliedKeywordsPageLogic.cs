@@ -10,22 +10,14 @@ using Statistics.Uno.Presentation.Pages.ViewModel;
 using Statistics.Shared.Extensions;
 using Statistics.Uno.Presentation.Core.Converters;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Statistics.Uno.Presentation.Core;
+using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class AppliedKeywordsPage
 {
-    private static readonly Dictionary<string, string> ColumnHeaderToPropertyNameMap = new()
-    {
-        {"Text", nameof(IAppliedKeyword.Text)},
-        {"Uses Regular Expression", nameof(IAppliedKeyword.UsesRegex)},
-        {"Matching Responses Count", nameof(IAppliedKeyword.MatchingResponsesCount)},
-        {"Total Responses Count", nameof(IAppliedKeyword.TotalResponsesCount)},
-        {"Start Search", nameof(IAppliedKeyword.StartSearch)},
-        {"End Search", nameof(IAppliedKeyword.EndSearch)}
-    };
-
-    private class AppliedKeywordsPageLogic
+    private class AppliedKeywordsPageLogic : BaseLogic<IAppliedKeyword>
     {
         private readonly IAppliedKeywordService appliedKeywordService;
         private readonly IResponseEndpoint responsesApi;
@@ -43,7 +35,7 @@ public sealed partial class AppliedKeywordsPage
             ViewModel = viewModel;
         }
 
-        internal async Task UpdateAppliedKeywords(bool forceUpdate = false)
+        internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             if (forceUpdate || _appliedKeywordsCache == null || !_appliedKeywordsCache.Any())
             {
@@ -75,39 +67,8 @@ public sealed partial class AppliedKeywordsPage
             }
         }
 
-        public void SortItems(object? sender, DataGridColumnEventArgs e)
-        {
-            if (sender is not DataGrid dataGrid || e.Column == null)
-                return;
-
-            var propertyName = e.Column != null ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
-                : throw new ArgumentNullException(nameof(e.Column));
-
-            // Determine the sort direction
-            var sortDirection =
-                e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
-                    ? DataGridSortDirection.Ascending
-                    : DataGridSortDirection.Descending;
-
-            dataGrid.Columns.ForEach(column => column.SortDirection = null);
-
-            // Update the column's sort direction
-            e.Column.SortDirection = sortDirection;
-
-            // Perform the sorting
-            var sortedItems = sortDirection == DataGridSortDirection.Ascending
-                ? ViewModel.AppliedKeywords.OrderBy(item => item.GetSortableValue(propertyName)).ToList()
-                : ViewModel.AppliedKeywords.OrderByDescending(item => item.GetSortableValue(propertyName)).ToList();
-
-            // Update the ObservableCollection
-            ViewModel.AppliedKeywords.Clear();
-            foreach (var item in sortedItems)
-            {
-                ViewModel.AppliedKeywords.Add(item);
-            }
-        }
-
-        private string GetPropertyNameFromColumnHeader(string header)
+        /// <inheritdoc />
+        protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
             DataGridColumns column =
@@ -124,6 +85,12 @@ public sealed partial class AppliedKeywordsPage
                 DataGridColumns.END_SEARCH => nameof(IAppliedKeyword.EndSearch),
                 _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
             };
+        }
+
+        /// <inheritdoc />
+        protected override ObservableCollection<IAppliedKeyword> GetCollection()
+        {
+            return ViewModel.AppliedKeywords;
         }
     }
 }

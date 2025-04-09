@@ -7,6 +7,7 @@ using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -14,7 +15,7 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class ResponsesPage
 {
-    private class ResponsesPageLogic
+    private class ResponsesPageLogic : BaseLogic<IResponse>
     {
         private readonly IResponseEndpoint responseApi;
         private readonly IActionEndpoint actionApi;
@@ -29,7 +30,7 @@ public sealed partial class ResponsesPage
             updateCancellationTokenSource = new CancellationTokenSource();
         }
 
-        internal async Task UpdateResponses()
+        internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             IComplexSearchable complexSearchable = BuildComplexSearchable();
 
@@ -93,53 +94,11 @@ public sealed partial class ResponsesPage
             await actionApi.ExecuteAllPrompts(CancellationToken.None);
             ViewModel.ExecuteAllPromptsButtonText = "Execute Prompts";
             button.IsEnabled = true;
-            await UpdateResponses();
+            await UpdateDisplayedItems();
         }
 
-        public async void SearchFieldChanged(object? sender, string e)
-        {
-            if (e.Length < 5)
-            {
-                return;
-            }
-
-            await UpdateResponses();
-        }
-
-        public void SortItems(object? sender, DataGridColumnEventArgs e)
-        {
-            if (sender is not DataGrid dataGrid || e.Column == null)
-                return;
-
-            var propertyName = e.Column != null
-                ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
-                : throw new ArgumentNullException(nameof(e.Column));
-
-            // Determine the sort direction
-            var sortDirection =
-                e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
-                    ? DataGridSortDirection.Ascending
-                    : DataGridSortDirection.Descending;
-
-            dataGrid.Columns.ForEach(column => column.SortDirection = null);
-
-            // Update the column's sort direction
-            e.Column.SortDirection = sortDirection;
-
-            // Perform the sorting
-            var sortedItems = sortDirection == DataGridSortDirection.Ascending
-                ? ViewModel.Responses.OrderBy(item => GetPropertyValue(item, propertyName)).ToList()
-                : ViewModel.Responses.OrderByDescending(item => GetPropertyValue(item, propertyName)).ToList();
-
-            // Update the ObservableCollection
-            ViewModel.Responses.Clear();
-            foreach (var item in sortedItems)
-            {
-                ViewModel.Responses.Add(item);
-            }
-        }
-
-        private string GetPropertyNameFromColumnHeader(string header)
+        /// <inheritdoc />
+        protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
             DataGridColumns column =
@@ -154,22 +113,10 @@ public sealed partial class ResponsesPage
             };
         }
 
-        private object? GetPropertyValue(object obj, string propertyName)
+        /// <inheritdoc />
+        protected override ObservableCollection<IResponse> GetCollection()
         {
-            if (!propertyName.Contains('.'))
-            {
-                // Handle direct property
-                return obj.GetSortableValue(propertyName);
-            }
-
-            // Handle child object property
-            var parts = propertyName.Split('.');
-            var parentProperty = obj.GetType().GetProperty(parts[0]);
-            var childObject = parentProperty?.GetValue(obj);
-            return childObject?.GetSortableValue(parts[1]);
-
+            return ViewModel.Responses;
         }
-
-
     }
 }

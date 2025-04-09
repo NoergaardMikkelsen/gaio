@@ -7,6 +7,7 @@ using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core;
 using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
@@ -15,7 +16,7 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class ArtificialIntelligencePage
 {
-    private class ArtificialIntelligencePageLogic
+    private class ArtificialIntelligencePageLogic : BaseLogic<IArtificialIntelligence>
     {
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private readonly Page page;
@@ -31,7 +32,7 @@ public sealed partial class ArtificialIntelligencePage
             updateCancellationTokenSource = new CancellationTokenSource();
         }
 
-        internal async Task UpdateArtificialIntelligences()
+        internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             ISearchableArtificialIntelligence searchable = BuildSearchableArtificialIntelligences();
 
@@ -95,7 +96,7 @@ public sealed partial class ArtificialIntelligencePage
 
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromExisting(aiApi, ai, page.XamlRoot);
             await Task.Delay(TimeSpan.FromSeconds(1));
-            await UpdateArtificialIntelligences();
+            await UpdateDisplayedItems();
         }
 
         public async void DeleteButtonOnClick(object sender, RoutedEventArgs e)
@@ -116,61 +117,18 @@ public sealed partial class ArtificialIntelligencePage
 
             await aiApi.DeleteById(CancellationToken.None, aiId);
             await Task.Delay(TimeSpan.FromSeconds(1));
-            await UpdateArtificialIntelligences();
+            await UpdateDisplayedItems();
         }
 
         public async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
             await ContentDialogFactory.ShowBuildArtificialIntelligenceDialogFromNew(aiApi, page.XamlRoot);
             await Task.Delay(TimeSpan.FromSeconds(1));
-            await UpdateArtificialIntelligences();
+            await UpdateDisplayedItems();
         }
 
-        public async void SearchFieldChanged(object? sender, string e)
-        {
-            if (e.Length < 5)
-            {
-                return;
-            }
-
-            await UpdateArtificialIntelligences();
-        }
-
-        public void SortItems(object? sender, DataGridColumnEventArgs e)
-        {
-            if (sender is not DataGrid dataGrid || e.Column == null)
-                return;
-
-            var propertyName = e.Column != null
-                ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
-                : throw new ArgumentNullException(nameof(e.Column));
-
-            // Determine the sort direction
-            var sortDirection =
-                e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
-                    ? DataGridSortDirection.Ascending
-                    : DataGridSortDirection.Descending;
-
-            dataGrid.Columns.ForEach(column => column.SortDirection = null);
-
-            // Update the column's sort direction
-            e.Column.SortDirection = sortDirection;
-
-            // Perform the sorting
-            var sortedItems = sortDirection == DataGridSortDirection.Ascending
-                ? ViewModel.ArtificialIntelligences.OrderBy(item => item.GetSortableValue(propertyName)).ToList()
-                : ViewModel.ArtificialIntelligences.OrderByDescending(item => item.GetSortableValue(propertyName))
-                    .ToList();
-
-            // Update the ObservableCollection
-            ViewModel.ArtificialIntelligences.Clear();
-            foreach (var item in sortedItems)
-            {
-                ViewModel.ArtificialIntelligences.Add(item);
-            }
-        }
-
-        private string GetPropertyNameFromColumnHeader(string header)
+        /// <inheritdoc />
+        protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
             DataGridColumns column =
@@ -183,6 +141,12 @@ public sealed partial class ArtificialIntelligencePage
                 DataGridColumns.AI_TYPE => nameof(IArtificialIntelligence.AiType),
                 _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
             };
+        }
+
+        /// <inheritdoc />
+        protected override ObservableCollection<IArtificialIntelligence> GetCollection()
+        {
+            return ViewModel.ArtificialIntelligences;
         }
 
     }

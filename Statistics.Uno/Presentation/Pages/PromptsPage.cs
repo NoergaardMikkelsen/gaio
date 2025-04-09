@@ -27,6 +27,6 @@ public sealed partial class PromptsPage : BasePage
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        _ = logic.UpdatePrompts();
+        _ = logic.UpdateDisplayedItems();
     }
 }

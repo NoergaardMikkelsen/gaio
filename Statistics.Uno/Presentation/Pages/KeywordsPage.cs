@@ -28,6 +28,6 @@ public sealed partial class KeywordsPage : BasePage
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        _ = logic.UpdateKeywords();
+        _ = logic.UpdateDisplayedItems();
     }
 }

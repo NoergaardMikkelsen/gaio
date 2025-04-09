@@ -24,7 +24,7 @@ public sealed partial class PromptsPage
                 .CreateDataGrid(ViewModel, nameof(PromptsViewModel.Prompts), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
-            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdatePrompts()).Grid(row: 3, column: 4);
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateDisplayedItems()).Grid(row: 3, column: 4);
             
             grid.Children.Add(buttonPanel);
             grid.Children.Add(inputPanel);

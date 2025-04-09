@@ -32,6 +32,6 @@ public sealed partial class AppliedKeywordsPage : BasePage
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        _ = logic.UpdateAppliedKeywords();
+        _ = logic.UpdateDisplayedItems();
     }
 }

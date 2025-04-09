@@ -27,6 +27,6 @@ public sealed partial class ArtificialIntelligencePage : BasePage
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        _ = logic.UpdateArtificialIntelligences();
+        _ = logic.UpdateDisplayedItems();
     }
 }

@@ -25,7 +25,7 @@ public sealed partial class ResponsesPage
                 .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel refreshButtons =
-                CreateRefreshButtonsPanel(() => Logic.UpdateResponses()).Grid(row: 3, column: 4);
+                CreateRefreshButtonsPanel(() => Logic.UpdateDisplayedItems()).Grid(row: 3, column: 4);
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
 
             grid.Children.Add(buttonPanel);

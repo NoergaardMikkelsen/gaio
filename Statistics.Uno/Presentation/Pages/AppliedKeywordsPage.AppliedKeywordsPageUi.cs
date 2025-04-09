@@ -41,7 +41,7 @@ public sealed partial class AppliedKeywordsPage
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Right,
             };
-            forceButton.Click += async (_, _) => await Logic.UpdateAppliedKeywords(true);
+            forceButton.Click += async (_, _) => await Logic.UpdateDisplayedItems(true);
 
             var button = new Button()
             {
@@ -49,7 +49,7 @@ public sealed partial class AppliedKeywordsPage
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Right,
             };
-            button.Click += async (_, _) => await Logic.UpdateAppliedKeywords();
+            button.Click += async (_, _) => await Logic.UpdateDisplayedItems();
 
             stackPanel.Children.Add(forceButton);
             stackPanel.Children.Add(button);

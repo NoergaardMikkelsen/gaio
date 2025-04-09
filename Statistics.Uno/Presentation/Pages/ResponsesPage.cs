@@ -27,6 +27,6 @@ public sealed partial class ResponsesPage : BasePage
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
-        _ = logic.UpdateResponses();
+        _ = logic.UpdateDisplayedItems();
     }
 }

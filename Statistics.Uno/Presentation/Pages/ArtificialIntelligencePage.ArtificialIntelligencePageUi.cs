@@ -28,7 +28,7 @@ public sealed partial class ArtificialIntelligencePage
                 .Grid(row: 2, column: 0, columnSpan: 5);
 
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
-            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateArtificialIntelligences())
+            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateDisplayedItems())
                 .Grid(row: 3, column: 4);
 
 
