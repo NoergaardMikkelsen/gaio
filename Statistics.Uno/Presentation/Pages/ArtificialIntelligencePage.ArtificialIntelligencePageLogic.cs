@@ -3,9 +3,11 @@ using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
+using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -136,13 +138,52 @@ public sealed partial class ArtificialIntelligencePage
 
         public void SortItems(object? sender, DataGridColumnEventArgs e)
         {
-            
+            if (sender is not DataGrid dataGrid || e.Column == null)
+                return;
+
+            var propertyName = e.Column != null
+                ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
+                : throw new ArgumentNullException(nameof(e.Column));
+
+            // Determine the sort direction
+            var sortDirection =
+                e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
+                    ? DataGridSortDirection.Ascending
+                    : DataGridSortDirection.Descending;
+
+            dataGrid.Columns.ForEach(column => column.SortDirection = null);
+
+            // Update the column's sort direction
+            e.Column.SortDirection = sortDirection;
+
+            // Perform the sorting
+            var sortedItems = sortDirection == DataGridSortDirection.Ascending
+                ? ViewModel.ArtificialIntelligences.OrderBy(item => item.GetSortableValue(propertyName)).ToList()
+                : ViewModel.ArtificialIntelligences.OrderByDescending(item => item.GetSortableValue(propertyName))
+                    .ToList();
+
+            // Update the ObservableCollection
+            ViewModel.ArtificialIntelligences.Clear();
+            foreach (var item in sortedItems)
+            {
+                ViewModel.ArtificialIntelligences.Add(item);
+            }
         }
 
-        // Helper method to get the value of a property by name
-        private static object? GetPropertyValue(object obj, string propertyName)
+        private string GetPropertyNameFromColumnHeader(string header)
         {
-            return obj.GetType().GetProperty(propertyName)?.GetValue(obj);
+            var converter = new EnumToTitleCaseConverter();
+            DataGridColumns column =
+                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
+
+            return column switch
+            {
+                DataGridColumns.NAME => nameof(IArtificialIntelligence.Name),
+                DataGridColumns.KEY => nameof(IArtificialIntelligence.Key),
+                DataGridColumns.AI_TYPE => nameof(IArtificialIntelligence.AiType),
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+            };
         }
+
     }
 }

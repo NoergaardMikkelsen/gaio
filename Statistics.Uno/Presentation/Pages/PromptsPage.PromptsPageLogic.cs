@@ -3,8 +3,10 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
+using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
+using Statistics.Uno.Presentation.Core.Converters;
 using Statistics.Uno.Presentation.Factory;
 using Statistics.Uno.Presentation.Pages.ViewModel;
 
@@ -164,7 +166,52 @@ public sealed partial class PromptsPage
 
         public void SortItems(object? sender, DataGridColumnEventArgs e)
         {
-            throw new NotImplementedException();
+            if (sender is not DataGrid dataGrid || e.Column == null)
+                return;
+
+            var propertyName = e.Column != null
+                ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
+                : throw new ArgumentNullException(nameof(e.Column));
+
+            // Determine the sort direction
+            var sortDirection =
+                e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
+                    ? DataGridSortDirection.Ascending
+                    : DataGridSortDirection.Descending;
+
+            dataGrid.Columns.ForEach(column => column.SortDirection = null);
+
+            // Update the column's sort direction
+            e.Column.SortDirection = sortDirection;
+
+            // Perform the sorting
+            var sortedItems = sortDirection == DataGridSortDirection.Ascending
+                ? ViewModel.Prompts.OrderBy(item => item.GetSortableValue(propertyName)).ToList()
+                : ViewModel.Prompts.OrderByDescending(item => item.GetSortableValue(propertyName)).ToList();
+
+            // Update the ObservableCollection
+            ViewModel.Prompts.Clear();
+            foreach (var item in sortedItems)
+            {
+                ViewModel.Prompts.Add(item);
+            }
         }
+
+        private string GetPropertyNameFromColumnHeader(string header)
+        {
+            var converter = new EnumToTitleCaseConverter();
+            DataGridColumns column =
+                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
+
+            return column switch
+            {
+                DataGridColumns.PROMPT_TEXT => nameof(IPrompt.Text),
+                DataGridColumns.CREATED_AT => nameof(IPrompt.CreatedDateTime),
+                DataGridColumns.LAST_UPDATED_AT => nameof(IPrompt.UpdatedDateTime),
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+            };
+        }
+
+
     }
 }

@@ -79,7 +79,7 @@ public sealed partial class AppliedKeywordsPage
         {
             if (sender is not DataGrid dataGrid || e.Column == null)
                 return;
-            
+
             var propertyName = e.Column != null ? GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException())
                 : throw new ArgumentNullException(nameof(e.Column));
 
@@ -122,7 +122,7 @@ public sealed partial class AppliedKeywordsPage
                 DataGridColumns.TOTAL_RESPONSES_COUNT => nameof(IAppliedKeyword.TotalResponsesCount),
                 DataGridColumns.START_SEARCH => nameof(IAppliedKeyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(IAppliedKeyword.EndSearch),
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
             };
         }
     }

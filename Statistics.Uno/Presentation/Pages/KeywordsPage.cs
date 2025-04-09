@@ -9,7 +9,7 @@ public sealed partial class KeywordsPage : BasePage
     private enum DataGridColumns
     {
         KEYWORD_TEXT = 0,
-        USE_REGEX = 1,
+        USE_REGULAR_EXPRESSION = 1,
         START_SEARCH = 2,
         END_SEARCH = 3,
         CREATED_AT = 4,

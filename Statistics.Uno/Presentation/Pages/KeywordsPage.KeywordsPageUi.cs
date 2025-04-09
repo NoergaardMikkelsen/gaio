@@ -110,7 +110,7 @@ public sealed partial class KeywordsPage
                 DataGridColumns.LAST_UPDATED_AT => nameof(Keyword.UpdatedDateTime),
                 DataGridColumns.START_SEARCH => nameof(Keyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(Keyword.EndSearch),
-                DataGridColumns.USE_REGEX => nameof(Keyword.UseRegex),
+                DataGridColumns.USE_REGULAR_EXPRESSION => nameof(Keyword.UseRegex),
                 DataGridColumns.ACTIONS => nameof(Keyword.Id),
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
@@ -126,7 +126,7 @@ public sealed partial class KeywordsPage
                 DataGridColumns.LAST_UPDATED_AT => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.START_SEARCH => new UtcDateTimeToLocalStringConverter(),
                 DataGridColumns.END_SEARCH => new UtcDateTimeToLocalStringConverter(),
-                DataGridColumns.USE_REGEX => new BooleanToYesNoConverter(),
+                DataGridColumns.USE_REGULAR_EXPRESSION => new BooleanToYesNoConverter(),
                 var _ => null,
             };
         }
@@ -154,7 +154,7 @@ public sealed partial class KeywordsPage
                 DataGridColumns.LAST_UPDATED_AT => 25,
                 DataGridColumns.START_SEARCH => 25,
                 DataGridColumns.END_SEARCH => 25,
-                DataGridColumns.USE_REGEX => 15,
+                DataGridColumns.USE_REGULAR_EXPRESSION => 15,
                 DataGridColumns.ACTIONS => 25,
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
