@@ -19,15 +19,16 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
 
         DataContext = new BuildArtificialIntelligenceViewModel(ai);
 
-        var logic = new BuildArtificialIntelligenceDialogLogic(ai, (BuildArtificialIntelligenceViewModel)DataContext,
+        var logic = new BuildArtificialIntelligenceDialogLogic(ai, (BuildArtificialIntelligenceViewModel) DataContext,
             aiEndpoint);
-        var ui = new BuildArtificialIntelligenceDialogUi(logic, (BuildArtificialIntelligenceViewModel)DataContext,
+        var ui = new BuildArtificialIntelligenceDialogUi(logic, (BuildArtificialIntelligenceViewModel) DataContext,
             this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
 
-    private class BuildArtificialIntelligenceDialogUi : BaseDialogUi<BuildArtificialIntelligenceDialogLogic, BuildArtificialIntelligenceViewModel, ArtificialIntelligence, SearchableArtificialIntelligence>
+    private class BuildArtificialIntelligenceDialogUi : BaseDialogUi<BuildArtificialIntelligenceDialogLogic,
+        BuildArtificialIntelligenceViewModel, ArtificialIntelligence, SearchableArtificialIntelligence>
     {
         public BuildArtificialIntelligenceDialogUi(
             BuildArtificialIntelligenceDialogLogic logic, BuildArtificialIntelligenceViewModel viewModel,
@@ -57,18 +58,17 @@ public class BuildArtificialIntelligenceDialog : ContentDialog
                 placeholderText: "Enter AI key here...");
             AddLabelAndComboBox(grid, "AI Type:", nameof(BuildArtificialIntelligenceViewModel.AiType), 2,
                 typeof(ArtificialIntelligenceType).EnumNamesToTitleCase().ToList(), new EnumToIntConverter());
-            AddLabelAndTextBox(grid, "Id:", nameof(BuildArtificialIntelligenceViewModel.Id), 3, isEnabled: false);
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildArtificialIntelligenceViewModel.Id), 3, false);
             AddLabelAndTextBox(grid, "Created At:", nameof(BuildArtificialIntelligenceViewModel.CreatedDateTime), 4,
-                isEnabled: false, converter: dateTimeConverter);
+                false, dateTimeConverter);
             AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildArtificialIntelligenceViewModel.UpdatedDateTime),
-                5, isEnabled: false, converter: dateTimeConverter);
-            AddLabelAndTextBox(grid, "Version:", nameof(BuildArtificialIntelligenceViewModel.Version), 6,
-                isEnabled: false);
+                5, false, dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildArtificialIntelligenceViewModel.Version), 6, false);
         }
-
     }
 
-    private class BuildArtificialIntelligenceDialogLogic : BaseDialogLogic<BuildArtificialIntelligenceViewModel, ArtificialIntelligence, SearchableArtificialIntelligence>
+    private class BuildArtificialIntelligenceDialogLogic : BaseDialogLogic<BuildArtificialIntelligenceViewModel,
+        ArtificialIntelligence, SearchableArtificialIntelligence>
     {
         public BuildArtificialIntelligenceDialogLogic(
             IArtificialIntelligence ai, BuildArtificialIntelligenceViewModel viewModel,

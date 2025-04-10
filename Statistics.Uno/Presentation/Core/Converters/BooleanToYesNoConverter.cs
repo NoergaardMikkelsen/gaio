@@ -22,4 +22,3 @@ public class BooleanToYesNoConverter : IValueConverter
         throw new ArgumentException("Value must be a string");
     }
 }
-

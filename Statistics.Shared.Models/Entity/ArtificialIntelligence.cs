@@ -23,7 +23,7 @@ public class ArtificialIntelligence : IArtificialIntelligence
     public string Key { get; set; }
 
     /// <inheritdoc />
-    public ArtificialIntelligenceType AiType { get; set; }
+    public ArtificialIntelligenceType? AiType { get; set; }
 
     /// <inheritdoc />
     public uint Version { get; set; }
@@ -51,5 +51,14 @@ public class ArtificialIntelligence : IArtificialIntelligence
     {
         this.id = id;
         Responses = responses.Cast<IResponse>().ToList();
+    }
+
+    /// <summary>
+    /// Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public ArtificialIntelligence(int id)
+    {
+        this.id = id;
     }
 }

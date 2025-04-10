@@ -22,7 +22,7 @@ public partial class BuildArtificialIntelligenceViewModel : ObservableObject
 
     [ObservableProperty] private string key;
 
-    [ObservableProperty] private ArtificialIntelligenceType aiType;
+    [ObservableProperty] private ArtificialIntelligenceType? aiType;
 
     [ObservableProperty] private uint version;
 

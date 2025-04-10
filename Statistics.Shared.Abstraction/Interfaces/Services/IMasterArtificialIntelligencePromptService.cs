@@ -7,6 +7,5 @@ public interface IMasterArtificialIntelligencePromptService
     Task<IEnumerable<IResponse>> PromptSuppliedAis(
         IEnumerable<IArtificialIntelligence> ais, IEnumerable<IPrompt> prompts);
 
-    Task<IEnumerable<IResponse>> PromptSuppliedAis(
-        IEnumerable<IArtificialIntelligence> ais, IPrompt prompt);
+    Task<IEnumerable<IResponse>> PromptSuppliedAis(IEnumerable<IArtificialIntelligence> ais, IPrompt prompt);
 }

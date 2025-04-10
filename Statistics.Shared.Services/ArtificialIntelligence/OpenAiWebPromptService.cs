@@ -1,16 +1,26 @@
+using System.ClientModel;
+using System.Diagnostics.CodeAnalysis;
+using OpenAI;
+using OpenAI.Assistants;
 using OpenAI.Chat;
+using OpenAI.Responses;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 
 namespace Statistics.Shared.Services.ArtificialIntelligence;
 
-public class OpenAiPromptService : BasePromptService, IArtificialIntelligencePromptService
+/// <summary>
+/// As of 09-04-2025, OpenAI's nuget package with web search capabilities is only in preview.
+/// It also has little to no real explanation of how to use it - yet.
+/// This service therefore acts just like <see cref="OpenAiNoWebPromptService"/>, for now.
+/// </summary>
+public class OpenAiWebPromptService : BasePromptService, IArtificialIntelligencePromptService
 {
     private const string MODEL = "gpt-4o";
 
     /// <inheritdoc />
-    public OpenAiPromptService() : base(ArtificialIntelligenceType.OPEN_AI)
+    public OpenAiWebPromptService() : base(ArtificialIntelligenceType.OPEN_AI_WEB)
     {
     }
 
@@ -40,12 +50,14 @@ public class OpenAiPromptService : BasePromptService, IArtificialIntelligencePro
         return BuildResponseFromChatCompletion(chatCompletion, ai, prompt);
     }
 
-    private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, int index, IArtificialIntelligence ai, IEnumerable<IPrompt> prompts)
+    private IResponse BuildResponseFromChatCompletion(
+        ChatCompletion chatCompletion, int index, IArtificialIntelligence ai, IEnumerable<IPrompt> prompts)
     {
         return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompts.ToList()[index].Id);
     }
 
-    private IResponse BuildResponseFromChatCompletion(ChatCompletion chatCompletion, IArtificialIntelligence ai, IPrompt prompt)
+    private IResponse BuildResponseFromChatCompletion(
+        ChatCompletion chatCompletion, IArtificialIntelligence ai, IPrompt prompt)
     {
         return BuildResponse(chatCompletion.Content[0].Text, ai.Id, prompt.Id);
     }

@@ -4,5 +4,5 @@ namespace Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 
 public interface ISearchablePrompt : ISearchable
 {
-    string? Text { get; set; }
+    string Text { get; set; }
 }

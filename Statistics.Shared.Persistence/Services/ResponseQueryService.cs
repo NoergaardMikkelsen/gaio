@@ -33,7 +33,7 @@ public class ResponseQueryService : BaseEntityQueryService<StatisticsDatabaseCon
 
         if (!string.IsNullOrWhiteSpace(searchable.Text))
         {
-            query = query.Where(x => x.Text.Contains(searchable.Text));
+            query = query.Where(x => x.Text.ToLower().Contains(searchable.Text.ToLower()));
         }
 
         return query;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using Newtonsoft.Json.Serialization;
+using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 
 namespace Statistics.Shared.Core.Newtonsoft;
 
@@ -9,6 +10,12 @@ public class NoNavigationalPropertiesContractResolver : CamelCasePropertyNamesCo
     /// <inheritdoc />
     protected override List<MemberInfo> GetSerializableMembers(Type objectType)
     {
+        // If the object type implements IComplexSearchable, return the members without filtering
+        if (typeof(IComplexSearchable).IsAssignableFrom(objectType))
+        {
+            return base.GetSerializableMembers(objectType);
+        }
+
         var members = base.GetSerializableMembers(objectType);
 
         // Filter out navigational properties

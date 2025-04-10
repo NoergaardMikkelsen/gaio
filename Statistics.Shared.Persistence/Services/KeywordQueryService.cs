@@ -4,7 +4,7 @@ using Statistics.Shared.Persistence.Core;
 
 namespace Statistics.Shared.Persistence.Services;
 
-public class KeywordQueryService : BaseEntityQueryService < StatisticsDatabaseContext, Keyword, SearchableKeyword>
+public class KeywordQueryService : BaseEntityQueryService<StatisticsDatabaseContext, Keyword, SearchableKeyword>
 {
     /// <inheritdoc />
     public KeywordQueryService(StatisticsDatabaseContext context) : base(context)
@@ -22,7 +22,7 @@ public class KeywordQueryService : BaseEntityQueryService < StatisticsDatabaseCo
     {
         if (!string.IsNullOrWhiteSpace(searchable.Text))
         {
-            query = query.Where(x => x.Text.Contains(searchable.Text));
+            query = query.Where(x => x.Text.ToLower().Contains(searchable.Text.ToLower()));
         }
 
         return query;
