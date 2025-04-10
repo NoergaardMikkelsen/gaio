@@ -29,7 +29,7 @@ jobs:
 
       # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.4.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Build Statistics (Debug)
         shell: pwsh
@@ -49,7 +49,7 @@ jobs:
 
       # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.4.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Build Statistics.Tests (Release)
         shell: pwsh
