@@ -5,7 +5,7 @@ using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Persistence;
 using Statistics.Shared.Persistence.Services;
 
-namespace Statistics.Tests.Service;
+namespace Statistics.Tests.Services;
 
 [TestFixture]
 public class ResponseQueryServiceTests

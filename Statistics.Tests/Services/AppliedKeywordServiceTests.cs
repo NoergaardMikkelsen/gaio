@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters.Json;
 using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Exporters.Json;
 using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
@@ -11,9 +11,9 @@ using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Services.Keywords;
-using Statistics.Tests.Service.Benchmark;
+using Statistics.Tests.Services.Benchmark;
 
-namespace Statistics.Tests.Service;
+namespace Statistics.Tests.Services;
 
 [TestFixture]
 public class AppliedKeywordServiceTests

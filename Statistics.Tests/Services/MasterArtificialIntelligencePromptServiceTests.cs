@@ -4,7 +4,7 @@ using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Services.ArtificialIntelligence;
 
-namespace Statistics.Tests.Service;
+namespace Statistics.Tests.Services;
 
 [TestFixture]
 public class MasterArtificialIntelligencePromptServiceTests

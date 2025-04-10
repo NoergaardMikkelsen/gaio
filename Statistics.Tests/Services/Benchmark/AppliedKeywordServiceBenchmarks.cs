@@ -5,7 +5,7 @@ using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Services.Keywords;
 
-namespace Statistics.Tests.Service.Benchmark;
+namespace Statistics.Tests.Services.Benchmark;
 
 [MemoryDiagnoser]
 public class AppliedKeywordServiceBenchmarks
@@ -35,13 +35,13 @@ public class AppliedKeywordServiceBenchmarks
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI,},
+                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
         };
