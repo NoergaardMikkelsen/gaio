@@ -9,6 +9,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
 {
     protected readonly IEntityQueryService<TEntity, TSearchable> entityService;
     private readonly ILogger<TController> logger;
+    protected abstract Task<IEnumerable<TEntity>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable);
 
     protected EntityController(IEntityQueryService<TEntity, TSearchable> entityService, ILogger<TController> logger)
     {
@@ -36,13 +37,14 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
     {
         try
         {
-            IEntity entity = await entityService.GetEntity(new TSearchable {Id = id,});
+            IEntity entity = await entityService.GetEntity(new TSearchable {Id = id});
             return Ok(entity);
         }
         catch (Exception e)
         {
             logger.LogError(e,
-                "An exception was caught while attempting to get an entity by id of the controllers type.");
+                "An exception was caught while attempting to get an entity by id of the controllers type. Id: {Id}",
+                id);
             throw;
         }
     }
@@ -58,7 +60,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         catch (Exception e)
         {
             logger.LogError(e,
-                "An exception was caught while attempting to get entities matching specified query of the controllers type.");
+                "An exception was caught while attempting to get entities matching specified query of the controllers type. Query: {@Searchable}",
+                searchable);
             throw;
         }
     }
@@ -74,7 +77,8 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         catch (Exception e)
         {
             logger.LogError(e,
-                "An exception was caught while attempting to get entities matching specified query of the controllers type.");
+                "An exception was caught while attempting to get entities matching specified query of the controllers type. Query: {@Searchable}",
+                searchable);
             throw;
         }
     }
@@ -96,13 +100,10 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to get entities matching specified complex query of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to get entities matching specified complex query of the controllers type. Complex Query: {@ComplexSearchable}", complexSearchable);
             throw;
         }
     }
-
-    protected abstract Task<IEnumerable<TEntity>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable);
 
     [HttpPost]
     public async Task<IActionResult> AddSingle([FromBody] TEntity entity)
@@ -114,8 +115,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to add a single entity of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to add a single entity of the controllers type. Entity: {@Entity}", entity);
             throw;
         }
     }
@@ -130,8 +130,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to add multiple entities of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to add multiple entities of the controllers type. Entities: {@Entities}", entities);
             throw;
         }
     }
@@ -146,8 +145,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to update a specific entity of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to update a specific entity of the controllers type. Entity: {@Entity}", entity);
             throw;
         }
     }
@@ -162,8 +160,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to update multiple entities of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to update multiple entities of the controllers type. Entities: {@Entities}", entities);
             throw;
         }
     }
@@ -178,8 +175,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to delete a specific entity by specified query of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to delete a specific entity by specified query of the controllers type. Query: {@Searchable}", searchable);
             throw;
         }
     }
@@ -194,8 +190,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "An exception was caught while attempting to delete a entity by id of the controllers type.");
+            logger.LogError(e, "An exception was caught while attempting to delete an entity by id of the controllers type. Id: {Id}", id);
             throw;
         }
     }

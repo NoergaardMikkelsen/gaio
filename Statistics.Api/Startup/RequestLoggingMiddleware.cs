@@ -1,10 +1,17 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Threading.Tasks;
+
 public class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<RequestLoggingMiddleware> _logger;
 
-    public RequestLoggingMiddleware(RequestDelegate next)
+    public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -24,7 +31,7 @@ public class RequestLoggingMiddleware
         // Log the request body if the response status code is not 200
         if (context.Response.StatusCode != StatusCodes.Status200OK)
         {
-            Console.WriteLine($"Request Body: {requestBodyText}");
+            _logger.LogWarning($"Request Body: {requestBodyText}");
         }
     }
 }
