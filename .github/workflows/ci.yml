@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Statistics (Debug)
         shell: pwsh
-        run: msbuild ./Statistics/Statistics.csproj /r
+        run: msbuild ./Statistics.Uno/Statistics.Uno.csproj /r
 
   unit_test:
     name: Unit Tests
