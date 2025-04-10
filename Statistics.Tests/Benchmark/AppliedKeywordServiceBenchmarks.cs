@@ -5,7 +5,7 @@ using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Services.Keywords;
 
-namespace Statistics.Tests.Services.Benchmark;
+namespace Statistics.Tests.Benchmark;
 
 [MemoryDiagnoser]
 public class AppliedKeywordServiceBenchmarks

@@ -11,7 +11,8 @@ using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Services.Keywords;
-using Statistics.Tests.Services.Benchmark;
+using Statistics.Tests.Benchmark;
+using Statistics.Tests.Benchmark.Core;
 
 namespace Statistics.Tests.Services;
 
@@ -249,34 +250,14 @@ public class AppliedKeywordServiceTests
     [Test]
     public void BenchmarkPerformance()
     {
-        ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
-            .WithOptions(ConfigOptions.DisableOptimizationsValidator).AddLogger(ConsoleLogger.Default)
-            .AddExporter(MarkdownExporter.GitHub).AddExporter(HtmlExporter.Default).AddExporter(JsonExporter.Default)
-            .AddValidator(JitOptimizationsValidator.DontFailOnError).AddFilter(new ExcludeAssembliesFilter("Uno"));
+        var config = new BenchmarkConfig();
 
         Summary? summary = BenchmarkRunner.Run<AppliedKeywordServiceBenchmarks>(config);
-    }
 
-    public class ExcludeAssembliesFilter : IFilter
-    {
-        private readonly string[] _excludedAssemblies;
-
-        public ExcludeAssembliesFilter(params string[] excludedAssemblies)
+        // Check if the benchmark execution contains any errors
+        if (summary == null || summary.HasCriticalValidationErrors)
         {
-            _excludedAssemblies = excludedAssemblies;
-        }
-
-        public bool Predicate(BenchmarkCase benchmarkCase)
-        {
-            foreach (string assembly in _excludedAssemblies)
-            {
-                if (benchmarkCase.Descriptor.Type.Assembly.FullName.Contains(assembly))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            Assert.Fail("Benchmark failed due to critical validation errors.");
         }
     }
 }

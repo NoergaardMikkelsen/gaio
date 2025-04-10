@@ -1,4 +1,4 @@
-using Statistics.Uno.Models;
+using Statistics.Shared.Models.Settings;
 
 namespace Statistics.Tests;
 

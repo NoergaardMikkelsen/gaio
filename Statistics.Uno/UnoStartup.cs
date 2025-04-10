@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Abstraction.Interfaces.Services;
+using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Services.Keywords;
 using Statistics.Uno.Endpoints;
-using Statistics.Uno.Models;
 using Statistics.Uno.Startup;
 
 namespace Statistics.Uno;
