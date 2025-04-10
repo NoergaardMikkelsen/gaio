@@ -17,16 +17,12 @@ public class PromptQueryServiceTests
     {
         // Configure in-memory database
         var options = new DbContextOptionsBuilder<StatisticsDatabaseContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
+            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
 
         _context = new StatisticsDatabaseContext(options);
 
         // Seed data
-        _context.Prompts.AddRange(
-            new Prompt() { Text = "Prompt 1" },
-            new Prompt() { Text = "Prompt 2" }
-        );
+        _context.Prompts.AddRange(new Prompt() {Text = "Prompt 1",}, new Prompt() {Text = "Prompt 2",});
         _context.SaveChanges();
 
         // Initialize testable service
@@ -56,7 +52,7 @@ public class PromptQueryServiceTests
     public void AddQueryArguments_ShouldFilterByText()
     {
         // Arrange
-        var searchable = new SearchablePrompt { Text = "Prompt 1" };
+        var searchable = new SearchablePrompt {Text = "Prompt 1",};
         var baseQuery = _service.TestGetBaseQuery();
 
         // Act
@@ -71,10 +67,10 @@ public class PromptQueryServiceTests
     public async Task GetEntity_ShouldReturnMatchingPrompt()
     {
         // Arrange
-        var searchable = new SearchablePrompt { Text = "Prompt 1" };
+        var searchable = new SearchablePrompt {Text = "Prompt 1",};
 
         // Act
-        var result = await _service.GetEntity(searchable);
+        Prompt result = await _service.GetEntity(searchable);
 
         // Assert
         result.Should().NotBeNull();
@@ -85,7 +81,7 @@ public class PromptQueryServiceTests
     public async Task GetEntities_ShouldReturnAllMatchingPrompts()
     {
         // Arrange
-        var searchable = new SearchablePrompt { Text = "Prompt" };
+        var searchable = new SearchablePrompt {Text = "Prompt",};
 
         // Act
         var result = await _service.GetEntities(searchable);
@@ -100,13 +96,13 @@ public class PromptQueryServiceTests
     public async Task AddEntity_ShouldAddPromptToDbSet()
     {
         // Arrange
-        var newPrompt = new Prompt(3) { Text = "Prompt 3" };
+        var newPrompt = new Prompt(3) {Text = "Prompt 3",};
 
         // Act
         await _service.AddEntity(newPrompt);
 
         // Assert
-        var addedPrompt = await _context.Prompts.FindAsync(3);
+        Prompt? addedPrompt = await _context.Prompts.FindAsync(3);
         addedPrompt.Should().NotBeNull();
         addedPrompt.Text.Should().Be("Prompt 3");
     }
@@ -115,14 +111,14 @@ public class PromptQueryServiceTests
     public async Task UpdateEntity_ShouldUpdatePromptInDbSet()
     {
         // Arrange
-        var updatedPrompt = await _context.Prompts.FindAsync(1);
+        Prompt? updatedPrompt = await _context.Prompts.FindAsync(1);
         updatedPrompt.Text = "Updated Prompt 1";
 
         // Act
         await _service.UpdateEntity(updatedPrompt);
 
         // Assert
-        var prompt = await _context.Prompts.FindAsync(1);
+        Prompt? prompt = await _context.Prompts.FindAsync(1);
         prompt.Should().NotBeNull();
         prompt.Text.Should().Be("Updated Prompt 1");
     }
@@ -131,13 +127,13 @@ public class PromptQueryServiceTests
     public async Task DeleteEntity_ShouldRemovePromptFromDbSet()
     {
         // Arrange
-        var searchable = new SearchablePrompt { Text = "Prompt 1" };
+        var searchable = new SearchablePrompt {Text = "Prompt 1",};
 
         // Act
         await _service.DeleteEntity(searchable);
 
         // Assert
-        var prompt = _context.Prompts.FirstOrDefault(p => p.Text == "Prompt 1");
+        Prompt? prompt = _context.Prompts.FirstOrDefault(p => p.Text == "Prompt 1");
         prompt.Should().BeNull();
     }
 
@@ -151,9 +147,43 @@ public class PromptQueryServiceTests
         await _service.DeleteEntityById(id);
 
         // Assert
-        var prompt = await _context.Prompts.FindAsync(id);
+        Prompt? prompt = await _context.Prompts.FindAsync(id);
         prompt.Should().BeNull();
     }
+
+    [Test]
+    public async Task AddEntities_ShouldAddPromptsToDbSet()
+    {
+        // Arrange
+        var newPrompts = new List<Prompt>
+        {
+            new() {Text = "Prompt 3",},
+            new() {Text = "Prompt 4",},
+        };
+
+        // Act
+        await _service.AddEntities(newPrompts);
+
+        // Assert
+        var addedPrompts = await _context.Prompts.Where(p => p.Text.StartsWith("Prompt")).ToListAsync();
+        addedPrompts.Should().HaveCount(4);
+    }
+
+    [Test]
+    public async Task UpdateEntities_ShouldUpdatePromptsInDbSet()
+    {
+        // Arrange
+        var updatedPrompts = await _context.Prompts.ToListAsync();
+        updatedPrompts.ForEach(p => p.Text = "Updated " + p.Text);
+
+        // Act
+        await _service.UpdateEntities(updatedPrompts);
+
+        // Assert
+        var result = await _context.Prompts.ToListAsync();
+        result.All(p => p.Text.StartsWith("Updated")).Should().BeTrue();
+    }
+
 
     private class TestablePromptQueryService : PromptQueryService
     {
