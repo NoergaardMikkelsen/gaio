@@ -101,6 +101,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
             throw;
         }
     }
+
     protected abstract Task<IEnumerable<TEntity>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable);
 
     [HttpPost]

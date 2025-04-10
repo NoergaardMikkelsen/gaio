@@ -29,11 +29,10 @@ public class ResponseControllerTests
         // Arrange
         var expectedEntities = new List<Response>
         {
-            new Response(1) { Text = "Response1" },
-            new Response(2) { Text = "Response2" }
+            new(1) {Text = "Response1",},
+            new(2) {Text = "Response2",},
         };
-        _mockEntityService
-            .Setup(service => service.GetEntities(It.IsAny<SearchableResponse>()))
+        _mockEntityService.Setup(service => service.GetEntities(It.IsAny<SearchableResponse>()))
             .ReturnsAsync(expectedEntities);
 
         // Act
@@ -46,20 +45,45 @@ public class ResponseControllerTests
     }
 
     [Test]
+    public async Task GetAllByComplexQuery_ReturnsOkResultWithEntities()
+    {
+        // Arrange
+        var complexSearchable = new ComplexSearchable
+        {
+            SearchableResponse = new SearchableResponse {Text = "TestResponse",},
+        };
+        var expectedEntities = new List<Response>
+        {
+            new(1) {Text = "Response1",},
+            new(2) {Text = "Response2",},
+        };
+
+        _mockEntityService.Setup(service => service.GetEntities(It.IsAny<SearchableResponse>()))
+            .ReturnsAsync(expectedEntities);
+
+        // Act
+        var result = await _controller.GetAllByComplexQuery(complexSearchable) as OkObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        result.Value.Should().BeEquivalentTo(expectedEntities);
+    }
+
+
+    [Test]
     public async Task GetEntitiesByComplexQuery_WithValidSearchableResponse_ReturnsEntities()
     {
         // Arrange
-        var searchableResponse = new SearchableResponse { Text = "TestResponse" };
-        var complexSearchable = new ComplexSearchable { SearchableResponse = searchableResponse };
+        var searchableResponse = new SearchableResponse {Text = "TestResponse",};
+        var complexSearchable = new ComplexSearchable {SearchableResponse = searchableResponse,};
         var expectedEntities = new List<Response>
         {
-            new Response(1) { Text = "Response1" },
-            new Response(2) { Text = "Response2" }
+            new(1) {Text = "Response1",},
+            new(2) {Text = "Response2",},
         };
 
-        _mockEntityService
-            .Setup(service => service.GetEntities(searchableResponse))
-            .ReturnsAsync(expectedEntities);
+        _mockEntityService.Setup(service => service.GetEntities(searchableResponse)).ReturnsAsync(expectedEntities);
 
         // Act
         var result = await _controller.InvokeGetEntitiesByComplexQuery(complexSearchable);
@@ -73,7 +97,7 @@ public class ResponseControllerTests
     public void GetEntitiesByComplexQuery_WithNullSearchableResponse_ThrowsArgumentNullException()
     {
         // Arrange
-        var complexSearchable = new ComplexSearchable { SearchableResponse = null };
+        var complexSearchable = new ComplexSearchable {SearchableResponse = null,};
 
         // Act
         Func<Task> act = async () => await _controller.InvokeGetEntitiesByComplexQuery(complexSearchable);
@@ -83,13 +107,166 @@ public class ResponseControllerTests
             .WithMessage("Value cannot be null. (Parameter 'SearchableResponse')");
     }
 
-    // Private wrapper class to expose the protected method
+    [Test]
+    public async Task UpdateSingle_ReturnsOkResult()
+    {
+        // Arrange
+        var entity = new Response(1) {Text = "UpdatedResponse",};
+
+        // Act
+        var result = await _controller.UpdateSingle(entity) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.UpdateEntity(entity, It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task AddMultiple_ReturnsOkResult()
+    {
+        // Arrange
+        var entities = new List<Response>
+        {
+            new(1) {Text = "Response1",},
+            new(2) {Text = "Response2",},
+        };
+
+        // Act
+        var result = await _controller.AddMultiple(entities) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.AddEntities(entities, It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task DeleteByQuery_ReturnsOkResult()
+    {
+        // Arrange
+        var searchable = new SearchableResponse {Text = "TestResponse",};
+
+        // Act
+        var result = await _controller.DeleteByQuery(searchable) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.DeleteEntity(searchable, It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task GetAllByQuery_ReturnsOkResultWithEntities()
+    {
+        // Arrange
+        var searchable = new SearchableResponse {Text = "TestResponse",};
+        var expectedEntities = new List<Response>
+        {
+            new(1) {Text = "Response1",},
+            new(2) {Text = "Response2",},
+        };
+        _mockEntityService.Setup(service => service.GetEntities(searchable)).ReturnsAsync(expectedEntities);
+
+        // Act
+        var result = await _controller.GetAllByQuery(searchable) as OkObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        result.Value.Should().BeEquivalentTo(expectedEntities);
+    }
+
+    [Test]
+    public async Task UpdateMultiple_ReturnsOkResult()
+    {
+        // Arrange
+        var entities = new List<Response>
+        {
+            new(1) {Text = "UpdatedResponse1",},
+            new(2) {Text = "UpdatedResponse2",},
+        };
+
+        // Act
+        var result = await _controller.UpdateMultiple(entities) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.UpdateEntities(entities, It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task GetById_ReturnsOkResultWithEntity()
+    {
+        // Arrange
+        var id = 1;
+        var expectedEntity = new Response(id) {Text = "Response1",};
+        _mockEntityService.Setup(service => service.GetEntity(It.Is<SearchableResponse>(s => s.Id == id)))
+            .ReturnsAsync(expectedEntity);
+
+        // Act
+        var result = await _controller.GetById(id) as OkObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        result.Value.Should().BeEquivalentTo(expectedEntity);
+    }
+
+    [Test]
+    public async Task GetByQuery_ReturnsOkResultWithEntity()
+    {
+        // Arrange
+        var searchable = new SearchableResponse {Text = "TestResponse",};
+        var expectedEntity = new Response(1) {Text = "Response1",};
+        _mockEntityService.Setup(service => service.GetEntity(searchable)).ReturnsAsync(expectedEntity);
+
+        // Act
+        var result = await _controller.GetByQuery(searchable) as OkObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        result.Value.Should().BeEquivalentTo(expectedEntity);
+    }
+
+    [Test]
+    public async Task AddSingle_ReturnsOkResult()
+    {
+        // Arrange
+        var entity = new Response(1) {Text = "Response1",};
+
+        // Act
+        var result = await _controller.AddSingle(entity) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.AddEntity(entity, It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task DeleteById_ReturnsOkResult()
+    {
+        // Arrange
+        var id = 1;
+
+        // Act
+        var result = await _controller.DeleteById(id) as OkResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(200);
+        _mockEntityService.Verify(service => service.DeleteEntityById(id, It.IsAny<bool>()), Times.Once);
+    }
+
+
     private class TestableResponseController : ResponseController
     {
         public TestableResponseController(
             IEntityQueryService<Response, SearchableResponse> entityService,
-            ILogger<ResponseController> logger)
-            : base(entityService, logger)
+            ILogger<ResponseController> logger) : base(entityService, logger)
         {
         }
 

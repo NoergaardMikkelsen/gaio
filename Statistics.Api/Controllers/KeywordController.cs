@@ -10,7 +10,9 @@ namespace Statistics.Api.Controllers;
 public class KeywordController : EntityController<Keyword, SearchableKeyword, KeywordController>
 {
     /// <inheritdoc />
-    public KeywordController(IEntityQueryService<Keyword, SearchableKeyword> entityService, ILogger<KeywordController> logger) : base(entityService, logger)
+    public KeywordController(
+        IEntityQueryService<Keyword, SearchableKeyword> entityService,
+        ILogger<KeywordController> logger) : base(entityService, logger)
     {
     }
 
@@ -18,7 +20,9 @@ public class KeywordController : EntityController<Keyword, SearchableKeyword, Ke
     protected override async Task<IEnumerable<Keyword>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable)
     {
         if (complexSearchable.SearchableKeyword is null)
+        {
             throw new ArgumentNullException(nameof(complexSearchable.SearchableKeyword));
+        }
 
         var entities = (await entityService.GetEntities((SearchableKeyword) complexSearchable.SearchableKeyword))
             .AsEnumerable();
