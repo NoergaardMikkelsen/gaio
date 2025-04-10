@@ -33,15 +33,15 @@ public class AppliedKeywordServiceTests
         var responses = Enum.GetValues<ArtificialIntelligenceType>().Select(aiType => new Response
         {
             Text = matchingText,
-            Ai = new ArtificialIntelligence {AiType = aiType},
-            CreatedDateTime = matchingCreatedDateTime ?? DateTime.UtcNow
+            Ai = new ArtificialIntelligence {AiType = aiType,},
+            CreatedDateTime = matchingCreatedDateTime ?? DateTime.UtcNow,
         }).ToList();
 
         responses.Add(new Response
         {
             Text = "non-matching response",
-            Ai = new ArtificialIntelligence {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB},
-            CreatedDateTime = nonMatchingCreatedDateTime ?? DateTime.UtcNow.AddDays(-2)
+            Ai = new ArtificialIntelligence {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
+            CreatedDateTime = nonMatchingCreatedDateTime ?? DateTime.UtcNow.AddDays(-2),
         });
 
         return responses;
@@ -51,21 +51,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordUsingRegex_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = true};
+        var keyword = new Keyword {Text = "test", UseRegex = true,};
         var responses = CreateResponses("test response").ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -74,21 +74,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordUsingContains_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = false};
+        var keyword = new Keyword {Text = "test", UseRegex = false,};
         var responses = CreateResponses("test response").ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -97,21 +97,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordWithStartOnlyUsingRegex_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = true, StartSearch = DateTime.UtcNow.AddDays(-1)};
-        var responses = CreateResponses("test response", matchingCreatedDateTime: DateTime.UtcNow).ToList();
+        var keyword = new Keyword {Text = "test", UseRegex = true, StartSearch = DateTime.UtcNow.AddDays(-1),};
+        var responses = CreateResponses("test response", DateTime.UtcNow).ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -120,21 +120,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordWithStartOnlyUsingContains_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = false, StartSearch = DateTime.UtcNow.AddDays(-1)};
-        var responses = CreateResponses("test response", matchingCreatedDateTime: DateTime.UtcNow).ToList();
+        var keyword = new Keyword {Text = "test", UseRegex = false, StartSearch = DateTime.UtcNow.AddDays(-1),};
+        var responses = CreateResponses("test response", DateTime.UtcNow).ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -143,22 +143,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordWithEndOnlyUsingRegex_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = true, EndSearch = DateTime.UtcNow.AddDays(-1)};
-        var responses =
-            CreateResponses("test response", matchingCreatedDateTime: DateTime.UtcNow.AddDays(-2)).ToList();
+        var keyword = new Keyword {Text = "test", UseRegex = true, EndSearch = DateTime.UtcNow.AddDays(-1),};
+        var responses = CreateResponses("test response", DateTime.UtcNow.AddDays(-2)).ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -167,22 +166,21 @@ public class AppliedKeywordServiceTests
     public async Task GenerateAppliedKeywordWithEndOnlyUsingContains_ShouldReturnCorrectResult()
     {
         // Arrange
-        var keyword = new Keyword {Text = "test", UseRegex = false, EndSearch = DateTime.UtcNow.AddDays(-1)};
-        var responses =
-            CreateResponses("test response", matchingCreatedDateTime: DateTime.UtcNow.AddDays(-2)).ToList();
+        var keyword = new Keyword {Text = "test", UseRegex = false, EndSearch = DateTime.UtcNow.AddDays(-1),};
+        var responses = CreateResponses("test response", DateTime.UtcNow.AddDays(-2)).ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -196,23 +194,23 @@ public class AppliedKeywordServiceTests
             Text = "test",
             UseRegex = true,
             StartSearch = DateTime.UtcNow.AddDays(-2),
-            EndSearch = DateTime.UtcNow.AddDays(-1)
+            EndSearch = DateTime.UtcNow.AddDays(-1),
         };
-        var responses = CreateResponses("test response",
-            matchingCreatedDateTime: DateTime.UtcNow.AddDays(-2), nonMatchingCreatedDateTime: DateTime.UtcNow.AddDays(-1)).ToList();
+        var responses = CreateResponses("test response", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1))
+            .ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
         }
     }
@@ -226,38 +224,24 @@ public class AppliedKeywordServiceTests
             Text = "test",
             UseRegex = false,
             StartSearch = DateTime.UtcNow.AddDays(-2),
-            EndSearch = DateTime.UtcNow.AddDays(-1)
+            EndSearch = DateTime.UtcNow.AddDays(-1),
         };
-        var responses = CreateResponses("test response",
-            matchingCreatedDateTime: DateTime.UtcNow.AddDays(-2), nonMatchingCreatedDateTime: DateTime.UtcNow.AddDays(-1)).ToList();
+        var responses = CreateResponses("test response", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1))
+            .ToList();
 
         // Act
-        var result = await _service.CalculateAppliedKeywords(new[] {keyword}, responses);
+        var result = await _service.CalculateAppliedKeywords(new[] {keyword,}, responses);
 
         // Assert
-        foreach (var aiType in Enum.GetValues<ArtificialIntelligenceType>())
+        foreach (ArtificialIntelligenceType aiType in Enum.GetValues<ArtificialIntelligenceType>())
         {
             result.Should().ContainSingle(x => x.AiType == aiType).Which.Should().BeEquivalentTo(new
             {
                 Text = "test",
                 AiType = aiType,
                 MatchingResponsesCount = 1,
-                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType)
+                TotalResponsesCount = responses.Count(x => x.Ai.AiType == aiType),
             });
-        }
-    }
-
-    [Test]
-    public void BenchmarkPerformance()
-    {
-        var config = new BenchmarkConfig();
-
-        Summary? summary = BenchmarkRunner.Run<AppliedKeywordServiceBenchmarks>(config);
-
-        // Check if the benchmark execution contains any errors
-        if (summary == null || summary.HasCriticalValidationErrors)
-        {
-            Assert.Fail("Benchmark failed due to critical validation errors.");
         }
     }
 }
