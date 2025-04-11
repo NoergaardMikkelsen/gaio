@@ -15,15 +15,15 @@ public class KeywordJsonConverter : JsonConverter<Keyword>
             throw new JsonException();
         }
 
-        var jObject = JObject.Load(reader);
-        var id = jObject[nameof(Keyword.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
+        JObject? jObject = JObject.Load(reader);
+        int id = jObject[nameof(Keyword.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
         var text = jObject[nameof(Keyword.Text).ToJsonPropertyCapitalisation()]?.Value<string>();
-        var version = jObject[nameof(Keyword.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
-        var createdDateTime =
+        uint version = jObject[nameof(Keyword.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
+        DateTime createdDateTime =
             jObject[nameof(Keyword.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        var updatedDateTime =
+        DateTime updatedDateTime =
             jObject[nameof(Keyword.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        var useRegex = jObject[nameof(Keyword.UseRegex).ToJsonPropertyCapitalisation()]?.Value<bool>() ?? default;
+        bool useRegex = jObject[nameof(Keyword.UseRegex).ToJsonPropertyCapitalisation()]?.Value<bool>() ?? default;
         var startSearch =
             jObject[nameof(Keyword.StartSearch).ToJsonPropertyCapitalisation()]?.Value<DateTime?>();
         var endSearch =

@@ -14,14 +14,14 @@ public class ResponseJsonConverter : JsonConverter<Response>
             throw new JsonException();
         }
 
-        var jObject = JObject.Load(reader);
-        var id = jObject[nameof(Response.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
+        JObject? jObject = JObject.Load(reader);
+        int id = jObject[nameof(Response.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
         var text = jObject[nameof(Response.Text).ToJsonPropertyCapitalisation()]?.Value<string>();
-        var aiId = jObject[nameof(Response.AiId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
-        var promptId = jObject[nameof(Response.PromptId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
-        var version = jObject[nameof(Response.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
-        var createdDateTime = jObject[nameof(Response.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        var updatedDateTime = jObject[nameof(Response.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
+        int aiId = jObject[nameof(Response.AiId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
+        int promptId = jObject[nameof(Response.PromptId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
+        uint version = jObject[nameof(Response.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
+        DateTime createdDateTime = jObject[nameof(Response.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
+        DateTime updatedDateTime = jObject[nameof(Response.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
         var ai = jObject[nameof(Response.Ai).ToJsonPropertyCapitalisation()]?.ToObject<ArtificialIntelligence>(serializer);
         var prompt = jObject[nameof(Response.Prompt).ToJsonPropertyCapitalisation()]?.ToObject<Prompt>(serializer);
 

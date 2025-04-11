@@ -81,7 +81,7 @@ public class ApiStartup : ApiModularStartup
             }
         };
 
-        var templateContent = System.Text.Json.JsonSerializer.Serialize(template,
+        string templateContent = System.Text.Json.JsonSerializer.Serialize(template,
             new System.Text.Json.JsonSerializerOptions
             {
                 WriteIndented = true

@@ -78,7 +78,7 @@ public static class DataGridFactory
 
         dataGrid.Sorting += sortItems;
 
-        foreach (var column in dataGrid.Columns)
+        foreach (DataGridColumn? column in dataGrid.Columns)
         {
             if (column.Header.ToString() == "Actions") // Disable sorting for "Actions" column
             {

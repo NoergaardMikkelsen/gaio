@@ -35,7 +35,7 @@ public sealed partial class PromptsPage
 
         private StackPanel CreateUpdatingTextBlock()
         {
-            var panel = StackPanelFactory.CreateDefaultPanel();
+            StackPanel? panel = StackPanelFactory.CreateDefaultPanel();
             panel.HorizontalAlignment = HorizontalAlignment.Left;
 
             var block = new TextBlock()

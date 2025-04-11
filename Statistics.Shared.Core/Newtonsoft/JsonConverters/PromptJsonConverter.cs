@@ -15,13 +15,13 @@ public class PromptJsonConverter : JsonConverter<Prompt>
             throw new JsonException();
         }
 
-        var jObject = JObject.Load(reader);
-        var id = jObject[nameof(Prompt.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
+        JObject? jObject = JObject.Load(reader);
+        int id = jObject[nameof(Prompt.Id).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
         var text = jObject[nameof(Prompt.Text).ToJsonPropertyCapitalisation()]?.Value<string>();
-        var version = jObject[nameof(Prompt.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
-        var createdDateTime =
+        uint version = jObject[nameof(Prompt.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
+        DateTime createdDateTime =
             jObject[nameof(Prompt.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        var updatedDateTime =
+        DateTime updatedDateTime =
             jObject[nameof(Prompt.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
         var responses =
             jObject[nameof(Prompt.Responses).ToJsonPropertyCapitalisation()]?.ToObject<List<Response>>(serializer) ??

@@ -4,7 +4,7 @@ public static class StackPanelFactory
 {
     public static StackPanel CreateLabeledFieldPanel(string labelText, string placeholderText, string bindingPath)
     {
-        var stackPanel = CreateDefaultPanel();
+        StackPanel? stackPanel = CreateDefaultPanel();
 
         var label = new TextBlock
         {

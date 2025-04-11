@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reflection;
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
@@ -16,11 +17,11 @@ public abstract class BaseLogic<TItem>
         if (sender is not DataGrid dataGrid || e.Column == null)
             return;
 
-        var propertyName =
+        string? propertyName =
             GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException());
 
         // Determine the sort direction
-        var sortDirection = e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
+        DataGridSortDirection sortDirection = e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
             ? DataGridSortDirection.Ascending
             : DataGridSortDirection.Descending;
 
@@ -37,7 +38,7 @@ public abstract class BaseLogic<TItem>
 
         // Update the ObservableCollection
         collection.Clear();
-        foreach (var item in sortedItems)
+        foreach (TItem? item in sortedItems)
         {
             collection.Add(item);
         }
@@ -52,9 +53,9 @@ public abstract class BaseLogic<TItem>
         }
 
         // Handle child object property
-        var parts = propertyName.Split('.');
-        var parentProperty = obj.GetType().GetProperty(parts[0]);
-        var childObject = parentProperty?.GetValue(obj);
+        string[]? parts = propertyName.Split('.');
+        PropertyInfo? parentProperty = obj.GetType().GetProperty(parts[0]);
+        object? childObject = parentProperty?.GetValue(obj);
         return childObject?.GetSortableValue(parts[1]);
 
     }

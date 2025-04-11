@@ -36,7 +36,7 @@ public class BenchmarkConfig : ManualConfig
 
         public bool Predicate(BenchmarkCase benchmarkCase)
         {
-            foreach (var assembly in _excludedAssemblies)
+            foreach (string? assembly in _excludedAssemblies)
             {
                 if (!benchmarkCase.Descriptor.Type.Assembly.FullName.Contains(assembly))
                 {
