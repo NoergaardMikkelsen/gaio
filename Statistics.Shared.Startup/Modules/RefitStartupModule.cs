@@ -23,7 +23,7 @@ public class RefitStartupModule<TEndpoint> : IStartupModule where TEndpoint : IR
                 new PromptJsonConverter(),
                 new ResponseJsonConverter(),
                 new ComplexSearchableJsonConverter(),
-                new KeywordJsonConverter()
+                new KeywordJsonConverter(),
             },
         }),
     };

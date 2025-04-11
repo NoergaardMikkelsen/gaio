@@ -32,7 +32,7 @@ public class ResponseJsonConverter : JsonConverter<Response>
             PromptId = promptId,
             Version = version,
             CreatedDateTime = createdDateTime,
-            UpdatedDateTime = updatedDateTime
+            UpdatedDateTime = updatedDateTime,
         };
     }
 

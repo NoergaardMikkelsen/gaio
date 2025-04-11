@@ -74,7 +74,7 @@ public static class DataGridFactory
         setupColumns(dataGrid);
         setupRowTemplate?.Invoke(dataGrid);
 
-        dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = itemsSourcePath, Source = viewModel});
+        dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = itemsSourcePath, Source = viewModel,});
 
         dataGrid.Sorting += sortItems;
 

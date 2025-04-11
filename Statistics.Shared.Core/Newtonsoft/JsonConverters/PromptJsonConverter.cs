@@ -32,7 +32,7 @@ public class PromptJsonConverter : JsonConverter<Prompt>
             Text = text,
             Version = version,
             CreatedDateTime = createdDateTime,
-            UpdatedDateTime = updatedDateTime
+            UpdatedDateTime = updatedDateTime,
         };
     }
 

@@ -37,7 +37,7 @@ public class KeywordJsonConverter : JsonConverter<Keyword>
             UpdatedDateTime = updatedDateTime,
             UseRegex = useRegex,
             StartSearch = startSearch,
-            EndSearch = endSearch
+            EndSearch = endSearch,
         };
     }
 

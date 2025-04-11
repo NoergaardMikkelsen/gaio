@@ -83,7 +83,7 @@ public sealed partial class AppliedKeywordsPage
                 DataGridColumns.TOTAL_RESPONSES_COUNT => nameof(IAppliedKeyword.TotalResponsesCount),
                 DataGridColumns.START_SEARCH => nameof(IAppliedKeyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(IAppliedKeyword.EndSearch),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 

@@ -77,14 +77,14 @@ public class ApiStartup : ApiModularStartup
         {
             SecretsConfig = new SecretsConfig
             {
-                ConnectionString = TEMPLATE_CONNECTION_STRING
-            }
+                ConnectionString = TEMPLATE_CONNECTION_STRING,
+            },
         };
 
         string templateContent = System.Text.Json.JsonSerializer.Serialize(template,
             new System.Text.Json.JsonSerializerOptions
             {
-                WriteIndented = true
+                WriteIndented = true,
             });
 
         Directory.CreateDirectory(Path.GetDirectoryName(SECRETS_FILE)!);

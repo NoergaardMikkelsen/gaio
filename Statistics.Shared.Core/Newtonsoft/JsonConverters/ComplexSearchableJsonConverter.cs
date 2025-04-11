@@ -32,7 +32,7 @@ public class ComplexSearchableJsonConverter : JsonConverter<ComplexSearchable>
             SearchableArtificialIntelligence = searchableArtificialIntelligence,
             SearchablePrompt = searchablePrompt,
             SearchableKeyword = searchableKeyword,
-            SearchableResponse = searchableResponse
+            SearchableResponse = searchableResponse,
         };
     }
 

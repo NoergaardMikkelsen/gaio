@@ -37,7 +37,7 @@ public abstract class EntityController<TEntity, TSearchable, TController> : Cont
     {
         try
         {
-            IEntity entity = await entityService.GetEntity(new TSearchable {Id = id});
+            IEntity entity = await entityService.GetEntity(new TSearchable {Id = id,});
             return Ok(entity);
         }
         catch (Exception e)

@@ -139,7 +139,7 @@ public sealed partial class ArtificialIntelligencePage
                 DataGridColumns.NAME => nameof(IArtificialIntelligence.Name),
                 DataGridColumns.KEY => nameof(IArtificialIntelligence.Key),
                 DataGridColumns.AI_TYPE => nameof(IArtificialIntelligence.AiType),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 

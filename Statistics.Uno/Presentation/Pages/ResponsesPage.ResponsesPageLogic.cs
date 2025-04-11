@@ -109,7 +109,7 @@ public sealed partial class ResponsesPage
                 DataGridColumns.RESPONSE_TEXT => nameof(IResponse.Text),
                 DataGridColumns.PROMPT_TEXT => $"{nameof(IResponse.Prompt)}.{nameof(IPrompt.Text)}",
                 DataGridColumns.CREATED_AT => nameof(IResponse.PromptId),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 

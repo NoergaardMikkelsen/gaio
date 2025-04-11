@@ -136,7 +136,7 @@ public sealed partial class KeywordsPage
                 DataGridColumns.USE_REGULAR_EXPRESSION => nameof(IKeyword.UseRegex),
                 DataGridColumns.START_SEARCH => nameof(IKeyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(IKeyword.EndSearch),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 

@@ -167,7 +167,7 @@ public sealed partial class PromptsPage
                 DataGridColumns.PROMPT_TEXT => nameof(IPrompt.Text),
                 DataGridColumns.CREATED_AT => nameof(IPrompt.CreatedDateTime),
                 DataGridColumns.LAST_UPDATED_AT => nameof(IPrompt.UpdatedDateTime),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}")
+                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 
