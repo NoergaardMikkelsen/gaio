@@ -65,7 +65,33 @@ jobs:
         run: dotnet test ./Statistics.Tests/Statistics.Tests.csproj --no-build -c Release --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Upload Benchmark Artifacts
+        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
-          path: BenchmarkDotNet.Artifacts/
+          path: BenchmarkDotNet.Artifacts/**
+
+  build_static_pages:
+    name: Build Static Pages
+    runs-on: windows-latest
+    needs:
+      - smoke_test
+      - unit_test
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        timeout-minutes: ${{ fromJSON(env.STEP_TIMEOUT_MINUTES) }}
+        uses: "./.github/steps/install_dependencies"
+
+      - name: Build Static Pages
+        shell: pwsh
+        run: dotnet publish ./Statistics.Uno/Statistics.Uno.csproj -c Release -r browser-wasm --output ./output/static-pages
+
+      - name: Upload Static Pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-pages
+          path: ./output/static-pages
