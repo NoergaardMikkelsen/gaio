@@ -65,7 +65,7 @@ jobs:
         run: dotnet test ./Statistics.Tests/Statistics.Tests.csproj --no-build -c Release --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Upload Benchmark Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: BenchmarkDotNet.Artifacts/
