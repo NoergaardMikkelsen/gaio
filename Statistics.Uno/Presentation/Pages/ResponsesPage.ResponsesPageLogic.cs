@@ -72,6 +72,8 @@ public sealed partial class ResponsesPage
 
         private IComplexSearchable BuildComplexSearchable()
         {
+            //TODO: Figure out why this object is empty in 'Release' mode, but not in 'Debug' mode.
+
             return new ComplexSearchable
             {
                 SearchableResponse = new SearchableResponse {Text = ViewModel.SearchableResponseText ?? "",},

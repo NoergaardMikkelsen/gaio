@@ -12,6 +12,7 @@ public class UnoStartup : UnoModularStartup
 {
     public UnoStartup()
     {
+        // Todo: Update to function in both development and production
         const string baseAddress = "https://localhost:7016/api/";
 
         Console.WriteLine("Constructing Startup Class...");
