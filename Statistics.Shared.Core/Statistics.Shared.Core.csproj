@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Statistics.Shared.Extensions\Statistics.Shared.Extensions.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Models\Statistics.Shared.Models.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Statistics.Shared.Extensions\Statistics.Shared.Extensions.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Models\Statistics.Shared.Models.csproj" />
+    </ItemGroup>
 
 </Project>

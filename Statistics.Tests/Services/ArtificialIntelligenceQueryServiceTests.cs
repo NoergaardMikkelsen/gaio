@@ -10,9 +10,6 @@ namespace Statistics.Tests.Services;
 [TestFixture]
 public class ArtificialIntelligenceQueryServiceTests
 {
-    private StatisticsDatabaseContext _context;
-    private TestableArtificialIntelligenceQueryService _service;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,9 +21,9 @@ public class ArtificialIntelligenceQueryServiceTests
 
         // Seed data
         _context.ArtificialIntelligences.AddRange(
-            new ArtificialIntelligence()
+            new ArtificialIntelligence
                 {Name = "AI 1", Key = "Key1", AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
-            new ArtificialIntelligence()
+            new ArtificialIntelligence
             {
                 Name = "AI 2", Key = "Key2",
                 AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,
@@ -43,6 +40,9 @@ public class ArtificialIntelligenceQueryServiceTests
         _context.Database.EnsureDeleted();
         _context.Dispose();
     }
+
+    private StatisticsDatabaseContext _context;
+    private TestableArtificialIntelligenceQueryService _service;
 
     [Test]
     public void GetBaseQuery_ShouldReturnAllArtificialIntelligencesWithResponsesAndPrompts()

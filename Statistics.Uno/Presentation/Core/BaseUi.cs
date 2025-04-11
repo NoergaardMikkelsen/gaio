@@ -4,14 +4,14 @@ namespace Statistics.Uno.Presentation.Core;
 
 public abstract class BaseUi<TLogic, TViewModel> where TLogic : class where TViewModel : class
 {
-    protected TLogic Logic { get; }
-    protected TViewModel ViewModel { get; }
-
     protected BaseUi(TLogic logic, TViewModel viewModel)
     {
         Logic = logic;
         ViewModel = viewModel;
     }
+
+    protected TLogic Logic { get; }
+    protected TViewModel ViewModel { get; }
 
     public Grid CreateContentGrid()
     {
@@ -37,7 +37,7 @@ public abstract class BaseUi<TLogic, TViewModel> where TLogic : class where TVie
         StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
         stackPanel.HorizontalAlignment = HorizontalAlignment.Right;
 
-        var button = new Button()
+        var button = new Button
         {
             Content = "Refresh",
             Margin = new Thickness(10),

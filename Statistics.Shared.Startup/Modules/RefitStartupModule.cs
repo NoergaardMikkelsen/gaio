@@ -10,11 +10,9 @@ namespace Statistics.Shared.Startup.Modules;
 
 public class RefitStartupModule<TEndpoint> : IStartupModule where TEndpoint : IRefitEndpoint
 {
-    private readonly string baseAddress;
-
     private static readonly RefitSettings settings = new()
     {
-        ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings()
+        ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings
         {
             ContractResolver = new NoNavigationalPropertiesContractResolver(),
             Converters =
@@ -27,6 +25,8 @@ public class RefitStartupModule<TEndpoint> : IStartupModule where TEndpoint : IR
             },
         }),
     };
+
+    private readonly string baseAddress;
 
     public RefitStartupModule(string baseAddress)
     {

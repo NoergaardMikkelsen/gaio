@@ -4,14 +4,14 @@ namespace Statistics.Shared.Models.Searchable;
 
 public class SearchablePrompt : ISearchablePrompt
 {
+    public SearchablePrompt()
+    {
+        Text = string.Empty;
+    }
+
     /// <inheritdoc />
     public string Text { get; set; }
 
     /// <inheritdoc />
     public int Id { get; set; }
-
-    public SearchablePrompt()
-    {
-        Text = string.Empty;
-    }
 }

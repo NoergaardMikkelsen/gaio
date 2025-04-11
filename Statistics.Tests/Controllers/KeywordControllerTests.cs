@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
 using Statistics.Api.Controllers;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Models.Entity;
@@ -18,10 +11,6 @@ namespace Statistics.Tests.Controllers;
 [TestFixture]
 public class KeywordControllerTests
 {
-    private Mock<IEntityQueryService<Keyword, SearchableKeyword>> _mockEntityService;
-    private Mock<ILogger<KeywordController>> _mockLogger;
-    private TestableKeywordController _controller;
-
     [SetUp]
     public void SetUp()
     {
@@ -29,6 +18,10 @@ public class KeywordControllerTests
         _mockLogger = new Mock<ILogger<KeywordController>>();
         _controller = new TestableKeywordController(_mockEntityService.Object, _mockLogger.Object);
     }
+
+    private Mock<IEntityQueryService<Keyword, SearchableKeyword>> _mockEntityService;
+    private Mock<ILogger<KeywordController>> _mockLogger;
+    private TestableKeywordController _controller;
 
     [Test]
     public async Task GetAll_ReturnsOkResultWithEntities()

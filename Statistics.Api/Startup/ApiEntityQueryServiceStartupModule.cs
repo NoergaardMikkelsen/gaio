@@ -6,8 +6,8 @@ namespace Statistics.Api.Startup;
 
 public class
     ApiEntityQueryServiceStartupModule<TQuery, TEntity, TSearchable> :
-        BaseEntityQueryServiceStartupModule<TQuery, TEntity, TSearchable>,
-        IApiStartupModule where TQuery : class, IEntityQueryService<TEntity, TSearchable>
+    BaseEntityQueryServiceStartupModule<TQuery, TEntity, TSearchable>,
+    IApiStartupModule where TQuery : class, IEntityQueryService<TEntity, TSearchable>
     where TEntity : class, IEntity
     where TSearchable : class, ISearchable
 {

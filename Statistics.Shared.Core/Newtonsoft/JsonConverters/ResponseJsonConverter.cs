@@ -7,7 +7,10 @@ namespace Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 public class ResponseJsonConverter : JsonConverter<Response>
 {
-    public override Response ReadJson(JsonReader reader, Type objectType, Response existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override bool CanWrite => false;
+
+    public override Response ReadJson(
+        JsonReader reader, Type objectType, Response existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         if (reader.TokenType != JsonToken.StartObject)
         {
@@ -20,9 +23,12 @@ public class ResponseJsonConverter : JsonConverter<Response>
         int aiId = jObject[nameof(Response.AiId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
         int promptId = jObject[nameof(Response.PromptId).ToJsonPropertyCapitalisation()]?.Value<int>() ?? default;
         uint version = jObject[nameof(Response.Version).ToJsonPropertyCapitalisation()]?.Value<uint>() ?? default;
-        DateTime createdDateTime = jObject[nameof(Response.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        DateTime updatedDateTime = jObject[nameof(Response.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
-        var ai = jObject[nameof(Response.Ai).ToJsonPropertyCapitalisation()]?.ToObject<ArtificialIntelligence>(serializer);
+        DateTime createdDateTime =
+            jObject[nameof(Response.CreatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
+        DateTime updatedDateTime =
+            jObject[nameof(Response.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
+        var ai = jObject[nameof(Response.Ai).ToJsonPropertyCapitalisation()]
+            ?.ToObject<ArtificialIntelligence>(serializer);
         var prompt = jObject[nameof(Response.Prompt).ToJsonPropertyCapitalisation()]?.ToObject<Prompt>(serializer);
 
         return new Response(id, prompt, ai)
@@ -39,10 +45,5 @@ public class ResponseJsonConverter : JsonConverter<Response>
     public override void WriteJson(JsonWriter writer, Response value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
     }
 }

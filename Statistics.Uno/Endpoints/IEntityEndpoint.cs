@@ -16,7 +16,8 @@ public interface IEntityEndpoint<TEntity, TSearchable> : IRefitEndpoint where TE
     Task<ApiResponse<List<TEntity>>> GetAllByQuery(CancellationToken ct, [Body] TSearchable searchable);
 
     [Post("/GetAllByComplexQuery")]
-    Task<ApiResponse<List<TEntity>>> GetAllByComplexQuery(CancellationToken ct, [Body] ComplexSearchable complexSearchable);
+    Task<ApiResponse<List<TEntity>>> GetAllByComplexQuery(
+        CancellationToken ct, [Body] ComplexSearchable complexSearchable);
 
     [Post("/GetByQuery")]
     Task<ApiResponse<TEntity>> GetByQuery(CancellationToken ct, [Body] TSearchable searchable);

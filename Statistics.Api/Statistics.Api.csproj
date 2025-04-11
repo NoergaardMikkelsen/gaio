@@ -1,31 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.Extensions.Logging" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="Serilog.Sinks.File" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Statistics.Shared.Core\Statistics.Shared.Core.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Persistence\Statistics.Shared.Persistence.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Services\Statistics.Shared.Services.csproj" />
-    <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Statistics.Shared.Core\Statistics.Shared.Core.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Persistence.Core\Statistics.Shared.Persistence.Core.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Persistence\Statistics.Shared.Persistence.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Services\Statistics.Shared.Services.csproj" />
+        <ProjectReference Include="..\Statistics.Shared.Startup\Statistics.Shared.Startup.csproj" />
+    </ItemGroup>
 
 </Project>

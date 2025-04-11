@@ -18,8 +18,8 @@ public sealed partial class ResponsesPage
         protected override void AddControlsToGrid(Grid grid)
         {
             StackPanel buttonPanel = CreateButtonsPanel().Grid(row: 0, column: 0, columnSpan: 2);
-            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(nameof(ResponsesViewModel.SelectedAiType))
-                .Grid(row: 0, column: 4);
+            ComboBox aiSelectionComboBox = ComboBoxFactory
+                .CreateAiSelectionComboBox(nameof(ResponsesViewModel.SelectedAiType)).Grid(row: 0, column: 4);
             StackPanel inputPanel = CreateInputPanel().Grid(row: 1, column: 0, columnSpan: 5);
             DataGrid responsesDataGrid = DataGridFactory
                 .CreateDataGrid(ViewModel, nameof(ResponsesViewModel.Responses), SetupDataGridColumns, Logic.SortItems)
@@ -41,7 +41,7 @@ public sealed partial class ResponsesPage
             StackPanel? panel = StackPanelFactory.CreateDefaultPanel();
             panel.HorizontalAlignment = HorizontalAlignment.Left;
 
-            var block = new TextBlock()
+            var block = new TextBlock
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -79,7 +79,7 @@ public sealed partial class ResponsesPage
         {
             StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
-            var executeAllPromptsButton = new Button()
+            var executeAllPromptsButton = new Button
             {
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Left,

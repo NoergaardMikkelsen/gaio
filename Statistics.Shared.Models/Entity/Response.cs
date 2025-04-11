@@ -5,7 +5,34 @@ namespace Statistics.Shared.Models.Entity;
 
 public class Response : IResponse
 {
-    private int id;
+    private readonly int id;
+
+    public Response()
+    {
+    }
+
+    /// <summary>
+    ///     Constructor for Entity Framework Core to use.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="prompt"></param>
+    /// <param name="ai"></param>
+    [JsonConstructor]
+    public Response(int id, Prompt prompt, ArtificialIntelligence ai)
+    {
+        this.id = id;
+        Prompt = prompt;
+        Ai = ai;
+    }
+
+    /// <summary>
+    ///     Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public Response(int id)
+    {
+        this.id = id;
+    }
 
     /// <inheritdoc />
     public int Id
@@ -38,31 +65,4 @@ public class Response : IResponse
 
     /// <inheritdoc />
     public IPrompt Prompt { get; set; }
-
-    public Response()
-    {
-    }
-
-    /// <summary>
-    /// Constructor for Entity Framework Core to use.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="prompt"></param>
-    /// <param name="ai"></param>
-    [JsonConstructor]
-    public Response(int id, Prompt prompt, ArtificialIntelligence ai)
-    {
-        this.id = id;
-        Prompt = prompt;
-        Ai = ai;
-    }
-
-    /// <summary>
-    /// Constructor for Tests to use.
-    /// </summary>
-    /// <param name="id"></param>
-    public Response(int id)
-    {
-        this.id = id;
-    }
 }

@@ -1,14 +1,13 @@
-using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 
 namespace Statistics.Uno.Presentation.Pages.ViewModel;
 
 public partial class ArtificialIntelligenceViewModel : ObservableObject
 {
     [ObservableProperty] private ObservableCollection<IArtificialIntelligence> artificialIntelligences;
-    [ObservableProperty] private string? searchableAiName;
     [ObservableProperty] private string? searchableAiKey;
+    [ObservableProperty] private string? searchableAiName;
     [ObservableProperty] private string? updatingText;
 
     public event EventHandler<string>? SearchableAiNameChanged;

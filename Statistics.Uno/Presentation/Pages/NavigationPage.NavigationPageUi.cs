@@ -41,7 +41,7 @@ public sealed partial class NavigationPage
 
         private Frame CreateNavigationFrame()
         {
-            var frame = new Frame() {Background = new SolidColorBrush(Colors.White),};
+            var frame = new Frame {Background = new SolidColorBrush(Colors.White),};
 
             logic.RegisterNavigationFrame(frame);
 
@@ -50,7 +50,7 @@ public sealed partial class NavigationPage
 
         private ListView CreateNavigationListView()
         {
-            var view = new ListView()
+            var view = new ListView
             {
                 Background = new SolidColorBrush(Colors.Black),
                 ItemContainerStyle = new Style(typeof(ListViewItem))
@@ -74,7 +74,7 @@ public sealed partial class NavigationPage
 
         private TextBlock CreateNavigationTextBlock(ListView view, Pages page)
         {
-            return new TextBlock()
+            return new TextBlock
             {
                 Padding = new Thickness(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Stretch,

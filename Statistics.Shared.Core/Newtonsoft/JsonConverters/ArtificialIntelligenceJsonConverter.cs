@@ -9,6 +9,8 @@ namespace Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 public class ArtificialIntelligenceJsonConverter : JsonConverter<ArtificialIntelligence>
 {
+    public override bool CanWrite => false;
+
     public override ArtificialIntelligence ReadJson(
         JsonReader reader, Type objectType, ArtificialIntelligence existingValue, bool hasExistingValue,
         JsonSerializer serializer)
@@ -50,6 +52,4 @@ public class ArtificialIntelligenceJsonConverter : JsonConverter<ArtificialIntel
     {
         throw new NotImplementedException();
     }
-
-    public override bool CanWrite => false;
 }

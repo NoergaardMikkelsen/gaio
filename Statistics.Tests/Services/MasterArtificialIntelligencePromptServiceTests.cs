@@ -9,9 +9,6 @@ namespace Statistics.Tests.Services;
 [TestFixture]
 public class MasterArtificialIntelligencePromptServiceTests
 {
-    private Mock<IArtificialIntelligencePromptService> mockOpenAiPromptService;
-    private MasterArtificialIntelligencePromptService service;
-
     [SetUp]
     public void SetUp()
     {
@@ -23,6 +20,9 @@ public class MasterArtificialIntelligencePromptServiceTests
 
         service = new MasterArtificialIntelligencePromptService(promptServices);
     }
+
+    private Mock<IArtificialIntelligencePromptService> mockOpenAiPromptService;
+    private MasterArtificialIntelligencePromptService service;
 
     [Test]
     public async Task PromptSuppliedAis_WithMultiplePrompts_ShouldReturnFlattenedResponses()

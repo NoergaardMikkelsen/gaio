@@ -1,8 +1,6 @@
 using System.Collections.ObjectModel;
-using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
-using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -19,7 +17,6 @@ public sealed partial class KeywordsPage
         private readonly IKeywordEndpoint keywordApi;
         private readonly Page page;
         private CancellationTokenSource updateCancellationTokenSource;
-        private KeywordsViewModel ViewModel { get; }
 
         public KeywordsPageLogic(IKeywordEndpoint keywordApi, KeywordsViewModel viewModel, Page page)
         {
@@ -28,6 +25,8 @@ public sealed partial class KeywordsPage
             this.page = page;
             updateCancellationTokenSource = new CancellationTokenSource();
         }
+
+        private KeywordsViewModel ViewModel { get; }
 
         internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
@@ -38,7 +37,7 @@ public sealed partial class KeywordsPage
                 await updateCancellationTokenSource.CancelAsync();
                 updateCancellationTokenSource = new CancellationTokenSource();
 
-                Console.WriteLine($"Updating Keywords...");
+                Console.WriteLine("Updating Keywords...");
                 ViewModel.UpdatingText = "Updating...";
 
                 var apiResponse = await keywordApi.GetAllByQuery(updateCancellationTokenSource.Token,
@@ -54,7 +53,7 @@ public sealed partial class KeywordsPage
 
                 if (allKeywords == null)
                 {
-                    Console.WriteLine($"Failed to get all keyword entities.");
+                    Console.WriteLine("Failed to get all keyword entities.");
                     return;
                 }
 
@@ -62,7 +61,7 @@ public sealed partial class KeywordsPage
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine($"Update of Keywords Cancelled...");
+                Console.WriteLine("Update of Keywords Cancelled...");
             }
             finally
             {
@@ -72,7 +71,7 @@ public sealed partial class KeywordsPage
 
         private ISearchableKeyword BuildSearchableKeyword()
         {
-            return new SearchableKeyword()
+            return new SearchableKeyword
             {
                 Text = ViewModel.SearchableKeywordText ?? string.Empty,
             };
@@ -127,8 +126,7 @@ public sealed partial class KeywordsPage
         protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
-            DataGridColumns column =
-                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
+            var column = (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
 
             return column switch
             {
@@ -136,7 +134,7 @@ public sealed partial class KeywordsPage
                 DataGridColumns.USE_REGULAR_EXPRESSION => nameof(IKeyword.UseRegex),
                 DataGridColumns.START_SEARCH => nameof(IKeyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(IKeyword.EndSearch),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
+                var _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 
@@ -145,6 +143,5 @@ public sealed partial class KeywordsPage
         {
             return ViewModel.Keywords;
         }
-
     }
 }

@@ -9,9 +9,6 @@ namespace Statistics.Tests.Services;
 [TestFixture]
 public class KeywordQueryServiceTests
 {
-    private StatisticsDatabaseContext _context;
-    private TestableKeywordQueryService _service;
-
     [SetUp]
     public void SetUp()
     {
@@ -22,7 +19,7 @@ public class KeywordQueryServiceTests
         _context = new StatisticsDatabaseContext(options);
 
         // Seed data
-        _context.Keywords.AddRange(new Keyword() {Text = "Keyword 1",}, new Keyword() {Text = "Keyword 2",});
+        _context.Keywords.AddRange(new Keyword {Text = "Keyword 1",}, new Keyword {Text = "Keyword 2",});
         _context.SaveChanges();
 
         // Initialize testable service
@@ -35,6 +32,9 @@ public class KeywordQueryServiceTests
         _context.Database.EnsureDeleted();
         _context.Dispose();
     }
+
+    private StatisticsDatabaseContext _context;
+    private TestableKeywordQueryService _service;
 
     [Test]
     public void GetBaseQuery_ShouldReturnAllKeywords()

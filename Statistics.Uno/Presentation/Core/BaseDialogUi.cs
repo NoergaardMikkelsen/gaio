@@ -20,7 +20,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
         Grid grid, string labelText, string bindingPath, int row, bool isEnabled = true,
         IValueConverter? converter = null, string placeholderText = "")
     {
-        var label = new TextBlock()
+        var label = new TextBlock
         {
             Text = labelText,
             VerticalAlignment = VerticalAlignment.Center,
@@ -29,7 +29,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
         };
         label.Grid(row: row, column: 0);
 
-        var textBox = new TextBox()
+        var textBox = new TextBox
         {
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -56,7 +56,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
         Grid grid, string labelText, string bindingPath, int row, IEnumerable<string> itemsSource,
         IValueConverter converter)
     {
-        var label = new TextBlock()
+        var label = new TextBlock
         {
             Text = labelText,
             VerticalAlignment = VerticalAlignment.Center,
@@ -65,7 +65,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
         };
         label.Grid(row: row, column: 0);
 
-        var comboBox = new ComboBox()
+        var comboBox = new ComboBox
         {
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -87,7 +87,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
 
     protected void AddLabelAndCheckBox(Grid grid, string labelText, string bindingPath, int row)
     {
-        var label = new TextBlock()
+        var label = new TextBlock
         {
             Text = labelText,
             VerticalAlignment = VerticalAlignment.Center,
@@ -96,7 +96,7 @@ public abstract class BaseDialogUi<TLogic, TViewModel, TEntity, TSearchable> : B
         };
         label.Grid(row: row, column: 0);
 
-        var checkBox = new CheckBox()
+        var checkBox = new CheckBox
         {
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Left,

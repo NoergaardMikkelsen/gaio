@@ -5,7 +5,32 @@ namespace Statistics.Shared.Models.Entity;
 
 public class Prompt : IPrompt
 {
-    private int id;
+    private readonly int id;
+
+    public Prompt()
+    {
+    }
+
+    /// <summary>
+    ///     Constructor for Entity Framework Core to use.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="responses"></param>
+    [JsonConstructor]
+    public Prompt(int id, List<Response> responses)
+    {
+        this.id = id;
+        Responses = responses.Cast<IResponse>().ToList();
+    }
+
+    /// <summary>
+    ///     Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public Prompt(int id)
+    {
+        this.id = id;
+    }
 
     /// <inheritdoc />
     public int Id
@@ -29,29 +54,4 @@ public class Prompt : IPrompt
 
     /// <inheritdoc />
     public ICollection<IResponse> Responses { get; set; }
-
-    public Prompt()
-    {
-    }
-
-    /// <summary>
-    /// Constructor for Entity Framework Core to use.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="responses"></param>
-    [JsonConstructor]
-    public Prompt(int id, List<Response> responses)
-    {
-        this.id = id;
-        Responses = responses.Cast<IResponse>().ToList();
-    }
-
-    /// <summary>
-    /// Constructor for Tests to use.
-    /// </summary>
-    /// <param name="id"></param>
-    public Prompt(int id)
-    {
-        this.id = id;
-    }
 }

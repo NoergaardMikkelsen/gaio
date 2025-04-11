@@ -5,7 +5,21 @@ namespace Statistics.Shared.Models.Entity;
 
 public class Keyword : IKeyword
 {
-    private int id;
+    private readonly int id;
+
+    public Keyword()
+    {
+    }
+
+    /// <summary>
+    ///     Constructor for Entity Framework Core and Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    [JsonConstructor]
+    public Keyword(int id)
+    {
+        this.id = id;
+    }
 
     /// <inheritdoc />
     public int Id
@@ -35,19 +49,4 @@ public class Keyword : IKeyword
 
     /// <inheritdoc />
     public DateTime? EndSearch { get; set; }
-
-    public Keyword()
-    {
-        
-    }
-
-    /// <summary>
-    /// Constructor for Entity Framework Core and Tests to use.
-    /// </summary>
-    /// <param name="id"></param>
-    [JsonConstructor]
-    public Keyword(int id)
-    {
-        this.id = id;
-    }
 }

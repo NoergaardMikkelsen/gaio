@@ -5,6 +5,12 @@ namespace Statistics.Shared.Models.Searchable;
 
 public class SearchableArtificialIntelligence : ISearchableArtificialIntelligence
 {
+    public SearchableArtificialIntelligence()
+    {
+        Name = string.Empty;
+        Key = string.Empty;
+    }
+
     /// <inheritdoc />
     public int Id { get; set; }
 
@@ -16,10 +22,4 @@ public class SearchableArtificialIntelligence : ISearchableArtificialIntelligenc
 
     /// <inheritdoc />
     public ArtificialIntelligenceType? AiType { get; set; }
-
-    public SearchableArtificialIntelligence()
-    {
-        Name = string.Empty;
-        Key = string.Empty;
-    }
 }

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
@@ -54,10 +53,9 @@ public static class DataGridFactory
 {
     public static DataGrid CreateDataGrid<TViewModel>(
         TViewModel viewModel, string itemsSourcePath, Action<DataGrid> setupColumns,
-        EventHandler<DataGridColumnEventArgs> sortItems,
-        Action<DataGrid>? setupRowTemplate = null)
+        EventHandler<DataGridColumnEventArgs> sortItems, Action<DataGrid>? setupRowTemplate = null)
     {
-        var dataGrid = new DataGrid()
+        var dataGrid = new DataGrid
         {
             CanUserReorderColumns = false,
             CanUserResizeColumns = true,
@@ -74,7 +72,7 @@ public static class DataGridFactory
         setupColumns(dataGrid);
         setupRowTemplate?.Invoke(dataGrid);
 
-        dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding() {Path = itemsSourcePath, Source = viewModel,});
+        dataGrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding {Path = itemsSourcePath, Source = viewModel,});
 
         dataGrid.Sorting += sortItems;
 
@@ -92,7 +90,7 @@ public static class DataGridFactory
     private static DataGridTextColumn CreateDataGridTextColumn(
         string bindingPath, string header, IValueConverter? converter)
     {
-        var column = new DataGridTextColumn()
+        var column = new DataGridTextColumn
         {
             Header = header,
             Binding = new Binding
@@ -110,7 +108,7 @@ public static class DataGridFactory
         var stack = new StackPanel();
         var cells = setupRowArguments.EnumNumbers.Select(x =>
         {
-            var block = new TextBlock() {Margin = new Thickness(10),};
+            var block = new TextBlock {Margin = new Thickness(10),};
             string bindingPath = setupRowArguments.GetBindingPath(x);
 
             switch (bindingPath)
@@ -170,7 +168,7 @@ public static class DataGridFactory
     private static DataGridColumn CreateDataGridActionsTemplateColumn(
         string header, int enumAsInt, Func<int, FrameworkElement> buildActionsElement)
     {
-        return new DataGridTemplateColumn()
+        return new DataGridTemplateColumn
         {
             Header = header,
             CellTemplate = new DataTemplate(() => buildActionsElement(enumAsInt)),

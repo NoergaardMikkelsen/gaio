@@ -6,7 +6,32 @@ namespace Statistics.Shared.Models.Entity;
 
 public class ArtificialIntelligence : IArtificialIntelligence
 {
-    private int id;
+    private readonly int id;
+
+    public ArtificialIntelligence()
+    {
+    }
+
+    /// <summary>
+    ///     Constructor for Entity Framework Core to use.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="responses"></param>
+    [JsonConstructor]
+    public ArtificialIntelligence(int id, List<Response> responses)
+    {
+        this.id = id;
+        Responses = responses.Cast<IResponse>().ToList();
+    }
+
+    /// <summary>
+    ///     Constructor for Tests to use.
+    /// </summary>
+    /// <param name="id"></param>
+    public ArtificialIntelligence(int id)
+    {
+        this.id = id;
+    }
 
     /// <inheritdoc />
     public int Id
@@ -36,29 +61,4 @@ public class ArtificialIntelligence : IArtificialIntelligence
 
     /// <inheritdoc />
     public ICollection<IResponse> Responses { get; set; }
-
-    public ArtificialIntelligence()
-    {
-    }
-
-    /// <summary>
-    /// Constructor for Entity Framework Core to use.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="responses"></param>
-    [JsonConstructor]
-    public ArtificialIntelligence(int id, List<Response> responses)
-    {
-        this.id = id;
-        Responses = responses.Cast<IResponse>().ToList();
-    }
-
-    /// <summary>
-    /// Constructor for Tests to use.
-    /// </summary>
-    /// <param name="id"></param>
-    public ArtificialIntelligence(int id)
-    {
-        this.id = id;
-    }
 }

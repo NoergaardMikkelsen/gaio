@@ -18,8 +18,8 @@ public sealed partial class AppliedKeywordsPage
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            ComboBox aiSelectionComboBox = ComboBoxFactory.CreateAiSelectionComboBox(nameof(AppliedKeywordsViewModel.SelectedAiType))
-                .Grid(row: 0, column: 4);
+            ComboBox aiSelectionComboBox = ComboBoxFactory
+                .CreateAiSelectionComboBox(nameof(AppliedKeywordsViewModel.SelectedAiType)).Grid(row: 0, column: 4);
             DataGrid appliedKeywordsDataGrid = DataGridFactory.CreateDataGrid(
                     ViewModel, nameof(AppliedKeywordsViewModel.AppliedKeywords), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 1, column: 0, columnSpan: 5);
@@ -35,7 +35,7 @@ public sealed partial class AppliedKeywordsPage
             StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
             stackPanel.HorizontalAlignment = HorizontalAlignment.Right;
 
-            var forceButton = new Button()
+            var forceButton = new Button
             {
                 Content = "Force Refresh",
                 Margin = new Thickness(10),
@@ -43,7 +43,7 @@ public sealed partial class AppliedKeywordsPage
             };
             forceButton.Click += async (_, _) => await Logic.UpdateDisplayedItems(true);
 
-            var button = new Button()
+            var button = new Button
             {
                 Content = "Refresh",
                 Margin = new Thickness(10),

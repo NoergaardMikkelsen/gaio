@@ -1,23 +1,23 @@
+using System.Collections.ObjectModel;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Statistics.Uno.Presentation.Pages.ViewModel;
 
 public partial class ResponsesViewModel : ObservableObject
 {
-    public ResponsesViewModel()
-    {
-        ExecuteAllPromptsButtonText = "Execute Prompts";
-    }
+    [ObservableProperty] private string executeAllPromptsButtonText;
 
     [ObservableProperty] private ObservableCollection<IResponse> responses;
-    [ObservableProperty] private string executeAllPromptsButtonText;
     [ObservableProperty] private string? searchablePromptText;
     [ObservableProperty] private string? searchableResponseText;
     [ObservableProperty] private ArtificialIntelligenceType selectedAiType;
     [ObservableProperty] private string? updatingText;
+
+    public ResponsesViewModel()
+    {
+        ExecuteAllPromptsButtonText = "Execute Prompts";
+    }
 
     public event EventHandler<string>? SearchablePromptTextChanged;
     public event EventHandler<string>? SearchableResponseTextChanged;
@@ -31,5 +31,4 @@ public partial class ResponsesViewModel : ObservableObject
     {
         SearchablePromptTextChanged?.Invoke(this, value ?? string.Empty);
     }
-
 }

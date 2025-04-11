@@ -7,6 +7,8 @@ namespace Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 public class KeywordJsonConverter : JsonConverter<Keyword>
 {
+    public override bool CanWrite => false;
+
     public override Keyword ReadJson(
         JsonReader reader, Type objectType, Keyword existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
@@ -24,10 +26,8 @@ public class KeywordJsonConverter : JsonConverter<Keyword>
         DateTime updatedDateTime =
             jObject[nameof(Keyword.UpdatedDateTime).ToJsonPropertyCapitalisation()]?.Value<DateTime>() ?? default;
         bool useRegex = jObject[nameof(Keyword.UseRegex).ToJsonPropertyCapitalisation()]?.Value<bool>() ?? default;
-        var startSearch =
-            jObject[nameof(Keyword.StartSearch).ToJsonPropertyCapitalisation()]?.Value<DateTime?>();
-        var endSearch =
-            jObject[nameof(Keyword.EndSearch).ToJsonPropertyCapitalisation()]?.Value<DateTime?>();
+        var startSearch = jObject[nameof(Keyword.StartSearch).ToJsonPropertyCapitalisation()]?.Value<DateTime?>();
+        var endSearch = jObject[nameof(Keyword.EndSearch).ToJsonPropertyCapitalisation()]?.Value<DateTime?>();
 
         return new Keyword(id)
         {
@@ -44,10 +44,5 @@ public class KeywordJsonConverter : JsonConverter<Keyword>
     public override void WriteJson(JsonWriter writer, Keyword value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
     }
 }

@@ -20,12 +20,14 @@ public class ResponseController : EntityController<Response, SearchableResponse,
     protected override async Task<IEnumerable<Response>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable)
     {
         if (complexSearchable.SearchableResponse is null)
+        {
             throw new ArgumentNullException(nameof(complexSearchable.SearchableResponse));
+        }
 
         var entities = (await entityService.GetEntities((SearchableResponse) complexSearchable.SearchableResponse))
             .AsEnumerable();
 
-        if (complexSearchable.SearchableArtificialIntelligence != null )
+        if (complexSearchable.SearchableArtificialIntelligence != null)
         {
             if (!string.IsNullOrWhiteSpace(complexSearchable.SearchableArtificialIntelligence.Name))
             {
@@ -33,6 +35,7 @@ public class ResponseController : EntityController<Response, SearchableResponse,
                     x.Ai.Name.Contains(complexSearchable.SearchableArtificialIntelligence.Name,
                         StringComparison.InvariantCultureIgnoreCase));
             }
+
             if (complexSearchable.SearchableArtificialIntelligence.AiType != null)
             {
                 entities = entities.Where(x =>

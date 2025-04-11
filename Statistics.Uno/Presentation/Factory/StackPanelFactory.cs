@@ -33,7 +33,7 @@ public static class StackPanelFactory
 
     public static StackPanel CreateDefaultPanel()
     {
-        return new StackPanel()
+        return new StackPanel
         {
             Orientation = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Left,

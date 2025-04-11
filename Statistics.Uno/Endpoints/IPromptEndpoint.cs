@@ -7,5 +7,4 @@ namespace Statistics.Uno.Endpoints;
 [Headers("Content-Type: application/json")]
 public interface IPromptEndpoint : IEntityEndpoint<Prompt, SearchablePrompt>
 {
-    
 }

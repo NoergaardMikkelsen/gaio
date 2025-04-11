@@ -11,10 +11,6 @@ namespace Statistics.Tests.Controllers;
 [TestFixture]
 public class ArtificialIntelligenceControllerTests
 {
-    private Mock<IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence>> _mockEntityService;
-    private Mock<ILogger<ArtificialIntelligenceController>> _mockLogger;
-    private TestableArtificialIntelligenceController _controller;
-
     [SetUp]
     public void SetUp()
     {
@@ -22,6 +18,10 @@ public class ArtificialIntelligenceControllerTests
         _mockLogger = new Mock<ILogger<ArtificialIntelligenceController>>();
         _controller = new TestableArtificialIntelligenceController(_mockEntityService.Object, _mockLogger.Object);
     }
+
+    private Mock<IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence>> _mockEntityService;
+    private Mock<ILogger<ArtificialIntelligenceController>> _mockLogger;
+    private TestableArtificialIntelligenceController _controller;
 
     [Test]
     public async Task GetAll_ReturnsOkResultWithEntities()

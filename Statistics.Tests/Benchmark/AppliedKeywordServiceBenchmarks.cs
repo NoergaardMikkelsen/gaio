@@ -10,9 +10,9 @@ namespace Statistics.Tests.Benchmark;
 [MemoryDiagnoser]
 public class AppliedKeywordServiceBenchmarks
 {
-    private readonly IAppliedKeywordService _service;
     private readonly IEnumerable<IKeyword> _keywords;
     private readonly IEnumerable<IResponse> _responses;
+    private readonly IAppliedKeywordService _service;
 
     public AppliedKeywordServiceBenchmarks()
     {
@@ -35,13 +35,13 @@ public class AppliedKeywordServiceBenchmarks
             new Response
             {
                 Text = "test response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
+                Ai = new ArtificialIntelligence {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow,
             },
             new Response
             {
                 Text = "another response",
-                Ai = new ArtificialIntelligence() {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
+                Ai = new ArtificialIntelligence {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB,},
                 CreatedDateTime = DateTime.UtcNow.AddDays(-2),
             },
         };

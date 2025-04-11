@@ -4,15 +4,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class NavigationPage : Page
 {
-    private enum Pages
-    {
-        RESPONSES = 0,
-        PROMPTS = 1,
-        ARTIFICIAL_INTELLIGENCES = 2,
-        KEYWORDS = 3,
-        APPLIED_KEYWORDS = 4,
-    }
-
     public NavigationPage()
     {
         DataContext = new NavigationViewModel();
@@ -23,5 +14,14 @@ public sealed partial class NavigationPage : Page
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         logic.UpdateNavigationFrame();
+    }
+
+    private enum Pages
+    {
+        RESPONSES = 0,
+        PROMPTS = 1,
+        ARTIFICIAL_INTELLIGENCES = 2,
+        KEYWORDS = 3,
+        APPLIED_KEYWORDS = 4,
     }
 }

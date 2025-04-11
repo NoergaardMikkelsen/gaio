@@ -20,7 +20,9 @@ public class PromptController : EntityController<Prompt, SearchablePrompt, Promp
     protected override async Task<IEnumerable<Prompt>> GetEntitiesByComplexQuery(ComplexSearchable complexSearchable)
     {
         if (complexSearchable.SearchablePrompt is null)
+        {
             throw new ArgumentNullException(nameof(complexSearchable.SearchablePrompt));
+        }
 
         var entities = (await entityService.GetEntities((SearchablePrompt) complexSearchable.SearchablePrompt))
             .AsEnumerable();

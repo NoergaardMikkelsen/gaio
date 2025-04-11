@@ -1,10 +1,9 @@
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters.Json;
-using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Validators;
 using BenchmarkDotNet.Filters;
+using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Validators;
 
 namespace Statistics.Tests.Benchmark.Core;
 
@@ -43,7 +42,8 @@ public class BenchmarkConfig : ManualConfig
                     continue;
                 }
 
-                ConsoleLogger.Default.WriteLine(LogKind.Info, $"Assembly '{benchmarkCase.Descriptor.Type.Assembly.FullName}' is being ignored, due to excluding '{assembly}'.");
+                ConsoleLogger.Default.WriteLine(LogKind.Info,
+                    $"Assembly '{benchmarkCase.Descriptor.Type.Assembly.FullName}' is being ignored, due to excluding '{assembly}'.");
                 return false;
             }
 

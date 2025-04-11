@@ -1,4 +1,3 @@
-using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -8,13 +7,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class ResponsesPage : BasePage
 {
-    private enum DataGridColumns
-    {
-        PROMPT_TEXT = 0,
-        RESPONSE_TEXT = 1,
-        CREATED_AT = 2,
-    }
-
     public ResponsesPage()
     {
         IResponseEndpoint responseApi = GetResponseApi();
@@ -28,5 +20,12 @@ public sealed partial class ResponsesPage : BasePage
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateDisplayedItems();
+    }
+
+    private enum DataGridColumns
+    {
+        PROMPT_TEXT = 0,
+        RESPONSE_TEXT = 1,
+        CREATED_AT = 2,
     }
 }

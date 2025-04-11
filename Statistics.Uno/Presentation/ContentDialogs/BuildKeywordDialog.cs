@@ -16,8 +16,8 @@ public class BuildKeywordDialog : ContentDialog
 
         DataContext = new BuildKeywordViewModel(keyword);
 
-        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel)DataContext, keywordEndpoint);
-        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel)DataContext, this);
+        var logic = new BuildKeywordDialogLogic(keyword, (BuildKeywordViewModel) DataContext, keywordEndpoint);
+        var ui = new BuildKeywordDialogUi(logic, (BuildKeywordViewModel) DataContext, this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
@@ -67,7 +67,7 @@ public class BuildKeywordDialog : ContentDialog
     {
         public BuildKeywordDialogLogic(
             IKeyword keyword, BuildKeywordViewModel viewModel, IKeywordEndpoint keywordEndpoint) : base(
-            (Keyword)keyword, viewModel, keywordEndpoint)
+            (Keyword) keyword, viewModel, keywordEndpoint)
         {
         }
 
@@ -86,4 +86,3 @@ public class BuildKeywordDialog : ContentDialog
         }
     }
 }
-

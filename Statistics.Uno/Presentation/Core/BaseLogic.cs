@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using CommunityToolkit.WinUI.UI.Controls;
-using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Extensions;
 
 namespace Statistics.Uno.Presentation.Core;
@@ -15,15 +14,18 @@ public abstract class BaseLogic<TItem>
     public void SortItems(object? sender, DataGridColumnEventArgs e)
     {
         if (sender is not DataGrid dataGrid || e.Column == null)
+        {
             return;
+        }
 
         string? propertyName =
             GetPropertyNameFromColumnHeader(e.Column.Header.ToString() ?? throw new InvalidOperationException());
 
         // Determine the sort direction
-        DataGridSortDirection sortDirection = e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
-            ? DataGridSortDirection.Ascending
-            : DataGridSortDirection.Descending;
+        DataGridSortDirection sortDirection =
+            e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending
+                ? DataGridSortDirection.Ascending
+                : DataGridSortDirection.Descending;
 
         dataGrid.Columns.ForEach(column => column.SortDirection = null);
 
@@ -57,7 +59,6 @@ public abstract class BaseLogic<TItem>
         PropertyInfo? parentProperty = obj.GetType().GetProperty(parts[0]);
         object? childObject = parentProperty?.GetValue(obj);
         return childObject?.GetSortableValue(parts[1]);
-
     }
 
     public async void SearchFieldChanged(object? sender, string e)

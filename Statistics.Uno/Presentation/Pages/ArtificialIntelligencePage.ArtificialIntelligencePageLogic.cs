@@ -1,10 +1,6 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
-using Statistics.Shared.Extensions;
-using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -21,7 +17,6 @@ public sealed partial class ArtificialIntelligencePage
         private readonly IArtificialIntelligenceEndpoint aiApi;
         private readonly Page page;
         private CancellationTokenSource updateCancellationTokenSource;
-        private ArtificialIntelligenceViewModel ViewModel { get; }
 
         public ArtificialIntelligencePageLogic(
             IArtificialIntelligenceEndpoint aiApi, ArtificialIntelligenceViewModel viewModel, Page page)
@@ -32,6 +27,8 @@ public sealed partial class ArtificialIntelligencePage
             updateCancellationTokenSource = new CancellationTokenSource();
         }
 
+        private ArtificialIntelligenceViewModel ViewModel { get; }
+
         internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             ISearchableArtificialIntelligence searchable = BuildSearchableArtificialIntelligences();
@@ -41,7 +38,7 @@ public sealed partial class ArtificialIntelligencePage
                 await updateCancellationTokenSource.CancelAsync();
                 updateCancellationTokenSource = new CancellationTokenSource();
 
-                Console.WriteLine($"Updating Artificial Intelligences...");
+                Console.WriteLine("Updating Artificial Intelligences...");
                 ViewModel.UpdatingText = "Updating...";
 
                 var apiResponse = await aiApi.GetAllByQuery(updateCancellationTokenSource.Token,
@@ -57,7 +54,7 @@ public sealed partial class ArtificialIntelligencePage
 
                 if (allAis == null)
                 {
-                    Console.WriteLine($"Failed to get all artificial intelligence entities.");
+                    Console.WriteLine("Failed to get all artificial intelligence entities.");
                     return;
                 }
 
@@ -65,7 +62,7 @@ public sealed partial class ArtificialIntelligencePage
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine($"Update of Artificial Intelligences Cancelled...");
+                Console.WriteLine("Update of Artificial Intelligences Cancelled...");
             }
             finally
             {
@@ -75,7 +72,7 @@ public sealed partial class ArtificialIntelligencePage
 
         private ISearchableArtificialIntelligence BuildSearchableArtificialIntelligences()
         {
-            return new SearchableArtificialIntelligence()
+            return new SearchableArtificialIntelligence
             {
                 Key = ViewModel.SearchableAiKey ?? "",
                 Name = ViewModel.SearchableAiName ?? "",
@@ -131,15 +128,14 @@ public sealed partial class ArtificialIntelligencePage
         protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
-            DataGridColumns column =
-                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
+            var column = (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
 
             return column switch
             {
                 DataGridColumns.NAME => nameof(IArtificialIntelligence.Name),
                 DataGridColumns.KEY => nameof(IArtificialIntelligence.Key),
                 DataGridColumns.AI_TYPE => nameof(IArtificialIntelligence.AiType),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
+                var _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 
@@ -148,6 +144,5 @@ public sealed partial class ArtificialIntelligencePage
         {
             return ViewModel.ArtificialIntelligences;
         }
-
     }
 }

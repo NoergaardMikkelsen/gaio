@@ -6,16 +6,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class ArtificialIntelligencePage : BasePage
 {
-    private enum DataGridColumns
-    {
-        NAME = 0,
-        KEY = 1,
-        AI_TYPE = 2,
-        CREATED_AT = 3,
-        LAST_UPDATED_AT = 4,
-        ACTIONS = 5,
-    }
-
     public ArtificialIntelligencePage()
     {
         IArtificialIntelligenceEndpoint aiApi = GetAiApi();
@@ -28,5 +18,15 @@ public sealed partial class ArtificialIntelligencePage : BasePage
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateDisplayedItems();
+    }
+
+    private enum DataGridColumns
+    {
+        NAME = 0,
+        KEY = 1,
+        AI_TYPE = 2,
+        CREATED_AT = 3,
+        LAST_UPDATED_AT = 4,
+        ACTIONS = 5,
     }
 }

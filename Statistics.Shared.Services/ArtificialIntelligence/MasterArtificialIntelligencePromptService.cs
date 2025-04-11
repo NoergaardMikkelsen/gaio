@@ -13,10 +13,10 @@ public class MasterArtificialIntelligencePromptService : IMasterArtificialIntell
         Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>? promptServices = null)
     {
         this.promptServices = promptServices ??
-                              new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>()
+                              new Dictionary<ArtificialIntelligenceType, IArtificialIntelligencePromptService>
                               {
                                   {ArtificialIntelligenceType.OPEN_AI_NO_WEB, new OpenAiNoWebPromptService()},
-                                    {ArtificialIntelligenceType.OPEN_AI_WEB, new OpenAiWebPromptService()},
+                                  {ArtificialIntelligenceType.OPEN_AI_WEB, new OpenAiWebPromptService()},
                               };
     }
 
@@ -37,7 +37,8 @@ public class MasterArtificialIntelligencePromptService : IMasterArtificialIntell
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<IResponse>> PromptSuppliedAis(IEnumerable<IArtificialIntelligence> ais, IPrompt prompt)
+    public async Task<IEnumerable<IResponse>> PromptSuppliedAis(
+        IEnumerable<IArtificialIntelligence> ais, IPrompt prompt)
     {
         var tasks = new List<Task<IResponse>>();
 

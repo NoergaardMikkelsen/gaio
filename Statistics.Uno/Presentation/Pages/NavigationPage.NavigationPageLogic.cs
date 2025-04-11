@@ -1,5 +1,3 @@
-using CommunityToolkit.WinUI.UI.Controls;
-
 namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class NavigationPage

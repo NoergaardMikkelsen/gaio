@@ -11,10 +11,10 @@ namespace Statistics.Api.Controllers;
 public class ActionController : ControllerBase
 {
     private readonly IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService;
+    private readonly ILogger<ActionController> logger;
+    private readonly IMasterArtificialIntelligencePromptService masterAiPromptService;
     private readonly IEntityQueryService<Prompt, SearchablePrompt> promptService;
     private readonly IEntityQueryService<Response, SearchableResponse> responseService;
-    private readonly IMasterArtificialIntelligencePromptService masterAiPromptService;
-    private readonly ILogger<ActionController> logger;
 
     public ActionController(
         IEntityQueryService<ArtificialIntelligence, SearchableArtificialIntelligence> aiService,
@@ -55,7 +55,7 @@ public class ActionController : ControllerBase
     {
         try
         {
-            Prompt prompt = await promptService.GetEntity(new SearchablePrompt() {Id = id,});
+            Prompt prompt = await promptService.GetEntity(new SearchablePrompt {Id = id,});
             var ais = await aiService.GetEntities(new SearchableArtificialIntelligence());
 
             var responses = await masterAiPromptService.PromptSuppliedAis(ais, prompt);

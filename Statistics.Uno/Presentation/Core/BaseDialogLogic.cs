@@ -7,9 +7,9 @@ public abstract class BaseDialogLogic<TViewModel, TEntity, TSearchable> where TV
     where TEntity : class, IEntity
     where TSearchable : class, ISearchable
 {
-    protected readonly TViewModel viewModel;
     protected readonly IEntityEndpoint<TEntity, TSearchable> endpoint;
     protected readonly TEntity entity;
+    protected readonly TViewModel viewModel;
 
     protected BaseDialogLogic(TEntity entity, TViewModel viewModel, IEntityEndpoint<TEntity, TSearchable> endpoint)
     {

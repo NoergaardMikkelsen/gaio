@@ -11,10 +11,6 @@ namespace Statistics.Tests.Controllers;
 [TestFixture]
 public class PromptControllerTests
 {
-    private Mock<IEntityQueryService<Prompt, SearchablePrompt>> _mockEntityService;
-    private Mock<ILogger<PromptController>> _mockLogger;
-    private TestablePromptController _controller;
-
     [SetUp]
     public void SetUp()
     {
@@ -22,6 +18,10 @@ public class PromptControllerTests
         _mockLogger = new Mock<ILogger<PromptController>>();
         _controller = new TestablePromptController(_mockEntityService.Object, _mockLogger.Object);
     }
+
+    private Mock<IEntityQueryService<Prompt, SearchablePrompt>> _mockEntityService;
+    private Mock<ILogger<PromptController>> _mockLogger;
+    private TestablePromptController _controller;
 
     [Test]
     public async Task GetAll_ReturnsOkResultWithEntities()

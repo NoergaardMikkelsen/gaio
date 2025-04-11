@@ -8,13 +8,16 @@ namespace Statistics.Shared.Persistence;
 
 public class StatisticsDatabaseContext : BaseDatabaseContext
 {
-
-
     public StatisticsDatabaseContext(DbContextOptions options) : base(options)
     {
         //Console.WriteLine($"Completed Construction of Database Context. - {JsonConvert.SerializeObject(options)}");
-        Console.WriteLine($"Completed Construction of Database Context.");
+        Console.WriteLine("Completed Construction of Database Context.");
     }
+
+    public virtual DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
+    public virtual DbSet<Prompt> Prompts { get; set; }
+    public virtual DbSet<Response> Responses { get; set; }
+    public virtual DbSet<Keyword> Keywords { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,9 +32,4 @@ public class StatisticsDatabaseContext : BaseDatabaseContext
         modelBuilder.ApplyConfiguration(new ResponseConfiguration(databaseType));
         modelBuilder.ApplyConfiguration(new KeywordConfiguration(databaseType));
     }
-
-    public virtual DbSet<ArtificialIntelligence> ArtificialIntelligences { get; set; }
-    public virtual DbSet<Prompt> Prompts { get; set; }
-    public virtual DbSet<Response> Responses { get; set; }
-    public virtual DbSet<Keyword> Keywords { get; set; }
 }

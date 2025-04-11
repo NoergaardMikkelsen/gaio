@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
-using IApplicationBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Newtonsoft.Json.Converters;
 using Statistics.Shared.Core.Newtonsoft.JsonConverters;
+using IApplicationBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 
 namespace Statistics.Api.Startup;
 

@@ -1,17 +1,13 @@
 using System.Collections.ObjectModel;
 using System.Net;
-using CommunityToolkit.WinUI.UI.Controls;
 using Refit;
 using Statistics.Shared.Abstraction.Interfaces.Models;
 using Statistics.Shared.Abstraction.Interfaces.Persistence;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Uno.Endpoints;
-using Statistics.Uno.Presentation.Pages.ViewModel;
-using Statistics.Shared.Extensions;
-using Statistics.Uno.Presentation.Core.Converters;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Statistics.Uno.Presentation.Core;
-using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
+using Statistics.Uno.Presentation.Core.Converters;
+using Statistics.Uno.Presentation.Pages.ViewModel;
 
 namespace Statistics.Uno.Presentation.Pages;
 
@@ -19,11 +15,10 @@ public sealed partial class AppliedKeywordsPage
 {
     private class AppliedKeywordsPageLogic : BaseLogic<IAppliedKeyword>
     {
-        private readonly IAppliedKeywordService appliedKeywordService;
-        private readonly IResponseEndpoint responsesApi;
-        private readonly IKeywordEndpoint keywordApi;
-        private AppliedKeywordsViewModel ViewModel { get; }
         private static IList<IAppliedKeyword>? _appliedKeywordsCache;
+        private readonly IAppliedKeywordService appliedKeywordService;
+        private readonly IKeywordEndpoint keywordApi;
+        private readonly IResponseEndpoint responsesApi;
 
         public AppliedKeywordsPageLogic(
             IAppliedKeywordService appliedKeywordService, IResponseEndpoint responsesApi, IKeywordEndpoint keywordApi,
@@ -35,6 +30,8 @@ public sealed partial class AppliedKeywordsPage
             ViewModel = viewModel;
         }
 
+        private AppliedKeywordsViewModel ViewModel { get; }
+
         internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             if (forceUpdate || _appliedKeywordsCache == null || !_appliedKeywordsCache.Any())
@@ -42,7 +39,8 @@ public sealed partial class AppliedKeywordsPage
                 await UpdateAppliedKeywordsCache();
             }
 
-            ViewModel.AppliedKeywords = _appliedKeywordsCache!.Where(ak => ak.AiType == ViewModel.SelectedAiType).ToObservableCollection();
+            ViewModel.AppliedKeywords = _appliedKeywordsCache!.Where(ak => ak.AiType == ViewModel.SelectedAiType)
+                .ToObservableCollection();
         }
 
         private async Task UpdateAppliedKeywordsCache()
@@ -71,9 +69,7 @@ public sealed partial class AppliedKeywordsPage
         protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
-            DataGridColumns column =
-                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null,
-                    null);
+            var column = (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
 
             return column switch
             {
@@ -83,7 +79,7 @@ public sealed partial class AppliedKeywordsPage
                 DataGridColumns.TOTAL_RESPONSES_COUNT => nameof(IAppliedKeyword.TotalResponsesCount),
                 DataGridColumns.START_SEARCH => nameof(IAppliedKeyword.StartSearch),
                 DataGridColumns.END_SEARCH => nameof(IAppliedKeyword.EndSearch),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
+                var _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 

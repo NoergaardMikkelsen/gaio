@@ -5,9 +5,6 @@ namespace Statistics.Shared.Startup;
 
 public abstract class BaseModularStartup<TModule> : IStartupModule where TModule : IStartupModule
 {
-    public IServiceCollection Services { get; protected set; }
-    public IServiceProvider ServiceProvider { get; protected set; }
-
     protected ICollection<TModule> _modules;
 
     protected BaseModularStartup()
@@ -15,14 +12,17 @@ public abstract class BaseModularStartup<TModule> : IStartupModule where TModule
         _modules = new List<TModule>();
     }
 
-    protected void AddModule(TModule module)
-    {
-        _modules.Add(module);
-    }
+    public IServiceCollection Services { get; protected set; }
+    public IServiceProvider ServiceProvider { get; protected set; }
 
     /// <inheritdoc />
     public virtual void ConfigureServices(IServiceCollection services)
     {
+    }
+
+    protected void AddModule(TModule module)
+    {
+        _modules.Add(module);
     }
 
     public void SetupServices(IServiceCollection? services = null)

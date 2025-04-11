@@ -1,6 +1,3 @@
-using Newtonsoft.Json;
-using Statistics.Uno.Endpoints;
-using Refit;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
 using Statistics.Shared.Startup.Modules;
 

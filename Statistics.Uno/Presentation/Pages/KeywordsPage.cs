@@ -6,17 +6,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class KeywordsPage : BasePage
 {
-    private enum DataGridColumns
-    {
-        KEYWORD_TEXT = 0,
-        USE_REGULAR_EXPRESSION = 1,
-        START_SEARCH = 2,
-        END_SEARCH = 3,
-        CREATED_AT = 4,
-        LAST_UPDATED_AT = 5,
-        ACTIONS = 6,
-    }
-
     public KeywordsPage()
     {
         IKeywordEndpoint keywordApi = GetKeywordApi();
@@ -29,5 +18,16 @@ public sealed partial class KeywordsPage : BasePage
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateDisplayedItems();
+    }
+
+    private enum DataGridColumns
+    {
+        KEYWORD_TEXT = 0,
+        USE_REGULAR_EXPRESSION = 1,
+        START_SEARCH = 2,
+        END_SEARCH = 3,
+        CREATED_AT = 4,
+        LAST_UPDATED_AT = 5,
+        ACTIONS = 6,
     }
 }

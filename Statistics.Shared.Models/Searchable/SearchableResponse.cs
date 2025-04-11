@@ -4,6 +4,11 @@ namespace Statistics.Shared.Models.Searchable;
 
 public class SearchableResponse : ISearchableResponse
 {
+    public SearchableResponse()
+    {
+        Text = string.Empty;
+    }
+
     /// <inheritdoc />
     public string Text { get; set; }
 
@@ -15,9 +20,4 @@ public class SearchableResponse : ISearchableResponse
 
     /// <inheritdoc />
     public int Id { get; set; }
-
-    public SearchableResponse()
-    {
-        Text = string.Empty;
-    }
 }

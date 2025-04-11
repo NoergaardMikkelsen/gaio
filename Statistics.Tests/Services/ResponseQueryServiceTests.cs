@@ -10,9 +10,6 @@ namespace Statistics.Tests.Services;
 [TestFixture]
 public class ResponseQueryServiceTests
 {
-    private StatisticsDatabaseContext _context;
-    private TestableResponseQueryService _service;
-
     [SetUp]
     public void SetUp()
     {
@@ -23,15 +20,15 @@ public class ResponseQueryServiceTests
         _context = new StatisticsDatabaseContext(options);
 
         // Seed data
-        _context.Responses.AddRange(new Response()
+        _context.Responses.AddRange(new Response
         {
-            Text = "Response 1", AiId = 1, PromptId = 1, Prompt = new Prompt() {Text = "Hello",},
-            Ai = new ArtificialIntelligence()
+            Text = "Response 1", AiId = 1, PromptId = 1, Prompt = new Prompt {Text = "Hello",},
+            Ai = new ArtificialIntelligence
                 {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB, Name = "Ai 1", Key = "Key 1",},
-        }, new Response()
+        }, new Response
         {
-            Text = "Response 2", AiId = 2, PromptId = 2, Prompt = new Prompt() {Text = "Test",},
-            Ai = new ArtificialIntelligence()
+            Text = "Response 2", AiId = 2, PromptId = 2, Prompt = new Prompt {Text = "Test",},
+            Ai = new ArtificialIntelligence
                 {AiType = ArtificialIntelligenceType.OPEN_AI_NO_WEB, Name = "Ai 2", Key = "Key 2",},
         });
         _context.SaveChanges();
@@ -46,6 +43,9 @@ public class ResponseQueryServiceTests
         _context.Database.EnsureDeleted();
         _context.Dispose();
     }
+
+    private StatisticsDatabaseContext _context;
+    private TestableResponseQueryService _service;
 
     [Test]
     public void GetBaseQuery_ShouldReturnAllResponsesWithAiAndPrompt()

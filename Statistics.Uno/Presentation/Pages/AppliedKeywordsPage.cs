@@ -1,4 +1,3 @@
-using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -8,16 +7,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class AppliedKeywordsPage : BasePage
 {
-    private enum DataGridColumns
-    {
-        TEXT = 0,
-        USES_REGULAR_EXPRESSION = 1,
-        MATCHING_RESPONSES_COUNT = 2,
-        TOTAL_RESPONSES_COUNT = 3,
-        START_SEARCH = 4,
-        END_SEARCH = 5,
-    }
-
     public AppliedKeywordsPage()
     {
         IAppliedKeywordService keywordService = GetAppliedKeywordService();
@@ -33,5 +22,15 @@ public sealed partial class AppliedKeywordsPage : BasePage
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateDisplayedItems();
+    }
+
+    private enum DataGridColumns
+    {
+        TEXT = 0,
+        USES_REGULAR_EXPRESSION = 1,
+        MATCHING_RESPONSES_COUNT = 2,
+        TOTAL_RESPONSES_COUNT = 3,
+        START_SEARCH = 4,
+        END_SEARCH = 5,
     }
 }

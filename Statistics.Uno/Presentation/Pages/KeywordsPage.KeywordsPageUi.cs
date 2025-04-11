@@ -24,7 +24,8 @@ public sealed partial class KeywordsPage
                 .CreateDataGrid(ViewModel, nameof(KeywordsViewModel.Keywords), SetupDataGridColumns, Logic.SortItems)
                 .Grid(row: 2, column: 0, columnSpan: 5);
             StackPanel updatingPanel = CreateUpdatingTextBlock().Grid(row: 3, column: 0);
-            StackPanel refreshButtons = CreateRefreshButtonsPanel(() => Logic.UpdateDisplayedItems()).Grid(row: 3, column: 4);
+            StackPanel refreshButtons =
+                CreateRefreshButtonsPanel(() => Logic.UpdateDisplayedItems()).Grid(row: 3, column: 4);
 
             grid.Children.Add(buttonPanel);
             grid.Children.Add(inputPanel);
@@ -38,7 +39,7 @@ public sealed partial class KeywordsPage
             StackPanel? panel = StackPanelFactory.CreateDefaultPanel();
             panel.HorizontalAlignment = HorizontalAlignment.Left;
 
-            var block = new TextBlock()
+            var block = new TextBlock
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -70,7 +71,7 @@ public sealed partial class KeywordsPage
         {
             StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
-            var addButton = new Button()
+            var addButton = new Button
             {
                 Content = "Add",
                 Margin = new Thickness(10),
@@ -164,7 +165,7 @@ public sealed partial class KeywordsPage
         {
             StackPanel stackPanel = StackPanelFactory.CreateDefaultPanel();
 
-            var editButton = new Button()
+            var editButton = new Button
             {
                 Content = "Edit",
                 Margin = new Thickness(5),
@@ -172,7 +173,7 @@ public sealed partial class KeywordsPage
             };
             editButton.Click += Logic.EditButtonOnClick;
             editButton.Tag(x => x.Binding(nameof(Keyword.Id)));
-            var deleteButton = new Button()
+            var deleteButton = new Button
             {
                 Content = "Delete",
                 Margin = new Thickness(5),

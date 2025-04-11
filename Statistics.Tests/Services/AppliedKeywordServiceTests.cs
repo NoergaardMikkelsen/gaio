@@ -1,31 +1,21 @@
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Exporters.Json;
-using BenchmarkDotNet.Filters;
-using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Validators;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
 using Statistics.Shared.Models.Entity;
 using Statistics.Shared.Services.Keywords;
-using Statistics.Tests.Benchmark;
-using Statistics.Tests.Benchmark.Core;
 
 namespace Statistics.Tests.Services;
 
 [TestFixture]
 public class AppliedKeywordServiceTests
 {
-    private IAppliedKeywordService _service;
-
     [SetUp]
     public void SetUp()
     {
         _service = new AppliedKeywordService();
     }
+
+    private IAppliedKeywordService _service;
 
     private static IEnumerable<IResponse> CreateResponses(
         string matchingText, DateTime? matchingCreatedDateTime = null, DateTime? nonMatchingCreatedDateTime = null)

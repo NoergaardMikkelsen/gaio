@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Statistics.Api.Startup;
 using Statistics.Shared.Abstraction.Interfaces.Services;
@@ -18,7 +19,7 @@ public class ApiStartup : ApiModularStartup
     private const string APP_SETTINGS_FILE = "appsettings.json";
     private const string TEMPLATE_CONNECTION_STRING = "Your-Database-Connection-String-Here";
 
-    public ApiStartup() : base()
+    public ApiStartup()
     {
         Configuration = BuildConfiguration();
 
@@ -81,11 +82,10 @@ public class ApiStartup : ApiModularStartup
             },
         };
 
-        string templateContent = System.Text.Json.JsonSerializer.Serialize(template,
-            new System.Text.Json.JsonSerializerOptions
-            {
-                WriteIndented = true,
-            });
+        string templateContent = JsonSerializer.Serialize(template, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+        });
 
         Directory.CreateDirectory(Path.GetDirectoryName(SECRETS_FILE)!);
         File.WriteAllText(SECRETS_FILE, templateContent);

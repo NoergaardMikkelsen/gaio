@@ -1,9 +1,7 @@
 using System.Collections.ObjectModel;
-using CommunityToolkit.WinUI.UI.Controls;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
-using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Searchable;
 using Statistics.Uno.Endpoints;
 using Statistics.Uno.Presentation.Core;
@@ -17,11 +15,10 @@ public sealed partial class PromptsPage
 {
     private class PromptsPageLogic : BaseLogic<IPrompt>
     {
-        private readonly IPromptEndpoint promptApi;
         private readonly IActionEndpoint actionApi;
         private readonly Page page;
+        private readonly IPromptEndpoint promptApi;
         private CancellationTokenSource updateCancellationTokenSource;
-        private PromptsViewModel ViewModel { get; }
 
         public PromptsPageLogic(
             IPromptEndpoint promptApi, IActionEndpoint actionApi, PromptsViewModel viewModel, PromptsPage page)
@@ -33,6 +30,8 @@ public sealed partial class PromptsPage
             updateCancellationTokenSource = new CancellationTokenSource();
         }
 
+        private PromptsViewModel ViewModel { get; }
+
         internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             ISearchablePrompt searchable = BuildSearchablePrompt();
@@ -42,7 +41,7 @@ public sealed partial class PromptsPage
                 await updateCancellationTokenSource.CancelAsync();
                 updateCancellationTokenSource = new CancellationTokenSource();
 
-                Console.WriteLine($"Updating Prompts...");
+                Console.WriteLine("Updating Prompts...");
                 ViewModel.UpdatingText = "Updating...";
 
                 var apiResponse = await promptApi.GetAllByQuery(updateCancellationTokenSource.Token,
@@ -58,7 +57,7 @@ public sealed partial class PromptsPage
 
                 if (allPrompts == null)
                 {
-                    Console.WriteLine($"Failed to get all prompt entities.");
+                    Console.WriteLine("Failed to get all prompt entities.");
                     return;
                 }
 
@@ -66,7 +65,7 @@ public sealed partial class PromptsPage
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine($"Update of Prompts Cancelled...");
+                Console.WriteLine("Update of Prompts Cancelled...");
             }
             finally
             {
@@ -76,7 +75,7 @@ public sealed partial class PromptsPage
 
         private ISearchablePrompt BuildSearchablePrompt()
         {
-            return new SearchablePrompt()
+            return new SearchablePrompt
             {
                 Text = ViewModel.SearchablePromptText ?? string.Empty,
             };
@@ -159,15 +158,14 @@ public sealed partial class PromptsPage
         protected override string GetPropertyNameFromColumnHeader(string header)
         {
             var converter = new EnumToTitleCaseConverter();
-            DataGridColumns column =
-                (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
+            var column = (DataGridColumns) converter.ConvertBack(header, typeof(DataGridColumns), null, null);
 
             return column switch
             {
                 DataGridColumns.PROMPT_TEXT => nameof(IPrompt.Text),
                 DataGridColumns.CREATED_AT => nameof(IPrompt.CreatedDateTime),
                 DataGridColumns.LAST_UPDATED_AT => nameof(IPrompt.UpdatedDateTime),
-                _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
+                var _ => throw new ArgumentOutOfRangeException(nameof(header), $"Unexpected column header: {header}"),
             };
         }
 
@@ -176,7 +174,5 @@ public sealed partial class PromptsPage
         {
             return ViewModel.Prompts;
         }
-
-
     }
 }

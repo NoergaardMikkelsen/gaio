@@ -16,7 +16,7 @@ public class AppliedKeywordService : IAppliedKeywordService
     {
         var types = Enum.GetValues<ArtificialIntelligenceType>();
 
-        var generateAppliedKeywordsTasks = types.Select((type) =>
+        var generateAppliedKeywordsTasks = types.Select(type =>
             GenerateAppliedKeywordsForAiType(type, keywords, responses));
 
         var appliedKeywordsByType = await Task.WhenAll(generateAppliedKeywordsTasks);
@@ -29,7 +29,7 @@ public class AppliedKeywordService : IAppliedKeywordService
     {
         var typeMatchingResponses = responses.Where(x => x.Ai.AiType == type).ToList();
 
-        var generateAppliedKeywordsTasks = keywords.AsParallel().Select((word) =>
+        var generateAppliedKeywordsTasks = keywords.AsParallel().Select(word =>
             word.UseRegex
                 ? GenerateAppliedKeywordUsingRegex(type, word, typeMatchingResponses)
                 : GenerateAppliedKeywordUsingContains(type, word, typeMatchingResponses));

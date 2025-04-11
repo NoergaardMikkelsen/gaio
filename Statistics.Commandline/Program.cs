@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Refit;
+using Microsoft.Extensions.Hosting;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
-using System.Threading;
 
 namespace Statistics.Commandline;
 

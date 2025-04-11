@@ -16,16 +16,18 @@ public class BuildPromptDialog : ContentDialog
 
         DataContext = new BuildPromptViewModel(prompt);
 
-        var logic = new BuildPromptDialogLogic(prompt, (BuildPromptViewModel)DataContext, promptEndpoint);
-        var ui = new BuildPromptDialogUi(logic, (BuildPromptViewModel)DataContext, this);
+        var logic = new BuildPromptDialogLogic(prompt, (BuildPromptViewModel) DataContext, promptEndpoint);
+        var ui = new BuildPromptDialogUi(logic, (BuildPromptViewModel) DataContext, this);
 
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
     }
 
-    private class BuildPromptDialogUi : BaseDialogUi<BuildPromptDialogLogic, BuildPromptViewModel, Prompt, SearchablePrompt>
+    private class
+        BuildPromptDialogUi : BaseDialogUi<BuildPromptDialogLogic, BuildPromptViewModel, Prompt, SearchablePrompt>
     {
         public BuildPromptDialogUi(
-            BuildPromptDialogLogic logic, BuildPromptViewModel viewModel, ContentDialog dialog) : base(logic, viewModel, dialog)
+            BuildPromptDialogLogic logic, BuildPromptViewModel viewModel, ContentDialog dialog) : base(logic, viewModel,
+            dialog)
         {
         }
 
@@ -47,19 +49,19 @@ public class BuildPromptDialog : ContentDialog
 
             AddLabelAndTextBox(grid, "Text:", nameof(BuildPromptViewModel.Text), 0,
                 placeholderText: "Enter prompt text here...");
-            AddLabelAndTextBox(grid, "Id:", nameof(BuildPromptViewModel.Id), 1, isEnabled: false);
-            AddLabelAndTextBox(grid, "Created At:", nameof(BuildPromptViewModel.CreatedDateTime), 2, isEnabled: false,
-                converter: dateTimeConverter);
-            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildPromptViewModel.UpdatedDateTime), 3,
-                isEnabled: false, converter: dateTimeConverter);
-            AddLabelAndTextBox(grid, "Version:", nameof(BuildPromptViewModel.Version), 4, isEnabled: false);
+            AddLabelAndTextBox(grid, "Id:", nameof(BuildPromptViewModel.Id), 1, false);
+            AddLabelAndTextBox(grid, "Created At:", nameof(BuildPromptViewModel.CreatedDateTime), 2, false,
+                dateTimeConverter);
+            AddLabelAndTextBox(grid, "Last Updated At:", nameof(BuildPromptViewModel.UpdatedDateTime), 3, false,
+                dateTimeConverter);
+            AddLabelAndTextBox(grid, "Version:", nameof(BuildPromptViewModel.Version), 4, false);
         }
     }
 
     private class BuildPromptDialogLogic : BaseDialogLogic<BuildPromptViewModel, Prompt, SearchablePrompt>
     {
-        public BuildPromptDialogLogic(IPrompt prompt, BuildPromptViewModel viewModel, IPromptEndpoint promptEndpoint)
-            : base((Prompt) prompt, viewModel, promptEndpoint)
+        public BuildPromptDialogLogic(IPrompt prompt, BuildPromptViewModel viewModel, IPromptEndpoint promptEndpoint) :
+            base((Prompt) prompt, viewModel, promptEndpoint)
         {
         }
 

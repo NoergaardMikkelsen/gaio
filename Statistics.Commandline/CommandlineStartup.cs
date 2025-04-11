@@ -4,12 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Statistics.Commandline.Startup;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
-using Statistics.Shared.Abstraction.Interfaces.Services;
-using Statistics.Shared.Models.Entity;
-using Statistics.Shared.Models.Searchable;
 using Statistics.Shared.Models.Settings;
 using Statistics.Shared.Persistence;
-using Statistics.Shared.Persistence.Services;
 
 namespace Statistics.Commandline;
 
@@ -17,9 +13,9 @@ public class CommandlineStartup : CommandlineModularStartup
 {
     public CommandlineStartup()
     {
-        Console.WriteLine($"Constructing Startup Class...");
+        Console.WriteLine("Constructing Startup Class...");
 
-        const string baseAddress = $"https://localhost:7016/api/";
+        const string baseAddress = "https://localhost:7016/api/";
 
         AddModule(new CommandlineRefitStartupModule<IActionEndpoint>($"{baseAddress}Action"));
 

@@ -11,10 +11,6 @@ namespace Statistics.Tests.Controllers;
 [TestFixture]
 public class ResponseControllerTests
 {
-    private Mock<IEntityQueryService<Response, SearchableResponse>> _mockEntityService;
-    private Mock<ILogger<ResponseController>> _mockLogger;
-    private TestableResponseController _controller;
-
     [SetUp]
     public void SetUp()
     {
@@ -22,6 +18,10 @@ public class ResponseControllerTests
         _mockLogger = new Mock<ILogger<ResponseController>>();
         _controller = new TestableResponseController(_mockEntityService.Object, _mockLogger.Object);
     }
+
+    private Mock<IEntityQueryService<Response, SearchableResponse>> _mockEntityService;
+    private Mock<ILogger<ResponseController>> _mockLogger;
+    private TestableResponseController _controller;
 
     [Test]
     public async Task GetAll_ReturnsOkResultWithEntities()

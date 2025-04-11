@@ -4,12 +4,11 @@ namespace Statistics.Uno.Presentation.Core.Converters;
 
 public class ArtificialIntelligenceTypeToHumanReadableConverter : IValueConverter
 {
-    private Dictionary<ArtificialIntelligenceType, string> typeMap =
-        new Dictionary<ArtificialIntelligenceType, string>()
-        {
-            {ArtificialIntelligenceType.OPEN_AI_NO_WEB, $"Open Ai - Without Web"},
-            {ArtificialIntelligenceType.OPEN_AI_WEB, $"Open Ai - With Web"},
-        };
+    private readonly Dictionary<ArtificialIntelligenceType, string> typeMap = new()
+    {
+        {ArtificialIntelligenceType.OPEN_AI_NO_WEB, "Open Ai - Without Web"},
+        {ArtificialIntelligenceType.OPEN_AI_WEB, "Open Ai - With Web"},
+    };
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, string language)

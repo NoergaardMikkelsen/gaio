@@ -9,9 +9,6 @@ namespace Statistics.Tests.Services;
 [TestFixture]
 public class PromptQueryServiceTests
 {
-    private StatisticsDatabaseContext _context;
-    private TestablePromptQueryService _service;
-
     [SetUp]
     public void SetUp()
     {
@@ -22,7 +19,7 @@ public class PromptQueryServiceTests
         _context = new StatisticsDatabaseContext(options);
 
         // Seed data
-        _context.Prompts.AddRange(new Prompt() {Text = "Prompt 1",}, new Prompt() {Text = "Prompt 2",});
+        _context.Prompts.AddRange(new Prompt {Text = "Prompt 1",}, new Prompt {Text = "Prompt 2",});
         _context.SaveChanges();
 
         // Initialize testable service
@@ -35,6 +32,9 @@ public class PromptQueryServiceTests
         _context.Database.EnsureDeleted();
         _context.Dispose();
     }
+
+    private StatisticsDatabaseContext _context;
+    private TestablePromptQueryService _service;
 
     [Test]
     public void GetBaseQuery_ShouldReturnAllPromptsWithResponsesAndAi()

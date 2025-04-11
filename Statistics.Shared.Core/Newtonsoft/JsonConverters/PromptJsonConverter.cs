@@ -7,6 +7,8 @@ namespace Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 public class PromptJsonConverter : JsonConverter<Prompt>
 {
+    public override bool CanWrite => false;
+
     public override Prompt ReadJson(
         JsonReader reader, Type objectType, Prompt existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
@@ -39,10 +41,5 @@ public class PromptJsonConverter : JsonConverter<Prompt>
     public override void WriteJson(JsonWriter writer, Prompt value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
     }
 }

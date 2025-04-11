@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Extensions;
 using Statistics.Shared.Models.Searchable;
 
@@ -8,6 +7,8 @@ namespace Statistics.Shared.Core.Newtonsoft.JsonConverters;
 
 public class ComplexSearchableJsonConverter : JsonConverter<ComplexSearchable>
 {
+    public override bool CanWrite => false;
+
     public override ComplexSearchable ReadJson(
         JsonReader reader, Type objectType, ComplexSearchable existingValue, bool hasExistingValue,
         JsonSerializer serializer)
@@ -18,8 +19,9 @@ public class ComplexSearchableJsonConverter : JsonConverter<ComplexSearchable>
         }
 
         JObject jObject = JObject.Load(reader);
-        var searchableArtificialIntelligence = jObject[nameof(ComplexSearchable.SearchableArtificialIntelligence).ToJsonPropertyCapitalisation()]
-            ?.ToObject<SearchableArtificialIntelligence>(serializer);
+        var searchableArtificialIntelligence =
+            jObject[nameof(ComplexSearchable.SearchableArtificialIntelligence).ToJsonPropertyCapitalisation()]
+                ?.ToObject<SearchableArtificialIntelligence>(serializer);
         var searchablePrompt = jObject[nameof(ComplexSearchable.SearchablePrompt).ToJsonPropertyCapitalisation()]
             ?.ToObject<SearchablePrompt>(serializer);
         var searchableKeyword = jObject[nameof(ComplexSearchable.SearchableKeyword).ToJsonPropertyCapitalisation()]
@@ -40,6 +42,4 @@ public class ComplexSearchableJsonConverter : JsonConverter<ComplexSearchable>
     {
         throw new NotImplementedException();
     }
-
-    public override bool CanWrite => false;
 }

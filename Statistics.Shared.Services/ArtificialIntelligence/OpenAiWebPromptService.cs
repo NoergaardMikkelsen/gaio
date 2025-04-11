@@ -1,9 +1,4 @@
-using System.ClientModel;
-using System.Diagnostics.CodeAnalysis;
-using OpenAI;
-using OpenAI.Assistants;
 using OpenAI.Chat;
-using OpenAI.Responses;
 using Statistics.Shared.Abstraction.Enum;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Services;
@@ -11,9 +6,9 @@ using Statistics.Shared.Abstraction.Interfaces.Services;
 namespace Statistics.Shared.Services.ArtificialIntelligence;
 
 /// <summary>
-/// As of 09-04-2025, OpenAI's nuget package with web search capabilities is only in preview.
-/// It also has little to no real explanation of how to use it - yet.
-/// This service therefore acts just like <see cref="OpenAiNoWebPromptService"/>, for now.
+///     As of 09-04-2025, OpenAI's nuget package with web search capabilities is only in preview.
+///     It also has little to no real explanation of how to use it - yet.
+///     This service therefore acts just like <see cref="OpenAiNoWebPromptService" />, for now.
 /// </summary>
 public class OpenAiWebPromptService : BasePromptService, IArtificialIntelligencePromptService
 {

@@ -10,13 +10,11 @@ namespace Statistics.Uno;
 
 public class UnoStartup : UnoModularStartup
 {
-    protected IHost? Host { get; private set; }
-
     public UnoStartup()
     {
-        const string baseAddress = $"https://localhost:7016/api/";
+        const string baseAddress = "https://localhost:7016/api/";
 
-        Console.WriteLine($"Constructing Startup Class...");
+        Console.WriteLine("Constructing Startup Class...");
 
         AddModule(new UnoRefitStartupModule<IResponseEndpoint>($"{baseAddress}Response"));
         AddModule(new UnoRefitStartupModule<IArtificialIntelligenceEndpoint>($"{baseAddress}ArtificialIntelligence"));
@@ -24,6 +22,8 @@ public class UnoStartup : UnoModularStartup
         AddModule(new UnoRefitStartupModule<IKeywordEndpoint>($"{baseAddress}Keyword"));
         AddModule(new UnoRefitStartupModule<IActionEndpoint>($"{baseAddress}Action"));
     }
+
+    protected IHost? Host { get; private set; }
 
     /// <inheritdoc />
     public override void ConfigureServices(IServiceCollection services)
@@ -52,7 +52,7 @@ public class UnoStartup : UnoModularStartup
 
     private void ConfigureSerialization(HostBuilderContext host, IServiceCollection services)
     {
-        services.AddSingleton(new JsonSerializerOptions() {IncludeFields = true,});
+        services.AddSingleton(new JsonSerializerOptions {IncludeFields = true,});
     }
 
     private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logBuilder)

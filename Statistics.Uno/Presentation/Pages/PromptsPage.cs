@@ -7,14 +7,6 @@ namespace Statistics.Uno.Presentation.Pages;
 
 public sealed partial class PromptsPage : BasePage
 {
-    private enum DataGridColumns
-    {
-        PROMPT_TEXT = 0,
-        CREATED_AT = 1,
-        LAST_UPDATED_AT = 2,
-        ACTIONS = 3,
-    }
-
     public PromptsPage()
     {
         IPromptEndpoint promptApi = GetPromptApi();
@@ -28,5 +20,13 @@ public sealed partial class PromptsPage : BasePage
         this.Background(Theme.Brushes.Background.Default).Content(ui.CreateContentGrid());
 
         _ = logic.UpdateDisplayedItems();
+    }
+
+    private enum DataGridColumns
+    {
+        PROMPT_TEXT = 0,
+        CREATED_AT = 1,
+        LAST_UPDATED_AT = 2,
+        ACTIONS = 3,
     }
 }
