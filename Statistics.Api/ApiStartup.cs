@@ -14,6 +14,9 @@ namespace Statistics.Api;
 public class ApiStartup : ApiModularStartup
 {
     private const string LOG_FILE = "Storage/satistics.log";
+    private const string SECRETS_FILE = "appsettings.secrets.json";
+    private const string APP_SETTINGS_FILE = "appsettings.json";
+    private const string TEMPLATE_CONNECTION_STRING = "Your-Database-Connection-String-Here";
 
     public ApiStartup() : base()
     {
@@ -53,18 +56,62 @@ public class ApiStartup : ApiModularStartup
 
     private IConfiguration BuildConfiguration()
     {
+        EnsureSecretsFileExists();
+
         IConfigurationBuilder configBuilder = new ConfigurationBuilder();
 
-        configBuilder.AddJsonFile("appsettings.json", false, true);
-        configBuilder.AddJsonFile("appsettings.secrets.json", false, true);
+        configBuilder.AddJsonFile(APP_SETTINGS_FILE, false, true);
+        configBuilder.AddJsonFile(SECRETS_FILE, false, true);
 
         return configBuilder.Build();
+    }
+
+    private void EnsureSecretsFileExists()
+    {
+        if (File.Exists(SECRETS_FILE))
+        {
+            return;
+        }
+
+        var template = new
+        {
+            SecretsConfig = new SecretsConfig
+            {
+                ConnectionString = TEMPLATE_CONNECTION_STRING
+            }
+        };
+
+        var templateContent = System.Text.Json.JsonSerializer.Serialize(template,
+            new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+        Directory.CreateDirectory(Path.GetDirectoryName(SECRETS_FILE)!);
+        File.WriteAllText(SECRETS_FILE, templateContent);
+
+        throw new FileNotFoundException(
+            $"Secrets file '{SECRETS_FILE}' was not found. An empty template secrets file as been generated. Please fill it out before running the application again.");
     }
 
     private SecretsConfig GetSecrets()
     {
         var config = new SecretsConfig();
         Configuration.GetSection(nameof(SecretsConfig)).Bind(config);
+
+        if (string.IsNullOrEmpty(config.ConnectionString))
+        {
+            throw new ArgumentNullException(nameof(config.ConnectionString),
+                "The connection string in the secrets was empty");
+        }
+
+        if (config.ConnectionString.Equals(TEMPLATE_CONNECTION_STRING, StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new ArgumentException(
+                $"The connection string in the secrets was not set. It is still the template value '{TEMPLATE_CONNECTION_STRING}'",
+                nameof(config.ConnectionString));
+        }
+
         return config;
     }
 
