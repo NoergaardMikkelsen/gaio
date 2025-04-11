@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 using Statistics.Shared.Abstraction.Interfaces.Models.Entity;
 using Statistics.Shared.Abstraction.Interfaces.Models.Searchable;
 using Statistics.Shared.Abstraction.Interfaces.Refit;
@@ -33,6 +34,9 @@ public sealed partial class ResponsesPage
         internal override async Task UpdateDisplayedItems(bool forceUpdate = false)
         {
             IComplexSearchable complexSearchable = BuildComplexSearchable();
+
+            // Log the complexSearchable object to the console
+            Console.WriteLine("ComplexSearchable Object: " + JsonConvert.SerializeObject(complexSearchable));
 
             try
             {
@@ -72,7 +76,13 @@ public sealed partial class ResponsesPage
 
         private IComplexSearchable BuildComplexSearchable()
         {
-            //TODO: Figure out why this object is empty in 'Release' mode, but not in 'Debug' mode.
+            //TODO: Figure out why the returned object is empty in 'Release' mode, but not in 'Debug' mode.
+
+            Console.WriteLine("Creating Complex Searchable...");
+
+            Console.WriteLine($"{nameof(ViewModel.SearchableResponseText)}: {ViewModel.SearchableResponseText}"); // Empty
+            Console.WriteLine($"{nameof(ViewModel.SelectedAiType)}: {ViewModel.SelectedAiType}"); // ArtificialIntelligenceType.OPEN_AI_NO_WEB
+            Console.WriteLine($"{nameof(ViewModel.SearchablePromptText)}: {ViewModel.SearchablePromptText}"); // Empty
 
             return new ComplexSearchable
             {
